@@ -4,6 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@theme {
+  --font-inter: 'Inter', sans-serif;
+  --color-light-grey: #F8FAFC;
+  --color-dark-grey: #6B7280;
+  --color-primary: #FF9644;
+  --color-secondary: #0F172A;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
