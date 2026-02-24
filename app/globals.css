@@ -8,8 +8,9 @@
   --font-inter: 'Inter', sans-serif;
   --color-light-grey: #F8FAFC;
   --color-dark-grey: #6B7280;
-  --color-primary: #FF9644;
+  --color-primary-orange: #FF9644;
   --color-secondary: #0F172A;
+  --color-border-grey: #E5E7EB;
 }
 
 @theme inline {

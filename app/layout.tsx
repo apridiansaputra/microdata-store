@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import "../globals.css";
-
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Microdata Store",
@@ -9,8 +8,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="id">
+      <body className="min-h-screen antialiased">
         {children}
       </body>
     </html>
