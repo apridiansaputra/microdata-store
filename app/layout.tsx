@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/components/layout/Navbar";
-import Container from "@/components/components/layout/Container";
-import Footer from "@/components/components/layout/Footer";
+import Navbar from "@/components/components/user-layout/Navbar";
+import Container from "@/components/components/user-layout/Container";
+import Footer from "@/components/components/user-layout/Footer";
 
 export const metadata: Metadata = {
   title: "MicrodataStore",

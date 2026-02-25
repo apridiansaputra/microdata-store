@@ -1,9 +1,7 @@
 'use client'
-
-import React from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
-import { SearchIcon, ShoppingCartIcon, UserIcon } from 'lucide-react'
+import { Menu, SearchIcon, ShoppingCartIcon, UserIcon } from 'lucide-react'
 
 export default function Header() {
   return (
@@ -29,11 +27,10 @@ export default function Header() {
             <SheetHeader>
               <SheetTitle>Keranjang Belanja</SheetTitle>
             </SheetHeader>
-            {/* <CartSheet /> */}
           </SheetContent>
         </Sheet>
 
-        <UserIcon className="cursor-pointer" />
+        <Menu className="cursor-pointer" />
       </div>
     </div>
   )
