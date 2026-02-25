@@ -1,4 +1,4 @@
-import { footerCategory, footerHelp } from "@/Constants/Data";
+import { footerCategory, footerHelp } from "@/constants/data";
 import Link from "next/link";
 import React from "react";
 import { Button } from "../ui/button";
