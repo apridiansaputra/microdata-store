@@ -1,7 +1,7 @@
 'use client'
 import Link from "next/link";
 import Container from "./Container";
-import { headerData } from "@/Constants/Data";
+import { headerData } from "@/constants/data";
 import { usePathname } from "next/dist/client/components/navigation";
 
 export default function Menu () {

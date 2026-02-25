@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "@/components/components/user-layout/Navbar";
-import Container from "@/components/components/user-layout/Container";
-import Footer from "@/components/components/user-layout/Footer";
 
 export const metadata: Metadata = {
   title: "MicrodataStore",
@@ -14,13 +11,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1">
-          <Container>{children}</Container>
-        </main>
-        <Footer />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
