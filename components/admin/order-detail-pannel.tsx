@@ -97,7 +97,7 @@ export default function OrderDetailPanel({ onClose }: OrderDetailPanelProps) {
                     </p>
                     <p className="mt-2 text-xs leading-none ">{item.price}</p>
                   </div>
-                  <p className="text-sm leading font-semibold">
+                  <p className="text-xs leading font-semibold text-dark-grey/80">
                     x {item.quantity}
                   </p>
                 </article>

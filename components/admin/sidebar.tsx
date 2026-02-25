@@ -8,8 +8,8 @@ import Image from "next/image";
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutGrid },
   { label: "Pesanan", href: "/orders", icon: ShoppingBag },
-  { label: "Produk", href: "/products", icon: Package },
-  { label: "Negosiasi", href: "/finance", icon: Handshake },
+  { label: "Produk", href: "/products-admin", icon: Package },
+  { label: "Negosiasi", href: "/negotiations", icon: Handshake },
 ];
 
 export default function AdminSidebar() {

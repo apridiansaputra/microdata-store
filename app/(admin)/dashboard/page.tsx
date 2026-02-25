@@ -1,4 +1,4 @@
-import Header from '@/components/ui/admin/header'
+import Header from '@/components/admin/header'
 
 export default function Dashboard() {
   return (
