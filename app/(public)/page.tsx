@@ -1,7 +1,7 @@
-export default function Homepage() {
+import React from 'react'
+
+export default function page() {
   return (
-    <div>
-        <h1>Welcome to Microdata Store</h1>
-    </div>
+    <div>page</div>
   )
 }
