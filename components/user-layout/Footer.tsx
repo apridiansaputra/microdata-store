@@ -11,12 +11,13 @@ export default function Footer() {
         <Container className="flex flex-col md:flex-row w-full py-8 gap-8 md:gap-12 justify-between text-sm text-gray-700">
             <div className="flex flex-col gap-3 justify-around">
                 <div className="flex flex-col gap-4">
+                    <Image src="/logo.png" alt="Logo" width={80} height={20} />
                     <p className="text-sm">Telusuri dan pilih produk yang kamu inginkan.</p>
                 </div>
                 <div className="flex flex-row gap-6">
-                    <img src="/icon-twiter.png" alt="Twitter Icon" className="w-6 h-6" />
-                    <img src="/icon-tiktok.png" alt="TikTok Icon" className="w-6 h-6" />
-                    <img src="/icon-instagram.png" alt="Instagram Icon" className="w-6 h-6" />
+                    <Image src="/icon-twiter.png" alt="Twitter Icon" width={24} height={24} className="w-6 h-6" />
+                    <Image src="/icon-tiktok.png" alt="TikTok Icon" width={24} height={24} className="w-6 h-6" />
+                    <Image src="/icon-instagram.png" alt="Instagram Icon" width={24} height={24} className="w-6 h-6" />
                 </div>
             </div>  
 
@@ -52,7 +53,7 @@ export default function Footer() {
         </Container>
 
         <Container className="pt-6 pb-4 border-t w-full text-center text-xs text-gray-500">
-            <p> <img src="/icon-copyright.png" alt="Copyright Icon" className="w-4 h-4 inline mr-1 mb-1" />2025 Microdata Store. All rights reserved.</p>
+            <p> <Image src="/icon-copyright.png" alt="Copyright Icon" width={16} height={16} className="w-4 h-4 inline mr-1 mb-1" />2025 Microdata Store. All rights reserved.</p>
         </Container>
     </footer>
   );
