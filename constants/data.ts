@@ -1,8 +1,7 @@
 export const headerData = [
   { title: "Beranda", href: "/" },
-  { title: "Shop", href: "/shop" },
-  { title: "Kategori Satu", href: "/kategori-satu" },
-  { title: "Kategori Dua", href: "/kategori-dua" },
+  { title: "Semua Produk", href: "/semua-produk" },
+  { title: "Laptop", href: "/laptop" },
   { title: "Kategori Tiga", href: "/kategori-tiga" },
   { title: "Kategori Empat", href: "/kategori-empat" },
   { title: "Kategori Lima", href: "/kategori-lima" },
