@@ -11,7 +11,7 @@ export default function Menu () {
         <Container>
             <div className="flex justify-around w-full text-sm mt-6 ">
                 {headerData.map((item, index) => (
-                    <Link key={index} href={item.href} className={`text-xs ${pathName === item.href ? "font-semibold text-yellow-500" : ""}`}>{item.title}</Link>
+                    <Link key={index} href={item.href} className={`text-xs ${pathName === item.href ? "font-semibold text-primary-orange" : ""}`}>{item.title}</Link>
                 ))}
             </div>
         </Container>

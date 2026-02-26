@@ -12,7 +12,7 @@ export default function Footer() {
             <div className="flex flex-col gap-3 justify-around">
                 <div className="flex flex-col gap-4">
                     <Image src="/logo.png" alt="Logo" width={80} height={20} />
-                    <p className="text-sm">Telusuri dan pilih produk yang kamu inginkan.</p>
+                    <p className="text-xs">Telusuri dan pilih produk yang kamu inginkan.</p>
                 </div>
                 <div className="flex flex-row gap-6">
                     <Image src="/icon-twiter.png" alt="Twitter Icon" width={24} height={24} className="w-6 h-6" />
