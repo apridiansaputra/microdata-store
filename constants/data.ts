@@ -1,6 +1,6 @@
 export const headerData = [
   { title: "Beranda", href: "/" },
-  { title: "Semua Produk", href: "/semua-produk" },
+	{ title: "Semua Produk", href: "/products" },
   { title: "Laptop", href: "/laptop" },
   { title: "Kategori Tiga", href: "/kategori-tiga" },
   { title: "Kategori Empat", href: "/kategori-empat" },
@@ -22,6 +22,7 @@ export const footerCategory = [
 ]
 
 export type AdminProduct = {
+    isNew: boolean | undefined;
 	id: number;
 	title: string;
 	price: number;
@@ -33,11 +34,12 @@ export type AdminProduct = {
 export const ADMIN_PRODUCTS: AdminProduct[] = [
 	{
 		id: 1,
-		title: "Laptop Infinix X1 Book RAM 16 GB SSD 512 GB",
+		title: "Laptop Infinix X1 book RAM 600 GB 7000 SSD",
 		price: 8500000,
 		stock: 25,
 		sold: 10,
 		imageSrc: "/lenovo.png",
+		isNew: true
 	},
 	{
 		id: 2,
@@ -45,7 +47,8 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 		price: 9200000,
 		stock: 18,
 		sold: 7,
-		imageSrc: "/lenovo.png",
+		imageSrc: "/samsung.png",
+		isNew: undefined
 	},
 	{
 		id: 3,
@@ -54,6 +57,7 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 		stock: 12,
 		sold: 5,
 		imageSrc: "/lenovo.png",
+		isNew: true
 	},
 	{
 		id: 4,
@@ -62,6 +66,7 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 		stock: 30,
 		sold: 14,
 		imageSrc: "/lenovo.png",
+		isNew: undefined
 	},
 	{
 		id: 5,
@@ -70,6 +75,7 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 		stock: 20,
 		sold: 9,
 		imageSrc: "/lenovo.png",
+		isNew: true
 	},
 	{
 		id: 6,
@@ -78,6 +84,7 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 		stock: 10,
 		sold: 4,
 		imageSrc: "/lenovo.png",
+		isNew: undefined
 	},
 	{
 		id: 7,
@@ -86,6 +93,7 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 		stock: 16,
 		sold: 6,
 		imageSrc: "/lenovo.png",
+		isNew: undefined
 	},
 	{
 		id: 8,
@@ -94,6 +102,7 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 		stock: 14,
 		sold: 3,
 		imageSrc: "/lenovo.png",
+		isNew: undefined
 	},
 ];
 
