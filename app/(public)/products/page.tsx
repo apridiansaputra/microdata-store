@@ -70,20 +70,24 @@ export default function AllProducts() {
             </div>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                {ADMIN_PRODUCTS.map((product) => (
-                    <Link
-                        key={product.id}
-                        href={`/product/${product.id}`}
-                        className="block h-full"
-                    >
-                        <ProductCard
-                            image={product.imageSrc}
-                            name={product.title}
-                            price={product.price}
-                            isNew={product.isNew}
-                        />
-                    </Link>
-                ))}
+                {ADMIN_PRODUCTS.map((product) => {
+                    const slug = getAdminProductSlug(product)
+
+                    return (
+                        <Link
+                            key={product.id}
+                            href={`/product/${slug}`}
+                            className="block h-full"
+                        >
+                            <ProductCard
+                                image={product.imageSrc}
+                                name={product.title}
+                                price={product.price}
+                                isNew={product.isNew}
+                            />
+                        </Link>
+                    )
+                })}
             </div>
         </div>
     )

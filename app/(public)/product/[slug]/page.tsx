@@ -2,17 +2,19 @@ import React from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Star, StarIcon } from 'lucide-react'
-import { ADMIN_PRODUCTS } from '@/constants/data'
+import { ADMIN_PRODUCTS, getAdminProductSlug } from '@/constants/data'
 
 type ProductDetailPageProps = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
-export default function ProductDetailPage({ params }: ProductDetailPageProps) {
-  const id = Number(params.slug)
-  const product = ADMIN_PRODUCTS.find((item) => item.id === id)
+export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
+  const { slug } = await params
+  const product = ADMIN_PRODUCTS.find(
+    (item) => getAdminProductSlug(item) === slug
+  )
 
   if (!product) {
     return (
