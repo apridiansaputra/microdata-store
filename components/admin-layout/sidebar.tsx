@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, Package, ShoppingBag, Handshake } from "lucide-react";
+import { LayoutGrid, Package, ShoppingBag, Handshake, Menu, X } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutGrid },
@@ -14,9 +15,29 @@ const navItems = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <aside className="flex min-h-screen flex-col border-r border-border-grey bg-white">
+    <>
+      <div className="fixed top-4 right-4 z-50 md:hidden">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-2 rounded-lg bg-white  hover:bg-gray-100 cursor-pointer transition-all duration-200"
+        >
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/10 md:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      <aside className={`fixed md:relative flex min-h-screen flex-col border-r border-border-grey bg-white max-w-60 z-40 transition-transform duration-300 ${
+        isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+      }`}>
         <div className="flex h-16 items-center border-b border-border-grey px-5">
           <Image src="/logo.png" alt="Microdata Store" width={140} height={32} priority className="h-8 w-auto"/>
         </div>
@@ -27,6 +48,7 @@ export default function AdminSidebar() {
             const isActive = pathname === item.href;
             return (
               <Link key={item.label} href={item.href}
+                onClick={() => setIsOpen(false)}
                 className={`flex items-center gap-3 rounded-lg py-2 text-sm ${
                   isActive
                     ? "font-normal text-primary-orange"
@@ -49,6 +71,7 @@ export default function AdminSidebar() {
             </div>
           </div>
         </div>
-    </aside>
+      </aside>
+    </>
   )
 }

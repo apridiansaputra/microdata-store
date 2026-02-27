@@ -1,7 +1,7 @@
-import Container from "@/components/admin/container"
-import Header from "@/components/admin/header"
-import ProductCard  from "@/components/admin/product-card"
-import { ADMIN_PRODUCTS, getAdminProductSlug } from "@/constants/data"
+import Container from "@/components/admin-layout/container"
+import Header from "@/components/admin-layout/header"
+import ProductCard  from "@/components/admin-layout/product-card"
+import { ADMIN_PRODUCTS } from "@/constants/data"
 import Link from "next/link"
 
 export default function Products() {
@@ -13,7 +13,7 @@ export default function Products() {
           {ADMIN_PRODUCTS.map((product) => (
             <Link
               key={product.id}
-              href={`/product-admin/${getAdminProductSlug(product)}`}
+              href={`/product-admin/${product.id}`}
               className="no-underline"
             >
               <ProductCard

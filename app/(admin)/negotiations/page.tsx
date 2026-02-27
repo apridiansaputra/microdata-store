@@ -1,5 +1,5 @@
-import Container from '@/components/admin/container'
-import Header from '@/components/admin/header'  
+import Container from '@/components/admin-layout/container'
+import Header from '@/components/admin-layout/header'  
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"

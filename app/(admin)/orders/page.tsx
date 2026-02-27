@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from 'react'
-import Container from '@/components/admin/container'
-import Header from '@/components/admin/header'  
+import Container from '@/components/admin-layout/container'
+import Header from '@/components/admin-layout/header'  
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import { ArrowUpRight } from "lucide-react"
-import OrderDetailPanel from '@/components/admin/order-detail-pannel'
+import OrderDetailPanel from '@/components/admin-layout/order-detail-pannel'
 
 export default function OrdersPage() {
     const [isDetailOpen, setIsDetailOpen] = useState(false)
@@ -16,11 +16,15 @@ export default function OrdersPage() {
     <div className='flex flex-col h-screen'>
         <Header title='Pesanan' />
         <Container
-            className={`grid w-full flex-1 gap-5 overflow-hidden transition-[grid-template-columns] duration-300 ease-out ${
-                isDetailOpen ? "grid-cols-[minmax(0,1fr)_430px]" : "grid-cols-[minmax(0,1fr)_0px]"
+            className={`grid w-full flex-1 overflow-hidden transition-[grid-template-columns] duration-300 ease-out grid-cols-1 ${
+                isDetailOpen
+                  ? "md:grid-cols-[minmax(0,1fr)_430px]"
+                  : "md:grid-cols-[minmax(0,1fr)_0px]"
             }`}
         >
-            <div className={`min-w-0 bg-white rounded-lg p-4 flex flex-col gap-7 overflow-y-auto transition-transform duration-300 ease-out ${isDetailOpen ? "-translate-x-1" : "translate-x-0"}`}>
+            <div className={`min-w-0 w-full bg-white rounded-lg p-4 flex flex-col gap-7 overflow-y-auto transition-transform duration-300 ease-out ${
+                isDetailOpen ? "hidden md:flex -translate-x-1" : "flex translate-x-0"
+            }`}>
                 <div className='flex justify-end gap-2 py-4 '>
                     <Select>
                         <SelectTrigger className="w-48 text-xs">
@@ -90,7 +94,11 @@ export default function OrdersPage() {
                 </Table>
             </div>
 
-            <div className={`min-w-0 overflow-hidden transition-all duration-300 ease-out ${isDetailOpen ? "translate-x-0 opacity-100" : "pointer-events-none translate-x-6 opacity-0"}`}>
+            <div className={`min-w-0 w-full overflow-hidden transition-all duration-300 ease-out ${
+                isDetailOpen
+                  ? "translate-x-0 opacity-100"
+                  : "pointer-events-none translate-x-6 opacity-0 hidden md:block"
+            }`}>
                 <OrderDetailPanel onClose={() => setIsDetailOpen(false)} />
             </div>
         </Container>

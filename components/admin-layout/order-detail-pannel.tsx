@@ -39,7 +39,7 @@ type OrderDetailPanelProps = {
 
 export default function OrderDetailPanel({ onClose }: OrderDetailPanelProps) {
   return (
-    <aside className="h-full min-h-0 w-full max-w-107.5 rounded-lg bg-white flex flex-col overflow-hidden">
+    <aside className="h-full min-h-0 w-full md:max-w-107.5 rounded-lg bg-white flex flex-col overflow-hidden">
       <section className="shrink-0 flex items-start justify-between gap-4 p-5 ">
         <div>
           <p className="text-xs text-dark-grey">13 Nov, 2025</p>
