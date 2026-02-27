@@ -12,7 +12,7 @@ export default function PublicLayout({children,}: Readonly<{ children: React.Rea
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <main className="flex-1 mt-34">
+      <main className="flex-1 mt-35 mb-50">
         <Container>
           {children}
         </Container>

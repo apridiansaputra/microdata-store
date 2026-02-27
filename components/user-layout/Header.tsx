@@ -6,6 +6,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 import { Menu, SearchIcon, ShoppingCartIcon } from 'lucide-react'
 import Image from 'next/image'
 import Container from './Container'
+import CartSheet from '@/components/cart-components/CartSheet'
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false)
@@ -97,6 +98,7 @@ export default function Header() {
               <SheetHeader>
                 <SheetTitle>Keranjang Belanja</SheetTitle>
               </SheetHeader>
+              <CartSheet />
             </SheetContent>
           </Sheet>
 
