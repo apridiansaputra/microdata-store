@@ -27,16 +27,16 @@ export default function CartItems({
   onRemove
 }: Props) {
   return (
-    <div className="bg-gray-100 p-4 rounded-lg mb-6 border border-gray-200">
+    <div className="bg-light-grey p-4 rounded-lg mb-6 border border-border-white h-fit ">
       
-      {/* Top Section */}
+      
       <div className="flex justify-between items-start mb-4">
-        <Checkbox checked={checked} onCheckedChange={onCheckedChange} />
+        <Checkbox checked={checked} onCheckedChange={onCheckedChange} className="border-none" />
 
         <Button
-          variant="outline"
+          variant="ghost"
           size="xs"
-          className="border-0 p-3 shadow-none text-gray-500"
+          className="p-3 text-gray-500"
           onClick={onRemove}
         >
           <TrashIcon size={16} />
@@ -44,10 +44,9 @@ export default function CartItems({
         </Button>
       </div>
 
-      {/* Content */}
       <div className="flex gap-4">
-        <div className="border border-gray-200 p-2 rounded-lg h-fit">
-          <img src={image} alt={name} width={50} height={50} />
+        <div className="border border-gray-200 p-2 rounded-lg h-fit w-fit flex items-center">
+          <img src={image} alt={name} width={50} height={60} />
         </div>
 
         <div className="flex flex-col justify-between grow">
@@ -57,7 +56,7 @@ export default function CartItems({
           </div>
 
           <div className="flex justify-between items-center">
-            <p className="text-sm font-semibold text-orange-600">
+            <p className="text-sm font-semibold">
               Rp {price.toLocaleString("id-ID")}
             </p>
 
@@ -65,7 +64,7 @@ export default function CartItems({
               <Button
                 variant="outline"
                 size="icon-xs"
-                className="border-r-0 p-3 rounded-l-full"
+                className="border-r-0 p-3 rounded-l-full shadow-none"
                 onClick={() =>
                   onQuantityChange(Math.max(1, quantity - 1))
                 }
@@ -73,14 +72,14 @@ export default function CartItems({
                 <MinusIcon size={14} />
               </Button>
 
-              <div className="px-3 flex items-center text-xs border-y border-gray-200">
+              <div className="px-3 flex items-center text-xs border-y border-gray-200 bg-white text-primary-orange">
                 {quantity}
               </div>
 
               <Button
                 variant="outline"
                 size="icon-xs"
-                className="border-l-0 p-3 rounded-r-full"
+                className="border-l-0 p-3 rounded-r-full shadow-none"
                 onClick={() =>
                   onQuantityChange(quantity + 1)
                 }
