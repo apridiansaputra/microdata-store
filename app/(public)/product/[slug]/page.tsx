@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Button } from '@/components/ui/button'
 import { Star, StarIcon } from 'lucide-react'
 import { ADMIN_PRODUCTS, getAdminProductSlug } from '@/constants/data'
+import { AddToCartButton } from '@/components/cart-components/AddToCartButton'
 
 type ProductDetailPageProps = {
   params: Promise<{
@@ -74,9 +74,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </p>
           <p className="text-sm text-gray-500">lihat selengkapnya</p>
 
-          <Button className="mt-12 cursor-pointer py-6 text-sm bg-gray-600">
-            Masukkan Keranjang
-          </Button>
+          <AddToCartButton
+            id={product.id}
+            title={product.title}
+            price={product.price}
+            imageSrc={product.imageSrc}
+          />
         </div>
       </div>
 

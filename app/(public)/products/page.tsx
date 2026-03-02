@@ -37,7 +37,6 @@ export default function AllProducts() {
                                 placeholder="Periode"
                                 inputClassName="text-light-grey placeholder:text-light-grey"/>
                             <ComboboxContent>
-                                <ComboboxEmpty>Tidak ada opsi.</ComboboxEmpty>
                                 <ComboboxList>
                                     {(item) => (
                                         <ComboboxItem key={item} value={item}>
@@ -55,7 +54,6 @@ export default function AllProducts() {
                                 placeholder="Harga"
                                 inputClassName="text-light-grey placeholder:text-light-grey"/>
                             <ComboboxContent>
-                                <ComboboxEmpty>Tidak ada opsi.</ComboboxEmpty>
                                 <ComboboxList>
                                     {(item) => (
                                         <ComboboxItem key={item} value={item}>

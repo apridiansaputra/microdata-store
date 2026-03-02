@@ -7,9 +7,11 @@ import { Menu, SearchIcon, ShoppingCartIcon } from 'lucide-react'
 import Image from 'next/image'
 import Container from './Container'
 import CartSheet from '@/components/cart-components/CartSheet'
+import { useCart } from '@/components/cart-components/cart-context'
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false)
+  const { isCartOpen, openCart, closeCart } = useCart()
 
   return (
     <Container>
@@ -89,14 +91,14 @@ export default function Header() {
             )}
           </div>
 
-          <Sheet>
+          <Sheet open={isCartOpen} onOpenChange={(open) => (open ? openCart() : closeCart())}>
             <SheetTrigger asChild>
               <ShoppingCartIcon className="h-6 w-6 cursor-pointer" />
             </SheetTrigger>
 
             <SheetContent className="p-6">
               <SheetHeader>
-                <SheetTitle>Keranjang Belanja</SheetTitle>
+                <SheetTitle className="text-lg font-semibold mb-8">Keranjang Belanja</SheetTitle>
               </SheetHeader>
               <CartSheet />
             </SheetContent>
