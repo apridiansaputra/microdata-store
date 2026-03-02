@@ -27,7 +27,7 @@ export default function Header({
   const effectiveTitle = hasTitle ? title : !hasBreadcrumb ? "Dashboard" : undefined;
 
   return (
-    <div className="h-16 flex flex-col bg-white border-b border-border-grey justify-center px-5 gap-1">
+    <div className="sticky top-0 z-30 flex h-16 flex-col justify-center gap-1 border-b border-border-grey bg-white px-5">
       {hasBreadcrumb && (
         <Breadcrumb>
           <BreadcrumbList>

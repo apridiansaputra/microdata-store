@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import { ArrowUpRight } from 'lucide-react'
+import Link from 'next/link'
 
 export default function Negotiations() {
   return (
@@ -71,9 +72,11 @@ export default function Negotiations() {
                             <TableCell>Lunas</TableCell>
                             <TableCell>Dalam Pengiriman</TableCell>
                             <TableCell>
-                                <Button variant="outline" size="xs" className=' border-0 hover:bg-white hover:text-primary-orange cursor-pointer shadow-none'>
-                                    Proses
-                                    <ArrowUpRight className="size-4" />
+                                <Button asChild variant="outline" size="xs" className=' border-0 hover:bg-white hover:text-primary-orange cursor-pointer shadow-none'>
+                                    <Link href="/negotiations/new/ord-001">
+                                        Proses
+                                        <ArrowUpRight className="size-4" />
+                                    </Link>
                                 </Button>
                             </TableCell>
                         </TableRow>

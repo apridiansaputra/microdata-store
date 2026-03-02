@@ -10,7 +10,7 @@ export function ProductCard({ image, name, price, isNew }: ProductCardProps) {
     <div className="w-65 h-85 border rounded-lg p-4 pt-6 flex flex-col justify-between relative ">
         <div>
             {isNew && (
-            <span className="bg-secondary text-light-grey px-3 py-0.5 text-xs rounded-3xl absolute ">
+            <span className="bg-secondary text-white px-3 py-0.5 text-xs rounded-3xl absolute ">
                 Baru
             </span>
             )}

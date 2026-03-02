@@ -35,14 +35,14 @@ export default function AdminSidebar() {
         />
       )}
 
-      <aside className={`fixed md:relative flex min-h-screen flex-col border-r border-border-grey bg-white max-w-60 z-40 transition-transform duration-300 ${
+      <aside className={`fixed inset-y-0 left-0 z-40 flex h-screen w-60 flex-col border-r border-border-grey bg-white transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       }`}>
         <div className="flex h-16 items-center border-b border-border-grey px-5">
           <Image src="/logo.png" alt="Microdata Store" width={140} height={32} priority className="h-8 w-auto"/>
         </div>
 
-        <nav className="space-y-1 p-5">
+        <nav className="flex-1 space-y-1 overflow-y-auto p-5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive =
