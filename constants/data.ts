@@ -43,7 +43,7 @@ export const ADMIN_PRODUCTS: AdminProduct[] = [
 	},
 	{
 		id: 2,
-		title: "Laptop Lenovo Ideapad Slim 3 Ryzen 5",
+		title: "Apple MacBook Pro 14 Inch M3 Pro Chip RAM 16GB/512GB, Color Space Gray",
 		price: 9200000,
 		stock: 18,
 		sold: 7,

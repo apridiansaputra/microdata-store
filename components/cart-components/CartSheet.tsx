@@ -35,7 +35,7 @@ export default function CartSheet() {
   return (
     <div className="flex flex-col h-full">
       
-      <div className="grow overflow-y-auto">
+      <div className="cart-scroll grow h-80 overflow-y-auto">
         {items.map((item) => (
           <CartItems
             key={item.id}

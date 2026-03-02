@@ -9,7 +9,7 @@ export default function ShippingSection() {
 
       <div className="flex justify-between text-sm">
         <span>Nama Ekspedisi (2 - 3 Hari)</span>
-        <span className="font-medium">
+        <span className="font-semibold">
           Rp. 35.000,00
         </span>
       </div>

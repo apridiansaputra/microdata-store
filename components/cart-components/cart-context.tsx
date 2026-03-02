@@ -49,15 +49,32 @@ function loadSelected(): Record<number, boolean> {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>(loadItems)
-  const [selectedItems, setSelectedItems] = useState<Record<number, boolean>>(loadSelected)
+  // Mulai dengan state kosong di server & client agar markup awal sama,
+  // lalu sinkronkan dengan localStorage hanya di client melalui useEffect.
+  const [items, setItems] = useState<CartItem[]>([])
+  const [selectedItems, setSelectedItems] = useState<Record<number, boolean>>({})
   const [isCartOpen, setIsCartOpen] = useState(false)
 
   useEffect(() => {
+    const storedItems = loadItems()
+    const storedSelected = loadSelected()
+
+    if (storedItems.length > 0) {
+      setItems(storedItems)
+    }
+
+    if (Object.keys(storedSelected).length > 0) {
+      setSelectedItems(storedSelected)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (typeof window === "undefined") return
     localStorage.setItem(CART_ITEMS_KEY, JSON.stringify(items))
   }, [items])
 
   useEffect(() => {
+    if (typeof window === "undefined") return
     localStorage.setItem(CART_SELECTED_KEY, JSON.stringify(selectedItems))
   }, [selectedItems])
 

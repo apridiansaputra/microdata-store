@@ -1,5 +1,7 @@
 'use client';
 
+import { useCart } from "@/components/cart-components/cart-context";
+
 type OrderFooterProps = {
   subtotal: number;
   shippingCost: number;
@@ -11,38 +13,48 @@ export default function OrderFooter({
   shippingCost,
   totalPayment,
 }: OrderFooterProps) {
+  const { openCart } = useCart();
+  const canNegotiate = totalPayment >= 50000000;
+
   return (
     <>
       <hr className="my-6" />
-
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span>Total Pesanan</span>
+      <div className="rounded-md flex flex-col gap-2">
+        <div className="flex justify-between text-sm">
+          <span>Total Pesanan</span> 
           <span>Rp. {subtotal.toLocaleString("id-ID")},00</span>
         </div>
 
-        <div className="flex justify-between">
+        <div className="flex justify-between text-sm">
           <span>Biaya Pengiriman</span>
           <span>Rp. {shippingCost.toLocaleString("id-ID")},00</span>
         </div>
 
-        <div className="flex justify-between font-semibold text-base">
+        <div className="flex justify-between font-semibold">
           <span>Total Pembayaran</span>
           <span>Rp. {totalPayment.toLocaleString("id-ID")},00</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-6">
-        <button className="bg-gray-600 text-white py-3 rounded-md hover:bg-gray-700">
-          Nego Harga
-        </button>
+      <div
+        className={`grid gap-4 mt-6 ${canNegotiate ? "grid-cols-2" : "grid-cols-1"}`}
+      >
+        {canNegotiate && (
+          <button className="bg-white border border-primary-orange text-primary-orange py-3 text-sm rounded-md hover:bg-orange-50 cursor-pointer">
+            Nego Harga
+          </button>
+        )}
 
-        <button className="border py-3 rounded-md hover:bg-gray-50">
+        <button className="text-white bg-primary-orange rounded-md text-sm py-3 hover:bg-orange-500 cursor-pointer w-full">
           Lanjutkan Pembayaran
         </button>
       </div>
 
-      <button className="mt-4 text-sm text-gray-500 hover:text-black">
+      <button 
+        type="button"
+        onClick={openCart}
+        className="mt-4 text-sm text-gray-500 hover:text-gray-700 cursor-pointer justify-self-start flex"
+      >
         ← Kembali ke Keranjang
       </button>
     </>
