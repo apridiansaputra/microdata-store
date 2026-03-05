@@ -81,7 +81,7 @@ export default async function DetailNegotiationPage({
           </div>
 
           <div className="mt-4 overflow-x-auto">
-            <table className="w-full min-w-[860px] border-separate border-spacing-0 text-sm text-secondary">
+            <table className="w-full min-w-4xl border-separate border-spacing-0 text-sm text-secondary">
               <thead>
                 <tr>
                   <th className="border-b border-border-grey py-3 text-left text-xs font-medium text-dark-grey">
@@ -103,22 +103,22 @@ export default async function DetailNegotiationPage({
                 {items.map((item) => (
                   <tr key={item.id}>
                     <td className="border-b border-border-grey py-3">
-                      <p className="max-w-[420px] text-sm leading-6 font-medium text-secondary">
+                      <p className="max-w-[420px] text-xs leading-6 font-medium text-secondary">
                         {item.title}
                       </p>
                       <p className="text-sm text-dark-grey">x{item.qty}</p>
                     </td>
-                    <td className="border-b border-border-grey px-3 py-3 text-sm font-semibold">
+                    <td className="border-b border-border-grey px-3 py-3 text-xs font-medium">
                       {formatCurrency(item.basePrice)}
                     </td>
-                    <td className="border-b border-border-grey px-3 py-3 text-sm font-semibold">
+                    <td className="border-b border-border-grey px-3 py-3 text-xs font-medium">
                       {item.buyerOffer ? formatCurrency(item.buyerOffer) : "-"}
                     </td>
                     <td className="border-b border-border-grey py-3">
-                      <div className="ml-auto w-full max-w-[280px]">
+                      <div className="ml-auto w-full max-w-3xs">
                         <Input
                           placeholder="Masukkan harga nego anda"
-                          className="h-10 rounded-lg border-border-grey bg-white text-sm placeholder:text-dark-grey"
+                          className="rounded-lg border-border-grey bg-white text-xs placeholder:text-dark-grey"
                         />
                       </div>
                     </td>
@@ -130,8 +130,8 @@ export default async function DetailNegotiationPage({
 
           <div className="mt-6 flex flex-col gap-2 border-t border-border-grey pt-4">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-semibold text-dark-grey">Total Awal</p>
-              <p className="text-sm text-right font-semibold text-dark-grey">
+              <p className="text-xs text-dark-grey">Total Awal</p>
+              <p className="text-xs text-right font-semibold text-dark-grey">
                 {formatCurrency(totalBase)}
               </p>
             </div>
@@ -146,11 +146,11 @@ export default async function DetailNegotiationPage({
           <div className="mt-20 flex items-center justify-end gap-3">
             <Button
               variant="outline"
-              className="min-w-24 rounded-md border-border-grey bg-white text-sm text-primary-orange hover:text-primary-orange cursor-pointer"
+              className="min-w-24 rounded-sm border-border-grey bg-white text-xs text-primary-orange hover:text-primary-orange cursor-pointer"
             >
               Tolak
             </Button>
-            <Button className="min-w-24 rounded-md bg-primary-orange text-sm font-semibold text-white hover:bg-primary-orange/90 cursor-pointer">
+            <Button className="min-w-24 rounded-sm bg-primary-orange text-xs font-semibold text-white hover:bg-primary-orange/90 cursor-pointer">
               Setuju
             </Button>
           </div>
