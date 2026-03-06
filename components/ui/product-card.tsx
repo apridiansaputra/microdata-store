@@ -19,7 +19,7 @@ export function ProductCard({ image, name, price, isNew }: ProductCardProps) {
       <div className="w-full flex justify-center pb-4"><img src={image} alt={name} className="w-[135px] h-[100px] object-contain items-center" /></div>
       
       <div className="flex flex-col items-start gap-2">
-        <h3 className="font-extralight text-sm">{name}</h3>
+        <h3 className=" text-sm">{name}</h3>
         <p className="text-primary-orange font-semibold">Rp. {price.toLocaleString()}</p>
       </div>
     </div>
