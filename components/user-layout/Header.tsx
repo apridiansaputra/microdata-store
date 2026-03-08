@@ -3,11 +3,13 @@
 import React from 'react'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../ui/sheet'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
+import {DropdownMenu,DropdownMenuContent,DropdownMenuGroup,DropdownMenuItem,DropdownMenuLabel,DropdownMenuSeparator,DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import { Menu, SearchIcon, ShoppingCartIcon } from 'lucide-react'
 import Image from 'next/image'
 import Container from './Container'
 import CartSheet from '@/components/cart-components/CartSheet'
 import { useCart } from '@/components/cart-components/cart-context'
+import Link from 'next/link'
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false)
@@ -60,7 +62,7 @@ export default function Header() {
           )}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-6">
           <div className="flex items-center md:hidden">
             <button
               type="button"
@@ -104,7 +106,27 @@ export default function Header() {
             </SheetContent>
           </Sheet>
 
-          <Menu className="h-6 w-6 cursor-pointer" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Menu className="h-6 w-6 cursor-pointer" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className='text-xs text-dark-grey'>Menu</DropdownMenuLabel>
+                <DropdownMenuSeparator className='mb-3' />
+                <Link href="/profile">
+                  <DropdownMenuItem className='text-xs cursor-pointer'>Profile</DropdownMenuItem>
+                </Link>
+                <Link href="/orders">
+                  <DropdownMenuItem className='text-xs cursor-pointer'>Pesanan Saya</DropdownMenuItem>
+                </Link>
+                <Link href="/negotiations">
+                  <DropdownMenuItem className='text-xs cursor-pointer'>Negosiasi</DropdownMenuItem>
+                </Link>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
         </div>
       </div>
     </Container>
