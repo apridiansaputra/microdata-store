@@ -114,15 +114,15 @@ export default function Header() {
               <DropdownMenuGroup>
                 <DropdownMenuLabel className='text-xs text-dark-grey'>Menu</DropdownMenuLabel>
                 <DropdownMenuSeparator className='mb-3' />
-                <Link href="/profile">
-                  <DropdownMenuItem className='text-xs cursor-pointer'>Profile</DropdownMenuItem>
-                </Link>
-                <Link href="/orders">
-                  <DropdownMenuItem className='text-xs cursor-pointer'>Pesanan Saya</DropdownMenuItem>
-                </Link>
-                <Link href="/negotiations">
-                  <DropdownMenuItem className='text-xs cursor-pointer'>Negosiasi</DropdownMenuItem>
-                </Link>
+                <DropdownMenuItem asChild className='text-xs cursor-pointer'>
+                  <Link href="/account/profile">Profile</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className='text-xs cursor-pointer'>
+                  <Link href="/account/order">Pesanan Saya</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild className='text-xs cursor-pointer'>
+                  <Link href="/account/negotiations">Negosiasi</Link>
+                </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
