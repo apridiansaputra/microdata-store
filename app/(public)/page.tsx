@@ -32,7 +32,7 @@ export default function HomePage() {
 
   return (
     <div className="mt-3 flex flex-col gap-16 pb-16 md:gap-38 md:pb-24">
-      <section className="flex h-[220px] items-center justify-center rounded-lg bg-light-grey text-xl text-gray-700 md:h-[360px]">
+      <section className="flex h-56 items-center justify-center rounded-lg bg-light-grey text-xl text-gray-700 md:h-[360px]">
         <p className="text-xs text-dark-grey">Banner Promosi</p>
       </section>
 
