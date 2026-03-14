@@ -27,7 +27,7 @@ export function AddToCartButton({ id, title, price, imageSrc }: Props) {
   }
 
   return (
-    <Button className="mt-12 cursor-pointer py-6 text-sm bg-gray-600" onClick={handleClick}>
+    <Button className="mt-12 cursor-pointer py-6 text-sm bg-primary-orange hover:bg-primary-orange/90" onClick={handleClick}>
       Masukkan Keranjang
     </Button>
   )
