@@ -137,6 +137,15 @@
 }
 
 @layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
   .cart-scroll {
     scrollbar-width: thin;
     scrollbar-color: #cfd8e3 #f5f7fa;
