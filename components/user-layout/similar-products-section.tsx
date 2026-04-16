@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 export type SimilarProductItem = {
-  id: number
+  id: string
   slug: string
   title: string
   price: number

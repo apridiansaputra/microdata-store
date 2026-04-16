@@ -12,6 +12,7 @@ export default function CartSheet() {
     updateQuantity,
     selectedItems,
     setItemSelected,
+    isSyncing,
   } = useCart()
 
   const totalItems = useMemo(() => {
@@ -28,28 +29,33 @@ export default function CartSheet() {
     }, 0)
   }, [items, selectedItems])
 
-  const handleRemove = (id: number) => {
-    removeItem(id)
+  const handleRemove = (id: string) => {
+    void removeItem(id)
   }
 
   return (
     <div className="flex flex-col h-full">
       
       <div className="cart-scroll grow h-80 overflow-y-auto">
+        {isSyncing && items.length === 0 ? (
+          <p className="py-8 text-center text-xs text-dark-grey/70">Memuat keranjang...</p>
+        ) : null}
+
         {items.map((item) => (
           <CartItems
             key={item.id}
             name={item.name}
-            description={item.description ?? ""}
             price={item.price}
             image={item.image}
             checked={selectedItems[item.id] ?? false}
+            stock={item.stock}
+            isOutOfStock={item.isOutOfStock}
             quantity={item.quantity}
             onCheckedChange={(v: boolean) =>
-              setItemSelected(item.id, v)
+              void setItemSelected(item.id, v)
             }
             onQuantityChange={(q: number) =>
-              updateQuantity(item.id, q)
+              void updateQuantity(item.id, q)
             }
             onRemove={() => handleRemove(item.id)}
           />

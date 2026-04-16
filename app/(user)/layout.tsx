@@ -3,6 +3,7 @@ import Navbar from "@/components/user-layout/Navbar";
 import Footer from "@/components/user-layout/Footer";
 import Container from "@/components/user-layout/Container";
 import { CartProvider } from "@/components/cart-components/cart-context";
+import { UserAuthProvider } from "@/components/auth/user-auth-context";
 
 export const metadata: Metadata = {
   title: "MicrodataStore",
@@ -13,14 +14,16 @@ export default function UserLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <CartProvider>
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 mt-35 mb-50">
-          <Container>{children}</Container>
-        </main>
-        <Footer />
-      </div>
-    </CartProvider>
+    <UserAuthProvider>
+      <CartProvider>
+        <div className="min-h-screen flex flex-col">
+          <Navbar />
+          <main className="flex-1 mt-35 mb-50">
+            <Container>{children}</Container>
+          </main>
+          <Footer />
+        </div>
+      </CartProvider>
+    </UserAuthProvider>
   );
 }

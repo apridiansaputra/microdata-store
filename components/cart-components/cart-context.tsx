@@ -1,157 +1,268 @@
-"use client"
+"use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react"
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+
+import { useUserAuth } from "@/components/auth/user-auth-context";
 
 export type CartItem = {
-  id: number
-  name: string
-  description?: string
-  price: number
-  image: string
-  quantity: number
-}
+  id: string;
+  productId: string;
+  slug: string;
+  name: string;
+  description?: string | null;
+  price: number;
+  image: string;
+  quantity: number;
+  stock: number;
+  isOutOfStock: boolean;
+  isSelected: boolean;
+};
+
+type CartPayload = {
+  cartId: string | null;
+  items: CartItem[];
+};
 
 type CartContextValue = {
-  items: CartItem[]
-  addItem: (item: Omit<CartItem, "quantity"> & { quantity?: number }) => void
-  removeItem: (id: number) => void
-  updateQuantity: (id: number, quantity: number) => void
-  selectedItems: Record<number, boolean>
-  setItemSelected: (id: number, selected: boolean) => void
-  isCartOpen: boolean
-  openCart: () => void
-  closeCart: () => void
-}
+  items: CartItem[];
+  addItem: (item: { productId: string; quantity?: number }) => Promise<{ ok: boolean; error?: string }>;
+  removeItem: (id: string) => Promise<void>;
+  updateQuantity: (id: string, quantity: number) => Promise<void>;
+  selectedItems: Record<string, boolean>;
+  setItemSelected: (id: string, selected: boolean) => Promise<void>;
+  isCartOpen: boolean;
+  isSyncing: boolean;
+  refreshCart: () => Promise<void>;
+  openCart: () => void;
+  closeCart: () => void;
+};
 
-const CartContext = createContext<CartContextValue | undefined>(undefined)
+const CartContext = createContext<CartContextValue | undefined>(undefined);
 
-const CART_ITEMS_KEY = "mds_cart_items"
-const CART_SELECTED_KEY = "mds_cart_selected"
-
-function loadItems(): CartItem[] {
-  if (typeof window === "undefined") return []
-  try {
-    const raw = localStorage.getItem(CART_ITEMS_KEY)
-    return raw ? (JSON.parse(raw) as CartItem[]) : []
-  } catch {
-    return []
-  }
-}
-
-function loadSelected(): Record<number, boolean> {
-  if (typeof window === "undefined") return {}
-  try {
-    const raw = localStorage.getItem(CART_SELECTED_KEY)
-    return raw ? (JSON.parse(raw) as Record<number, boolean>) : {}
-  } catch {
-    return {}
-  }
+function toSelectedMap(items: CartItem[]) {
+  return items.reduce<Record<string, boolean>>((map, item) => {
+    map[item.id] = item.isSelected && !item.isOutOfStock;
+    return map;
+  }, {});
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
-  // Mulai dengan state kosong di server & client agar markup awal sama,
-  // lalu sinkronkan dengan localStorage hanya di client melalui useEffect.
-  const [items, setItems] = useState<CartItem[]>([])
-  const [selectedItems, setSelectedItems] = useState<Record<number, boolean>>({})
-  const [isCartOpen, setIsCartOpen] = useState(false)
+  const { user } = useUserAuth();
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Record<string, boolean>>({});
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  useEffect(() => {
-    const storedItems = loadItems()
-    const storedSelected = loadSelected()
+  const applyCartPayload = useCallback((payload: CartPayload | null | undefined) => {
+    const nextItems = payload?.items ?? [];
+    setItems(nextItems);
+    setSelectedItems(toSelectedMap(nextItems));
+  }, []);
 
-    if (storedItems.length > 0) {
-      setItems(storedItems)
+  const refreshCart = useCallback(async () => {
+    if (!user) {
+      setItems([]);
+      setSelectedItems({});
+      return;
     }
 
-    if (Object.keys(storedSelected).length > 0) {
-      setSelectedItems(storedSelected)
-    }
-  }, [])
+    setIsSyncing(true);
+    try {
+      const response = await fetch("/api/cart", {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      });
 
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    localStorage.setItem(CART_ITEMS_KEY, JSON.stringify(items))
-  }, [items])
-
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    localStorage.setItem(CART_SELECTED_KEY, JSON.stringify(selectedItems))
-  }, [selectedItems])
-
-  const addItem: CartContextValue["addItem"] = (item) => {
-    const quantity = item.quantity ?? 1
-
-    setItems((prev) => {
-      const existing = prev.find((i) => i.id === item.id)
-      if (existing) {
-        return prev.map((i) =>
-          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i,
-        )
+      if (!response.ok) {
+        return;
       }
 
-      return [
-        ...prev,
-        {
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          price: item.price,
-          image: item.image,
-          quantity,
-        },
-      ]
-    })
+      const data = (await response.json()) as { cart?: CartPayload };
+      applyCartPayload(data.cart ?? null);
+    } catch {
+      // Best effort. Keep current state on transient network failure.
+    } finally {
+      setIsSyncing(false);
+    }
+  }, [applyCartPayload, user]);
 
-    setSelectedItems((prev) => ({ ...prev, [item.id]: true }))
-  }
+  useEffect(() => {
+    if (!user) {
+      setItems([]);
+      setSelectedItems({});
+      return;
+    }
 
-  const removeItem: CartContextValue["removeItem"] = (id) => {
-    setItems((prev) => prev.filter((item) => item.id !== id))
-    setSelectedItems((prev) => {
-      const updated = { ...prev }
-      delete updated[id]
-      return updated
-    })
-  }
+    void refreshCart();
+  }, [refreshCart, user]);
 
-  const updateQuantity: CartContextValue["updateQuantity"] = (id, quantity) => {
-    setItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item,
-      ),
-    )
-  }
+  const addItem: CartContextValue["addItem"] = useCallback(
+    async (item) => {
+      if (!user) {
+        return { ok: false, error: "Silakan login terlebih dahulu." };
+      }
 
-  const setItemSelected: CartContextValue["setItemSelected"] = (id, selected) => {
-    setSelectedItems((prev) => ({ ...prev, [id]: selected }))
-  }
+      setIsSyncing(true);
+      try {
+        const response = await fetch("/api/cart/items", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: item.productId,
+            quantity: item.quantity ?? 1,
+          }),
+        });
 
-  const openCart = () => setIsCartOpen(true)
-  const closeCart = () => setIsCartOpen(false)
+        const data = (await response.json().catch(() => ({}))) as {
+          cart?: CartPayload;
+          error?: string;
+        };
 
-  return (
-    <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        selectedItems,
-        setItemSelected,
-        isCartOpen,
-        openCart,
-        closeCart,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  )
+        if (!response.ok) {
+          return { ok: false, error: data.error ?? "Gagal menambahkan produk ke keranjang." };
+        }
+
+        applyCartPayload(data.cart ?? null);
+        return { ok: true };
+      } catch {
+        return { ok: false, error: "Terjadi gangguan jaringan. Coba lagi." };
+      } finally {
+        setIsSyncing(false);
+      }
+    },
+    [applyCartPayload, user],
+  );
+
+  const removeItem: CartContextValue["removeItem"] = useCallback(
+    async (id) => {
+      if (!user) return;
+
+      try {
+        const response = await fetch(`/api/cart/items/${id}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+        const data = (await response.json().catch(() => ({}))) as { cart?: CartPayload };
+        if (response.ok) {
+          applyCartPayload(data.cart ?? null);
+          return;
+        }
+        await refreshCart();
+      } catch {
+        await refreshCart();
+      }
+    },
+    [applyCartPayload, refreshCart, user],
+  );
+
+  const updateQuantity: CartContextValue["updateQuantity"] = useCallback(
+    async (id, quantity) => {
+      if (!user) return;
+
+      try {
+        const response = await fetch(`/api/cart/items/${id}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            quantity: Math.max(1, quantity),
+          }),
+        });
+        const data = (await response.json().catch(() => ({}))) as { cart?: CartPayload };
+        if (response.ok) {
+          applyCartPayload(data.cart ?? null);
+          return;
+        }
+        await refreshCart();
+      } catch {
+        await refreshCart();
+      }
+    },
+    [applyCartPayload, refreshCart, user],
+  );
+
+  const setItemSelected: CartContextValue["setItemSelected"] = useCallback(
+    async (id, selected) => {
+      if (!user) return;
+
+      setSelectedItems((prev) => ({ ...prev, [id]: selected }));
+
+      try {
+        const response = await fetch(`/api/cart/items/${id}`, {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            isSelected: selected,
+          }),
+        });
+
+        if (!response.ok) {
+          await refreshCart();
+          return;
+        }
+
+        const data = (await response.json().catch(() => ({}))) as { cart?: CartPayload };
+        applyCartPayload(data.cart ?? null);
+      } catch {
+        await refreshCart();
+      }
+    },
+    [applyCartPayload, refreshCart, user],
+  );
+
+  const openCart = useCallback(() => {
+    setIsCartOpen(true);
+    void refreshCart();
+  }, [refreshCart]);
+  const closeCart = useCallback(() => {
+    setIsCartOpen(false);
+  }, []);
+
+  const contextValue = useMemo<CartContextValue>(
+    () => ({
+      items,
+      addItem,
+      removeItem,
+      updateQuantity,
+      selectedItems,
+      setItemSelected,
+      isCartOpen,
+      isSyncing,
+      refreshCart,
+      openCart,
+      closeCart,
+    }),
+    [
+      addItem,
+      items,
+      isCartOpen,
+      isSyncing,
+      refreshCart,
+      removeItem,
+      selectedItems,
+      setItemSelected,
+      updateQuantity,
+      openCart,
+      closeCart,
+    ],
+  );
+
+  return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;
 }
 
 export function useCart() {
-  const ctx = useContext(CartContext)
+  const ctx = useContext(CartContext);
   if (!ctx) {
-    throw new Error("useCart must be used within a CartProvider")
+    throw new Error("useCart must be used within a CartProvider");
   }
-  return ctx
+  return ctx;
 }

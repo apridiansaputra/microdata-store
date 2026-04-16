@@ -1,8 +1,10 @@
-import Link from "next/link"
-import { ArrowRight, Search, ShoppingCart, Truck, Wallet } from "lucide-react"
+import Link from "next/link";
+import { ArrowRight, Search, ShoppingCart, Truck, Wallet } from "lucide-react";
 
-import { ProductCard } from "@/components/ui/product-card"
-import { ADMIN_PRODUCTS, getAdminProductSlug } from "@/constants/data"
+import { ProductCard } from "@/components/ui/product-card";
+import HomeBannerCarousel from "@/components/user-layout/home-banner-carousel";
+import { prisma } from "@/lib/prisma";
+import { toSafeNumber } from "@/lib/products/utils";
 
 const shoppingGuideSteps = [
   {
@@ -25,16 +27,62 @@ const shoppingGuideSteps = [
     description: "Pesananmu diproses dan segera dikirim.",
     icon: Truck,
   },
-]
+];
 
-export default function HomePage() {
-  const latestProducts = ADMIN_PRODUCTS.slice(0, 4)
+export default async function HomePage() {
+  const [latestProducts, banners, settings] = await prisma.$transaction([
+    prisma.product.findMany({
+    where: {
+      status: "PUBLISHED",
+      deletedAt: null,
+      stock: {
+        gt: 0,
+      },
+    },
+    orderBy: [{ createdAt: "desc" }],
+    take: 4,
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      basePrice: true,
+      images: {
+        orderBy: { sortOrder: "asc" },
+        select: {
+          url: true,
+          isPrimary: true,
+          sortOrder: true,
+        },
+      },
+      },
+    }),
+    prisma.homeBanner.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      select: {
+        id: true,
+        title: true,
+        subtitle: true,
+        imageUrl: true,
+        altText: true,
+        targetUrl: true,
+      },
+    }),
+    prisma.appSetting.upsert({
+      where: { id: "default" },
+      create: {
+        id: "default",
+        shippingCourierCode: "jne",
+        shippingCourierName: "JNE",
+        bannerAutoplayMs: 5000,
+      },
+      update: {},
+    }),
+  ]);
 
   return (
     <div className="mt-3 flex flex-col gap-16 pb-16 md:gap-38 md:pb-24">
-      <section className="flex h-56 items-center justify-center rounded-lg bg-light-grey text-xl text-gray-700 md:h-[360px]">
-        <p className="text-xs text-dark-grey">Banner Promosi</p>
-      </section>
+      <HomeBannerCarousel banners={banners} autoplayMs={settings.bannerAutoplayMs} />
 
       <section className="space-y-16">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -56,18 +104,20 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
           {latestProducts.map((product) => {
-            const slug = getAdminProductSlug(product)
+            const coverImageUrl =
+              product.images.find((image) => image.isPrimary)?.url ??
+              product.images[0]?.url ??
+              "/image.png";
 
             return (
-              <Link key={product.id} href={`/product/${slug}`} className="mx-auto block h-full">
+              <Link key={product.id} href={`/product/${product.slug}`} className="mx-auto block h-full">
                 <ProductCard
-                  image={product.imageSrc}
-                  name={product.title}
-                  price={product.price}
-                  isNew={product.isNew}
+                  image={coverImageUrl}
+                  name={product.name}
+                  price={toSafeNumber(product.basePrice) ?? 0}
                 />
               </Link>
-            )
+            );
           })}
         </div>
       </section>
@@ -82,7 +132,7 @@ export default function HomePage() {
 
         <div className="mt-10 grid grid-cols-1 gap-8 md:mt-24 md:grid-cols-2 xl:grid-cols-4">
           {shoppingGuideSteps.map((step) => {
-            const Icon = step.icon
+            const Icon = step.icon;
 
             return (
               <div key={step.title} className="flex flex-col items-center text-center">
@@ -92,10 +142,10 @@ export default function HomePage() {
                 <h3 className="text-base font-semibold">{step.title}</h3>
                 <p className="mt-1 max-w-xs text-xs text-slate-300">{step.description}</p>
               </div>
-            )
+            );
           })}
         </div>
       </section>
     </div>
-  )
+  );
 }

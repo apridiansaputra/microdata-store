@@ -1,5 +1,13 @@
+"use client";
+
+import { Loader2, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+
 import Container from "@/components/admin-layout/container";
 import Header from "@/components/admin-layout/header";
+import { ProductDescriptionEditor } from "@/components/admin-layout/product-description-editor";
+import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,36 +17,186 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  AlignCenter,
-  AlignLeft,
-  Bold,
-  Eye,
-  ImagePlus,
-  Italic,
-  Link2,
-  List,
-  ListOrdered,
-  Smile,
-  Type,
-  Underline,
-} from "lucide-react";
+import { uploadProductImageFile } from "@/lib/products/upload-client";
 
-const editorTools = [
-  Bold,
-  Italic,
-  Underline,
-  Type,
-  AlignLeft,
-  AlignCenter,
-  List,
-  ListOrdered,
-  Link2,
-  Smile,
-];
+type CategoryOption = {
+  id: string;
+  name: string;
+};
+
+type CreateProductResponse = {
+  success: boolean;
+  product: {
+    slug: string;
+  };
+};
+
+const INITIAL_FORM = {
+  name: "",
+  sku: "",
+  shortSpec: "",
+  description: "",
+  basePrice: "",
+  compareAtPrice: "",
+  stock: "",
+  weightGrams: "",
+  categoryId: "",
+  status: "DRAFT" as "DRAFT" | "PUBLISHED",
+};
 
 export default function AddProductPage() {
+  const router = useRouter();
+  const coverInputRef = useRef<HTMLInputElement | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [isUploadingGallery, setIsUploadingGallery] = useState(false);
+  const [form, setForm] = useState(INITIAL_FORM);
+  const [coverImageUrl, setCoverImageUrl] = useState<string>("");
+  const [galleryImageUrls, setGalleryImageUrls] = useState<string[]>([]);
+  const [feedback, setFeedback] = useState<{
+    open: boolean;
+    variant: "success" | "error";
+    title: string;
+    description: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      setIsLoadingCategories(true);
+      try {
+        const response = await fetch("/api/admin/categories", {
+          method: "GET",
+          credentials: "include",
+          cache: "no-store",
+        });
+        const data = (await response.json().catch(() => ({}))) as {
+          categories?: CategoryOption[];
+        };
+        setCategories(data.categories ?? []);
+      } finally {
+        setIsLoadingCategories(false);
+      }
+    };
+
+    void loadCategories();
+  }, []);
+
+  const handleCoverUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingCover(true);
+    const uploaded = await uploadProductImageFile(file);
+    setIsUploadingCover(false);
+    event.target.value = "";
+
+    if (!uploaded.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Upload Gagal",
+        description: uploaded.error,
+      });
+      return;
+    }
+
+    setCoverImageUrl(uploaded.url);
+  };
+
+  const handleGalleryUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    if (files.length === 0) return;
+
+    setIsUploadingGallery(true);
+    const nextGallery: string[] = [...galleryImageUrls];
+
+    for (const file of files) {
+      const uploaded = await uploadProductImageFile(file);
+      if (!uploaded.ok) {
+        setFeedback({
+          open: true,
+          variant: "error",
+          title: "Upload Gagal",
+          description: uploaded.error,
+        });
+        continue;
+      }
+      if (!nextGallery.includes(uploaded.url) && uploaded.url !== coverImageUrl) {
+        nextGallery.push(uploaded.url);
+      }
+    }
+
+    setGalleryImageUrls(nextGallery.slice(0, 12));
+    setIsUploadingGallery(false);
+    event.target.value = "";
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!coverImageUrl) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gambar Sampul Wajib",
+        description: "Upload gambar sampul produk terlebih dahulu.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    const response = await fetch("/api/admin/products", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: form.name,
+        sku: form.sku,
+        shortSpec: form.shortSpec || null,
+        description: form.description || null,
+        basePrice: Number(form.basePrice || 0),
+        compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : null,
+        stock: Number(form.stock || 0),
+        weightGrams: Number(form.weightGrams || 0),
+        categoryId: form.categoryId || null,
+        status: form.status,
+        coverImageUrl,
+        galleryImageUrls,
+      }),
+    });
+
+    const data = (await response.json().catch(() => ({}))) as
+      | CreateProductResponse
+      | { error?: string };
+
+    setIsSubmitting(false);
+
+    if (!response.ok || !("success" in data && data.success)) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Menyimpan Produk",
+        description: ("error" in data && data.error) || "Periksa kembali data produk.",
+      });
+      return;
+    }
+
+    setFeedback({
+      open: true,
+      variant: "success",
+      title: "Produk Berhasil Ditambahkan",
+      description: "Data produk tersimpan dan siap digunakan.",
+    });
+
+    router.push(`/product-admin/${data.product.slug}`);
+  };
+
   return (
     <div className="min-h-screen pb-24">
       <Header
@@ -49,93 +207,112 @@ export default function AddProductPage() {
       />
 
       <Container className="space-y-4 py-4">
-        <div className="grid items-start gap-4 xl:grid-cols-[2fr_1.3fr]">
-          <div>
+        <form className="grid items-start gap-4 xl:grid-cols-[2fr_1.3fr]" onSubmit={handleSubmit}>
+          <div className="space-y-4">
             <section className="space-y-5 rounded-lg bg-white p-4">
               <h2 className="text-sm font-semibold text-secondary">Informasi Dasar</h2>
 
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold text-secondary">Nama</label>
+                <label className="text-xs font-semibold text-secondary">Nama Produk</label>
                 <Input
-                  placeholder="Masukkan Nama Produk"
-                  className="h-10 border-border-grey bg-white text-sm placeholder:text-dark-grey"
+                  required
+                  value={form.name}
+                  onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+                  placeholder="Masukkan nama produk"
+                  className="h-10 border-border-grey bg-white text-sm"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold text-secondary">SKU</label>
+                <Input
+                  required
+                  value={form.sku}
+                  onChange={(event) => setForm((prev) => ({ ...prev, sku: event.target.value }))}
+                  placeholder="Kode unik produk, contoh: LTP-001"
+                  className="h-10 border-border-grey bg-white text-sm"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-semibold text-secondary">Spesifikasi Singkat</label>
                 <Input
-                  placeholder="Spesifikasi singkat produk"
-                  className="h-10 border-border-grey bg-white text-sm placeholder:text-dark-grey"
+                  value={form.shortSpec}
+                  onChange={(event) => setForm((prev) => ({ ...prev, shortSpec: event.target.value }))}
+                  placeholder="Contoh: Intel Core i5, RAM 16GB, SSD 512GB"
+                  className="h-10 border-border-grey bg-white text-sm"
                 />
               </div>
 
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-semibold text-secondary">Deskripsi</label>
-                <div className="overflow-hidden rounded-xl border border-border-grey bg-white">
-                  <div className="flex items-center gap-1 border-b border-border-grey px-3 py-2">
-                    {editorTools.map((Icon, index) => (
-                      <button
-                        key={`${Icon.displayName ?? "tool"}-${index}`}
-                        type="button"
-                        className="flex h-7 w-7 items-center justify-center rounded-md text-secondary hover:bg-light-grey"
-                        aria-label="Editor tool"
-                      >
-                        <Icon className="h-4 w-4" />
-                      </button>
-                    ))}
-                  </div>
-                  <Textarea
-                    placeholder="Tulis deskripsi produk"
-                    className="min-h-36 resize-none border-0 rounded-none bg-white text-sm shadow-none focus-visible:ring-0"
-                  />
-                </div>
+                <ProductDescriptionEditor
+                  initialValue={form.description}
+                  onChange={(nextValue) =>
+                    setForm((prev) => ({ ...prev, description: nextValue }))
+                  }
+                />
               </div>
             </section>
 
             <section className="space-y-4 rounded-lg bg-white p-4">
-              <h2 className="text-sm font-semibold text-secondary">Harga &amp; Inventory</h2>
+              <h2 className="text-sm font-semibold text-secondary">Harga & Inventory</h2>
 
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-secondary">Harga</label>
+                  <label className="text-xs font-semibold text-secondary">Harga Jual (Rp)</label>
                   <Input
-                    placeholder="Masukkan Harga Produk"
-                    className="h-10 rounded-lg border-border-grey bg-white text-sm placeholder:text-dark-grey"
+                    required
+                    type="number"
+                    min={0}
+                    value={form.basePrice}
+                    onChange={(event) => setForm((prev) => ({ ...prev, basePrice: event.target.value }))}
+                    placeholder="Contoh: 8500000"
+                    className="h-10 rounded-lg border-border-grey bg-white text-sm"
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-secondary">Harga Coret</label>
+                  <label className="text-xs font-semibold text-secondary">Harga Coret (Rp)</label>
                   <Input
-                    placeholder="Harga Sebelum Diskon"
-                    className="h-10 rounded-lg border-border-grey bg-white text-sm placeholder:text-dark-grey"
+                    type="number"
+                    min={0}
+                    value={form.compareAtPrice}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, compareAtPrice: event.target.value }))
+                    }
+                    placeholder="Opsional"
+                    className="h-10 rounded-lg border-border-grey bg-white text-sm"
                   />
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-[1.2fr_0.8fr_0.8fr]">
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-secondary">SKU</label>
-                  <Input
-                    placeholder="Masukkan Kode Produk"
-                    className="h-10 rounded-lg border-border-grey bg-white text-sm placeholder:text-dark-grey"
-                  />
-                </div>
-
+              <div className="grid gap-4 md:grid-cols-2">
                 <div className="flex flex-col gap-2">
                   <label className="text-xs font-semibold text-secondary">Stok</label>
                   <Input
-                    placeholder="Stok"
-                    className="h-10 rounded-lg border-border-grey bg-white text-sm placeholder:text-dark-grey"
+                    required
+                    type="number"
+                    min={0}
+                    value={form.stock}
+                    onChange={(event) => setForm((prev) => ({ ...prev, stock: event.target.value }))}
+                    placeholder="Jumlah stok"
+                    className="h-10 rounded-lg border-border-grey bg-white text-sm"
                   />
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-xs font-semibold text-secondary">Berat</label>
+                  <label className="text-xs font-semibold text-secondary">Berat (gram)</label>
                   <Input
-                    placeholder="Berat"
-                    className="h-10 rounded-lg border-border-grey bg-white text-sm placeholder:text-dark-grey"
+                    required
+                    type="number"
+                    min={0}
+                    value={form.weightGrams}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, weightGrams: event.target.value }))
+                    }
+                    placeholder="Contoh: 1200"
+                    className="h-10 rounded-lg border-border-grey bg-white text-sm"
                   />
                 </div>
               </div>
@@ -145,81 +322,173 @@ export default function AddProductPage() {
           <section className="space-y-4 rounded-lg bg-white p-4">
             <h2 className="text-sm font-semibold text-secondary">Media Produk</h2>
 
+            <input
+              ref={coverInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
+              onChange={(event) => {
+                void handleCoverUpload(event);
+              }}
+            />
+            <input
+              ref={galleryInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              multiple
+              className="hidden"
+              onChange={(event) => {
+                void handleGalleryUpload(event);
+              }}
+            />
+
             <div className="flex flex-col gap-2">
               <label className="text-xs font-semibold text-secondary">Gambar Sampul</label>
-              <button
+              {coverImageUrl ? (
+                <div className="relative w-full overflow-hidden rounded-xl border border-border-grey p-3">
+                  <img
+                    src={coverImageUrl}
+                    alt="Cover produk"
+                    className="h-36 w-full rounded-md object-contain"
+                  />
+                  <button
+                    type="button"
+                    className="absolute top-2 right-2 rounded-full bg-white p-1 text-rose-600 shadow"
+                    onClick={() => setCoverImageUrl("")}
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+              ) : null}
+
+              <Button
                 type="button"
-                className="flex h-[88px] w-[120px] flex-col items-center justify-center rounded-xl border border-dashed border-dark-grey/70 text-dark-grey hover:bg-light-grey"
+                variant="outline"
+                className="h-10 justify-start border-dashed text-dark-grey"
+                onClick={() => coverInputRef.current?.click()}
               >
-                <ImagePlus className="h-6 w-6" />
-                <span className="mt-2 text-xs">Klik Untuk Upload</span>
-              </button>
+                {isUploadingCover ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  "Upload Gambar Sampul"
+                )}
+              </Button>
             </div>
 
             <div className="flex flex-col gap-2">
               <label className="text-xs font-semibold text-secondary">Galeri Gambar</label>
-              <button
+              {galleryImageUrls.length > 0 ? (
+                <div className="grid grid-cols-3 gap-2">
+                  {galleryImageUrls.map((imageUrl) => (
+                    <div key={imageUrl} className="relative overflow-hidden rounded-lg border p-1">
+                      <img
+                        src={imageUrl}
+                        alt="Galeri produk"
+                        className="h-20 w-full rounded object-cover"
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-1 right-1 rounded-full bg-white p-1 text-rose-600 shadow"
+                        onClick={() =>
+                          setGalleryImageUrls((prev) => prev.filter((url) => url !== imageUrl))
+                        }
+                      >
+                        <X className="size-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+
+              <Button
                 type="button"
-                className="flex h-20 w-full flex-col items-center justify-center rounded-xl border border-dashed border-dark-grey/70 text-dark-grey hover:bg-light-grey"
+                variant="outline"
+                className="h-10 justify-start border-dashed text-dark-grey"
+                onClick={() => galleryInputRef.current?.click()}
               >
-                <ImagePlus className="h-6 w-6" />
-                <span className="mt-2 text-xs">Klik Untuk Upload</span>
-              </button>
+                {isUploadingGallery ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  "Upload Galeri (maks 12)"
+                )}
+              </Button>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-semibold text-secondary">Kategori</label>
-                <Select>
+                <Select
+                  value={form.categoryId || "none"}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, categoryId: value === "none" ? "" : value }))
+                  }
+                  disabled={isLoadingCategories}
+                >
                   <SelectTrigger className="h-10 w-full rounded-lg border-border-grey bg-white text-xs">
-                    <SelectValue placeholder="Pilih Kategori" />
+                    <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="laptop">Laptop</SelectItem>
-                    <SelectItem value="komputer">Komputer</SelectItem>
-                    <SelectItem value="printer">Printer</SelectItem>
-                    <SelectItem value="proyektor">Proyektor</SelectItem>
+                    <SelectItem value="none">Tanpa Kategori</SelectItem>
+                    {categories.map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-semibold text-secondary">Status Produk</label>
-                <Select defaultValue="draft">
+                <Select
+                  value={form.status}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, status: value as "DRAFT" | "PUBLISHED" }))
+                  }
+                >
                   <SelectTrigger className="h-10 w-full rounded-lg border-border-grey bg-white text-xs">
-                    <SelectValue placeholder="Pilih Status" />
+                    <SelectValue placeholder="Pilih status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="draft">Draft (Arsip)</SelectItem>
-                    <SelectItem value="publish">Publish</SelectItem>
+                    <SelectItem value="DRAFT">Draft</SelectItem>
+                    <SelectItem value="PUBLISHED">Publish</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
           </section>
-        </div>
+
+          <div className="fixed right-0 bottom-0 left-0 z-30 border-t border-border-grey bg-white md:left-60">
+            <div className="flex items-center justify-end gap-3 px-4 py-4.5 md:px-6">
+              <Button
+                type="button"
+                variant="outline"
+                className="h-10 rounded-lg border-primary-orange bg-white px-4 text-sm text-primary-orange hover:bg-primary-orange/5"
+                onClick={() => router.push("/products-admin")}
+              >
+                Batal
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting || isUploadingCover || isUploadingGallery}
+                className="h-10 rounded-lg bg-primary-orange px-5 text-sm font-semibold text-white hover:bg-primary-orange/90"
+              >
+                {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : "Simpan Produk"}
+              </Button>
+            </div>
+          </div>
+        </form>
       </Container>
 
-      <div className="fixed right-0 bottom-0 left-0 z-30 border-t border-border-grey bg-white md:left-60">
-        <div className="flex items-center justify-end gap-3 px-4 py-4.5 md:px-6">
-          <Button
-            variant="outline"
-            className="h-10 rounded-lg border-primary-orange bg-white px-4 text-sm text-primary-orange hover:bg-primary-orange/5"
-          >
-            Batal
-          </Button>
-          <Button
-            variant="outline"
-            className="h-10 rounded-lg border-border-grey bg-[#F3F4F6] px-4 text-sm text-dark-grey hover:bg-[#ECEEF1]"
-          >
-            <Eye className="h-4 w-4" />
-            Preview
-          </Button>
-          <Button className="h-10 rounded-lg bg-primary-orange px-5 text-sm font-semibold text-white hover:bg-primary-orange/90">
-            Simpan Produk
-          </Button>
-        </div>
-      </div>
+      <AuthFeedbackDialog
+        open={feedback?.open ?? false}
+        onOpenChange={(open) => {
+          if (!open) setFeedback(null);
+        }}
+        variant={feedback?.variant ?? "success"}
+        title={feedback?.title ?? ""}
+        description={feedback?.description ?? ""}
+      />
     </div>
   );
 }
