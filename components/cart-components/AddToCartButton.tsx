@@ -1,34 +1,68 @@
-"use client"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { useCart } from "./cart-context"
+import { Loader2 } from "lucide-react";
+import { useState } from "react";
+
+import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/components/cart-components/cart-context";
 
 type Props = {
-  id: number
-  title: string
-  price: number
-  imageSrc: string
-}
+  productId: string;
+};
 
-export function AddToCartButton({ id, title, price, imageSrc }: Props) {
-  const { addItem, openCart } = useCart()
+export function AddToCartButton({ productId }: Props) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [feedback, setFeedback] = useState<{
+    open: boolean;
+    variant: "success" | "error";
+    title: string;
+    description: string;
+  } | null>(null);
+  const { addItem, openCart } = useCart();
 
-  const handleClick = () => {
-    addItem({
-      id,
-      name: title,
-      price,
-      image: imageSrc,
-      description: undefined,
+  const handleClick = async () => {
+    setIsSubmitting(true);
+    const result = await addItem({
+      productId,
       quantity: 1,
-    })
+    });
+    setIsSubmitting(false);
 
-    openCart()
-  }
+    if (!result.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Menambahkan Produk",
+        description: result.error ?? "Produk belum berhasil masuk ke keranjang.",
+      });
+      return;
+    }
+
+    openCart();
+  };
 
   return (
-    <Button className="mt-12 cursor-pointer py-6 text-sm bg-primary-orange hover:bg-primary-orange/90" onClick={handleClick}>
-      Masukkan Keranjang
-    </Button>
-  )
+    <>
+      <Button
+        disabled={isSubmitting}
+        className="mt-12 cursor-pointer bg-primary-orange py-6 text-sm hover:bg-primary-orange/90"
+        onClick={() => {
+          void handleClick();
+        }}
+      >
+        {isSubmitting ? <Loader2 className="size-4 animate-spin" /> : "Masukkan Keranjang"}
+      </Button>
+
+      <AuthFeedbackDialog
+        open={feedback?.open ?? false}
+        onOpenChange={(open) => {
+          if (!open) setFeedback(null);
+        }}
+        variant={feedback?.variant ?? "success"}
+        title={feedback?.title ?? ""}
+        description={feedback?.description ?? ""}
+      />
+    </>
+  );
 }

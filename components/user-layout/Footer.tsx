@@ -1,7 +1,5 @@
 import { footerCategory, footerHelp } from "@/constants/data";
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import Container from "./Container";
 import Image from "next/image";
 
@@ -21,7 +19,7 @@ export default function Footer() {
                 </div>
             </div>  
 
-            <div className="flex flex-col md:flex-row justify-between w-full md:w-3/4 gap-8 md:gap-0">
+            <div className="flex flex-col md:flex-row justify-between w-full md:w-2/3 gap-8 md:gap-0">
                 <div className="flex flex-col gap-2">
                     <p className="font-semibold pb-1 text-primary-orange text-xs">Kategori Populer</p>
                     {footerCategory.map((item) => (
@@ -39,15 +37,6 @@ export default function Footer() {
                     </Link>
                     ))}
                 </div>
-
-                <div className="flex flex-col gap-2 max-w-sm">
-                    <p className="font-semibold pb-1 text-primary-orange text-xs">Dapatkan Info Promo Terbaru</p>
-                    <p className="w-fit text-xs">Figma ipsum component variant main layer. Link union invite layout group select.</p>
-                    <div className="flex items-start sm:items-center gap-2 my-3 w-full">
-                        <Input type="search" placeholder="Masukkan Email" className="bg-white w-full sm:w-auto flex-1" />
-                        <Button className="text-xs">Sumbit</Button>
-                    </div>
-                </div>    
             </div>
 
         </Container>

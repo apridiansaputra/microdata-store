@@ -5,10 +5,11 @@ import { MinusIcon, PlusIcon, TrashIcon } from "lucide-react"
 
 type Props = {
   name: string
-  description: string
   price: number
   image: string
   checked: boolean
+  stock: number
+  isOutOfStock: boolean
   quantity: number
   onCheckedChange: (checked: boolean) => void
   onQuantityChange: (q: number) => void
@@ -17,10 +18,11 @@ type Props = {
 
 export default function CartItems({
   name,
-  description,
   price,
   image,
   checked,
+  stock,
+  isOutOfStock,
   quantity,
   onCheckedChange,
   onQuantityChange,
@@ -30,7 +32,12 @@ export default function CartItems({
     <div className="bg-light-grey p-4 rounded-lg mb-4 border border-dark-grey/7 h-fit ">
       
       <div className="flex justify-between items-start mb-4">
-        <Checkbox checked={checked} onCheckedChange={onCheckedChange} className="border border-dark-grey/20" />
+        <Checkbox
+          checked={checked && !isOutOfStock}
+          disabled={isOutOfStock}
+          onCheckedChange={(value) => onCheckedChange(Boolean(value))}
+          className="border border-dark-grey/20"
+        />
 
         <Button
           
@@ -51,6 +58,11 @@ export default function CartItems({
         <div className="flex flex-col justify-between grow w-3/4">
           <div className="mb-2">
             <p className="text-sm font-light leading-6 text-black/85">{name}</p>
+            {isOutOfStock ? (
+              <p className="mt-1 text-xs font-medium text-rose-500">Stok habis</p>
+            ) : (
+              <p className="mt-1 text-xs text-dark-grey/60">Stok tersedia: {stock}</p>
+            )}
           </div>
 
           <div className="flex flex-row justify-between items-center">
@@ -62,7 +74,8 @@ export default function CartItems({
               <Button
                 variant="outline"
                 size="icon-xs"
-                className="border-r-0 p-3 rounded-l-full shadow-none text-dark-grey/60 cursor-pointer"
+                className="border-r-0 p-3 rounded-l-full shadow-none text-dark-grey/60 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isOutOfStock}
                 onClick={() =>
                   onQuantityChange(Math.max(1, quantity - 1))
                 }
@@ -77,7 +90,8 @@ export default function CartItems({
               <Button
                 variant="outline"
                 size="icon-xs"
-                className="border-l-0 p-3 rounded-r-full shadow-none text-dark-grey/60 cursor-pointer"
+                className="border-l-0 p-3 rounded-r-full shadow-none text-dark-grey/60 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+                disabled={isOutOfStock}
                 onClick={() =>
                   onQuantityChange(quantity + 1)
                 }

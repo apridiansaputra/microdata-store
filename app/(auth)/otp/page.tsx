@@ -1,6 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 
@@ -13,9 +14,82 @@ import {
 
 export default function OTPPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") ?? "";
 
-  const handleVerifyOTP = () => {
-    router.push("/login");
+  const [otpCode, setOtpCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
+  const [devOtp, setDevOtp] = useState<string | null>(null);
+
+  const handleVerifyOTP = async () => {
+    if (!email) {
+      setError("Email tidak ditemukan. Silakan ulangi proses registrasi.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/auth/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code: otpCode }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Verifikasi OTP gagal.");
+        return;
+      }
+
+      setMessage("Verifikasi berhasil. Mengarahkan ke halaman login...");
+      router.push("/login");
+      router.refresh();
+    } catch {
+      setError("Terjadi gangguan jaringan. Silakan coba lagi.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (!email) {
+      setError("Email tidak ditemukan. Silakan ulangi proses registrasi.");
+      return;
+    }
+
+    setIsResending(true);
+    setError(null);
+    setMessage(null);
+    setDevOtp(null);
+
+    try {
+      const response = await fetch("/api/auth/resend-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setError(data.error ?? "Gagal mengirim ulang OTP.");
+        return;
+      }
+
+      setMessage("Kode OTP baru telah dikirim.");
+      if (data.devOtp) {
+        setDevOtp(String(data.devOtp));
+      }
+    } catch {
+      setError("Terjadi gangguan jaringan. Silakan coba lagi.");
+    } finally {
+      setIsResending(false);
+    }
   };
 
   const handleBackToRegister = () => {
@@ -29,13 +103,12 @@ export default function OTPPage() {
       <div className="mx-auto flex h-fit w-full max-w-[500px] flex-col gap-4 justify-center"> 
         <h1 className="text-2xl mb-2 text-primary-orange">Masukan Kode OTP</h1>
         <p className="text-dark-grey/80 mb-12 font-light">
-            Masukan kode OTP yang telah di kirim ke email Anda mangudin20@gmail.com
+            Masukan kode OTP yang telah di kirim ke email Anda {email || "-"}
         </p>
 
         {/* Input OTP */}
         <div className="flex flex-col gap-4"> {/*input otp*/}
-            <p className="text-xs text-dark-grey/80"> <span className="font-semibold">02.00</span> menit tersisa</p>
-            <InputOTP maxLength={6}>
+            <InputOTP maxLength={6} value={otpCode} onChange={setOtpCode}>
             <InputOTPGroup>
                 <InputOTPSlot index={0} />
                 <InputOTPSlot index={1} />
@@ -51,16 +124,34 @@ export default function OTPPage() {
                 <InputOTPSlot index={5} />
             </InputOTPGroup>
             </InputOTP>
-            <p className="text-dark-grey text-xs">Belum menerima kode? <span className=" hover:underline cursor-pointer font-semibold">Kirim ulang</span></p>
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              disabled={isResending}
+              className="w-fit text-dark-grey text-xs"
+            >
+              Belum menerima kode?{" "}
+              <span className="hover:underline cursor-pointer font-semibold">
+                {isResending ? "Mengirim..." : "Kirim ulang"}
+              </span>
+            </button>
+            {error ? <p className="text-sm text-red-600">{error}</p> : null}
+            {message ? <p className="text-sm text-green-700">{message}</p> : null}
+            {devOtp ? (
+              <p className="text-xs text-green-700">
+                OTP dev: <span className="font-semibold">{devOtp}</span>
+              </p>
+            ) : null}
         </div>
 
         <div className="flex flex-col gap-4 mt-12"> {/*button*/}
             <Button
               type="button"
               onClick={handleVerifyOTP}
-              className="w-full py-5 bg-primary-orange hover:bg-primary-orange/90 cursor-pointer"
+              disabled={isSubmitting || otpCode.length !== 6}
+              className="w-full py-5 bg-primary-orange hover:bg-primary-orange/90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
             >
-              Kirim
+              {isSubmitting ? "Memverifikasi..." : "Kirim"}
             </Button>
             <Button
               type="button"

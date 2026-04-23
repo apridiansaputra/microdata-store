@@ -2,6 +2,7 @@
 
 import Container from "@/components/admin-layout/container";
 import Header from "@/components/admin-layout/header";
+import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,60 +29,75 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import {
+  ArrowDown,
   ArrowUp,
   ArrowUpRight,
   BadgeDollarSign,
+  Loader2,
   ShoppingCart,
   UserRoundPlus,
   WalletCards,
 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
 type ProductPanelView = "produk" | "lokasi";
+type DashboardRange = "today" | "last-7-days" | "this-month" | "this-year";
 
-const dashboardDateFilters = [
+type SummaryCardItem = {
+  title: string;
+  value: number;
+  trend: string;
+  trendValue: number;
+  icon: "WalletCards" | "ShoppingCart" | "UserRoundPlus" | "BadgeDollarSign";
+  isCurrency: boolean;
+};
+
+type SalesDataItem = {
+  label: string;
+  pendapatan: number;
+};
+
+type TopProductItem = {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  sold: number;
+  image: string;
+};
+
+type TopLocationItem = {
+  id: string;
+  city: string;
+  province: string;
+  users: number;
+};
+
+type LatestOrderItem = {
+  id: string;
+  customer: string;
+  total: number;
+  paymentStatus: string;
+  shippingStatus: string;
+};
+
+type DashboardPayload = {
+  range: DashboardRange;
+  summaryCards: SummaryCardItem[];
+  salesData: SalesDataItem[];
+  topProducts: TopProductItem[];
+  topLocations: TopLocationItem[];
+  orders: LatestOrderItem[];
+  error?: string;
+};
+
+const dashboardDateFilters: Array<{ value: DashboardRange; label: string }> = [
   { value: "today", label: "Hari ini" },
   { value: "last-7-days", label: "7 hari terakhir" },
   { value: "this-month", label: "Bulan ini" },
   { value: "this-year", label: "Tahun ini" },
-];
-
-const summaryCards = [
-  {
-    title: "Total Pendapatan",
-    value: 5000000,
-    trend: "12%",
-    icon: WalletCards,
-  },
-  {
-    title: "Total Pesanan",
-    value: 3,
-    trend: "12%",
-    icon: ShoppingCart,
-  },
-  {
-    title: "Pelanggan Terbaru",
-    value: 3,
-    trend: "12%",
-    icon: UserRoundPlus,
-  },
-  {
-    title: "Net Profit",
-    value: 1500000,
-    trend: "12%",
-    icon: BadgeDollarSign,
-  },
-] as const;
-
-const salesData = [
-  { month: "January", pendapatan: 1400000 },
-  { month: "February", pendapatan: 1850000 },
-  { month: "March", pendapatan: 1650000 },
-  { month: "April", pendapatan: 2500000 },
-  { month: "May", pendapatan: 1350000 },
-  { month: "June", pendapatan: 2600000 },
 ];
 
 const chartConfig = {
@@ -91,104 +107,107 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const topProducts = [
-  {
-    id: "P001",
-    name: "Laptop Infinix X1 book RAM 600 GB 7000 SSD",
-    category: "Hardware",
-    price: 123456,
-    sold: 20,
-    image: "/lenovo.png",
-  },
-  {
-    id: "P002",
-    name: "Laptop Infinix X1 book RAM 600 GB 7000 SSD",
-    category: "Hardware",
-    price: 123456,
-    sold: 25,
-    image: "/lenovo.png",
-  },
-  {
-    id: "P003",
-    name: "Laptop Infinix X1 book RAM 600 GB 7000 SSD",
-    category: "Hardware",
-    price: 123456,
-    sold: 25,
-    image: "/lenovo.png",
-  },
-] as const;
+const ICON_MAP = {
+  WalletCards,
+  ShoppingCart,
+  UserRoundPlus,
+  BadgeDollarSign,
+} as const;
 
-const topLocations = [
-  { id: "L001", city: "Jakarta", users: 120 },
-  { id: "L002", city: "Surabaya", users: 96 },
-  { id: "L003", city: "Bandung", users: 74 },
-  { id: "L004", city: "Yogyakarta", users: 65 },
-] as const;
+const EMPTY_DASHBOARD: DashboardPayload = {
+  range: "today",
+  summaryCards: [],
+  salesData: [],
+  topProducts: [],
+  topLocations: [],
+  orders: [],
+};
 
-const orders = [
-  {
-    id: "PO1251",
-    customer: "Dian Nugroho Saputro",
-    total: 200000,
-    paymentStatus: "Approval Pending",
-    shippingStatus: "Terkirim",
-  },
-  {
-    id: "PO1242",
-    customer: "Wahyu Kusuma Prabowo",
-    total: 200000,
-    paymentStatus: "Completed",
-    shippingStatus: "Terkirim",
-  },
-  {
-    id: "PO1238",
-    customer: "Dewi Permata Dewanti",
-    total: 1000000,
-    paymentStatus: "Completed",
-    shippingStatus: "Terkirim",
-  },
-  {
-    id: "PO1250",
-    customer: "Adi Setiawan Putra",
-    total: 1000000,
-    paymentStatus: "Declined",
-    shippingStatus: "Terkirim",
-  },
-  {
-    id: "PO1235",
-    customer: "Nia Fitriani Utami",
-    total: 1000000,
-    paymentStatus: "In Progress",
-    shippingStatus: "Terkirim",
-  },
-  {
-    id: "PO1252",
-    customer: "Dodi Hermawan Saputra",
-    total: 200000,
-    paymentStatus: "In Progress",
-    shippingStatus: "Terkirim",
-  },
-  {
-    id: "PO1234",
-    customer: "Budi Santoso Utomo",
-    total: 200000,
-    paymentStatus: "Completed",
-    shippingStatus: "Terkirim",
-  },
-] as const;
-
-const formatRupiah = (value: number) => `Rp. ${value.toLocaleString("id-ID")}`;
+const formatRupiah = (value: number) => `Rp. ${Math.max(0, value).toLocaleString("id-ID")}`;
 
 export default function Dashboard() {
-  const [dateFilter, setDateFilter] = useState("today");
+  const [dateFilter, setDateFilter] = useState<DashboardRange>("today");
   const [productPanelView, setProductPanelView] = useState<ProductPanelView>("produk");
+  const [dashboardData, setDashboardData] = useState<DashboardPayload>(EMPTY_DASHBOARD);
+  const [isLoading, setIsLoading] = useState(true);
+  const [feedback, setFeedback] = useState<{
+    open: boolean;
+    variant: "success" | "error";
+    title: string;
+    description: string;
+  } | null>(null);
+
+  const loadDashboard = useCallback(
+    async (range: DashboardRange, silent = false) => {
+      if (!silent) {
+        setIsLoading(true);
+      }
+
+      const response = await fetch(`/api/admin/dashboard?range=${range}`, {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = (await response.json().catch(() => ({}))) as DashboardPayload;
+
+      if (!response.ok) {
+        if (!silent) {
+          setIsLoading(false);
+        }
+        setFeedback({
+          open: true,
+          variant: "error",
+          title: "Gagal Memuat Dashboard",
+          description: data.error ?? "Data dashboard belum dapat ditampilkan.",
+        });
+        return;
+      }
+
+      setDashboardData({
+        range,
+        summaryCards: data.summaryCards ?? [],
+        salesData: data.salesData ?? [],
+        topProducts: data.topProducts ?? [],
+        topLocations: data.topLocations ?? [],
+        orders: data.orders ?? [],
+      });
+      if (!silent) {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      void loadDashboard(dateFilter);
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [dateFilter, loadDashboard]);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      void loadDashboard(dateFilter, true);
+    }, 30000);
+
+    return () => window.clearInterval(intervalId);
+  }, [dateFilter, loadDashboard]);
+
+  const highestLocationUsers = useMemo(
+    () => dashboardData.topLocations[0]?.users ?? 0,
+    [dashboardData.topLocations],
+  );
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header
         title="Dashboard"
         rightContent={
-          <Select value={dateFilter} onValueChange={setDateFilter}>
+          <Select
+            value={dateFilter}
+            onValueChange={(value) => setDateFilter(value as DashboardRange)}
+          >
             <SelectTrigger className="h-9 min-w-32 border-border-grey bg-white text-sm text-secondary">
               <SelectValue />
             </SelectTrigger>
@@ -206,13 +225,20 @@ export default function Dashboard() {
       />
 
       <Container className="space-y-5 py-5 pb-8">
+        {isLoading ? (
+          <div className="flex items-center gap-2 rounded-md bg-white px-4 py-3 text-sm text-dark-grey">
+            <Loader2 className="size-4 animate-spin" />
+            Memuat data dashboard...
+          </div>
+        ) : null}
+
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {summaryCards.map((metric) => {
-            const Icon = metric.icon;
-            const metricValue =
-              metric.title.includes("Pendapatan") || metric.title === "Net Profit"
-                ? formatRupiah(metric.value)
-                : metric.value.toLocaleString("id-ID");
+          {dashboardData.summaryCards.map((metric) => {
+            const Icon = ICON_MAP[metric.icon];
+            const metricValue = metric.isCurrency
+              ? formatRupiah(metric.value)
+              : metric.value.toLocaleString("id-ID");
+            const isPositiveTrend = metric.trendValue >= 0;
 
             return (
               <Card
@@ -223,8 +249,17 @@ export default function Dashboard() {
                   <span className="flex size-9 items-center justify-center rounded-md bg-primary-orange/10 text-primary-orange">
                     <Icon className="size-5" />
                   </span>
-                  <span className="inline-flex items-center gap-1 text-xs text-secondary">
-                    <ArrowUp className="size-3.5" />
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1 text-xs",
+                      isPositiveTrend ? "text-[#16A34A]" : "text-[#DC2626]",
+                    )}
+                  >
+                    {isPositiveTrend ? (
+                      <ArrowUp className="size-3.5" />
+                    ) : (
+                      <ArrowDown className="size-3.5" />
+                    )}
                     {metric.trend}
                   </span>
                 </CardHeader>
@@ -253,16 +288,15 @@ export default function Dashboard() {
               <ChartContainer config={chartConfig} className="h-[250px] w-full">
                 <LineChart
                   accessibilityLayer
-                  data={salesData}
+                  data={dashboardData.salesData}
                   margin={{ top: 18, right: 8, bottom: 10, left: 8 }}
                 >
                   <CartesianGrid vertical={false} />
                   <XAxis
-                    dataKey="month"
+                    dataKey="label"
                     tickLine={false}
                     axisLine={false}
                     tickMargin={8}
-                    tickFormatter={(value: string) => value.slice(0, 3)}
                   />
                   <ChartTooltip
                     cursor={false}
@@ -296,7 +330,7 @@ export default function Dashboard() {
                     "cursor-pointer border-b-2 pb-3 text-sm font-semibold transition-colors",
                     productPanelView === "produk"
                       ? "border-secondary text-secondary"
-                      : "border-transparent text-dark-grey hover:text-secondary"
+                      : "border-transparent text-dark-grey hover:text-secondary",
                   )}
                 >
                   Produk Terlaris
@@ -309,7 +343,7 @@ export default function Dashboard() {
                     "cursor-pointer border-b-2 pb-3 text-sm font-semibold transition-colors",
                     productPanelView === "lokasi"
                       ? "border-secondary text-secondary"
-                      : "border-transparent text-dark-grey hover:text-secondary"
+                      : "border-transparent text-dark-grey hover:text-secondary",
                   )}
                 >
                   Top Lokasi Pelanggan
@@ -329,49 +363,65 @@ export default function Dashboard() {
                     </div>
 
                     <div className="space-y-4">
-                      {topProducts.map((product) => (
-                        <div
-                          key={product.id}
-                          className="grid grid-cols-[minmax(0,1fr)_120px_100px_70px] items-center gap-3"
-                        >
-                          <div className="flex items-center gap-3">
-                            <Image
-                              src={product.image}
-                              alt={product.name}
-                              width={46}
-                              height={34}
-                              className="h-9 w-12 rounded-md border border-border-grey object-cover"
-                            />
-                            <p className="line-clamp-2 text-xs text-secondary">{product.name}</p>
+                      {dashboardData.topProducts.length === 0 ? (
+                        <p className="text-xs text-dark-grey">Belum ada data produk terlaris.</p>
+                      ) : (
+                        dashboardData.topProducts.map((product) => (
+                          <div
+                            key={product.id}
+                            className="grid grid-cols-[minmax(0,1fr)_120px_100px_70px] items-center gap-3"
+                          >
+                            <div className="flex items-center gap-3">
+                              <Image
+                                src={product.image}
+                                alt={product.name}
+                                width={46}
+                                height={34}
+                                className="h-9 w-12 rounded-md border border-border-grey object-cover"
+                              />
+                              <p className="line-clamp-2 text-xs text-secondary">{product.name}</p>
+                            </div>
+                            <p className="text-xs text-secondary">{product.category}</p>
+                            <p className="text-xs text-secondary">{formatRupiah(product.price)}</p>
+                            <p className="text-xs text-secondary">{product.sold}</p>
                           </div>
-                          <p className="text-xs text-secondary">{product.category}</p>
-                          <p className="text-xs text-secondary">{formatRupiah(product.price)}</p>
-                          <p className="text-xs text-secondary">{product.sold}</p>
-                        </div>
-                      ))}
+                        ))
+                      )}
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4 pt-1">
-                  {topLocations.map((location) => {
-                    const progress = (location.users / topLocations[0].users) * 100;
+                  {dashboardData.topLocations.length === 0 ? (
+                    <p className="text-xs text-dark-grey">Belum ada data lokasi pelanggan.</p>
+                  ) : (
+                    dashboardData.topLocations.map((location) => {
+                      const progress =
+                        highestLocationUsers > 0
+                          ? (location.users / highestLocationUsers) * 100
+                          : 0;
 
-                    return (
-                      <div key={location.id} className="space-y-2">
-                        <div className="flex items-center justify-between text-sm text-secondary">
-                          <p>{location.city}</p>
-                          <p>{location.users} pelanggan</p>
+                      return (
+                        <div key={location.id} className="space-y-2">
+                          <div className="flex items-center justify-between text-sm text-secondary">
+                            <p>
+                              {location.city}
+                              <span className="ml-1 text-xs text-dark-grey/80">
+                                ({location.province})
+                              </span>
+                            </p>
+                            <p>{location.users} pelanggan</p>
+                          </div>
+                          <div className="h-2 overflow-hidden rounded-full bg-border-grey/70">
+                            <div
+                              className="h-full rounded-full bg-primary-orange"
+                              style={{ width: `${progress}%` }}
+                            />
+                          </div>
                         </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-border-grey/70">
-                          <div
-                            className="h-full rounded-full bg-primary-orange"
-                            style={{ width: `${progress}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  )}
                 </div>
               )}
             </CardContent>
@@ -389,59 +439,70 @@ export default function Dashboard() {
             <Table>
               <TableHeader>
                 <TableRow className="border-border-grey">
-                  <TableHead>
-                    ID Pesanan
-                  </TableHead>
-                  <TableHead>
-                    Pelanggan
-                  </TableHead>
-                  <TableHead>
-                    Total Belanja
-                  </TableHead>
-                  <TableHead>
-                    Status Pembayaran
-                  </TableHead>
-                  <TableHead>
-                    Status Pengiriman
-                  </TableHead>
+                  <TableHead>ID Pesanan</TableHead>
+                  <TableHead>Pelanggan</TableHead>
+                  <TableHead>Total Belanja</TableHead>
+                  <TableHead>Status Pembayaran</TableHead>
+                  <TableHead>Status Pengiriman</TableHead>
                   <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map((order) => (
-                  <TableRow key={order.id} className="border-border-grey">
-                    <TableCell className="text-xs text-secondary">
-                      {order.id}
-                    </TableCell>
-                    <TableCell className="text-xs font-semibold text-secondary">
-                      {order.customer}
-                    </TableCell>
-                    <TableCell className="text-xs text-secondary">
-                      {formatRupiah(order.total)}
-                    </TableCell>
-                    <TableCell className="text-xs text-secondary">
-                      {order.paymentStatus}
-                    </TableCell>
-                    <TableCell className="text-xs text-secondary">
-                      {order.shippingStatus}
-                    </TableCell>
-                    <TableCell className="text-xs text-secondary">
-                      <Button
-                        variant="outline"
-                        size="xs"
-                        className="cursor-pointer border-0 text-secondary shadow-none hover:bg-white hover:text-primary-orange"
-                      >
-                        Detail
-                        <ArrowUpRight className="size-4" />
-                      </Button>
+                {dashboardData.orders.length === 0 ? (
+                  <TableRow className="border-border-grey">
+                    <TableCell colSpan={6} className="text-center text-xs text-dark-grey">
+                      Belum ada pesanan terbaru pada periode ini.
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  dashboardData.orders.map((order) => (
+                    <TableRow key={order.id} className="border-border-grey">
+                      <TableCell className="text-xs text-secondary">{order.id}</TableCell>
+                      <TableCell className="text-xs font-semibold text-secondary">
+                        {order.customer}
+                      </TableCell>
+                      <TableCell className="text-xs text-secondary">
+                        {formatRupiah(order.total)}
+                      </TableCell>
+                      <TableCell className="text-xs text-secondary">
+                        {order.paymentStatus}
+                      </TableCell>
+                      <TableCell className="text-xs text-secondary">
+                        {order.shippingStatus}
+                      </TableCell>
+                      <TableCell className="text-xs text-secondary">
+                        <Button
+                          asChild
+                          variant="outline"
+                          size="xs"
+                          className="cursor-pointer border-0 text-secondary shadow-none hover:bg-white hover:text-primary-orange"
+                        >
+                          <a href="/orders">
+                            Detail
+                            <ArrowUpRight className="size-4" />
+                          </a>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </CardContent>
         </Card>
       </Container>
+
+      <AuthFeedbackDialog
+        open={feedback?.open ?? false}
+        onOpenChange={(open) => {
+          if (!open) {
+            setFeedback(null);
+          }
+        }}
+        variant={feedback?.variant ?? "success"}
+        title={feedback?.title ?? ""}
+        description={feedback?.description ?? ""}
+      />
     </div>
   );
 }

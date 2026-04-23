@@ -3,32 +3,30 @@
 import OrderItem from "./OrderItem";
 import OrderFooter from "./OrderFooter";
 import { useCart } from "@/components/cart-components/cart-context";
-import { useSearchParams } from "next/navigation";
+import type { CheckoutShippingQuote } from "./types";
 
-export default function OrderSummary() {
-  const { items, selectedItems } = useCart();
-  const searchParams = useSearchParams();
+type OrderSummaryProps = {
+  shippingCostOverride?: number;
+  selectedAddressId: string | null;
+  shippingQuote: CheckoutShippingQuote | null;
+  checkoutCartItemIds: string[];
+};
 
-  const idsFromQuery = (searchParams.get("items") ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  const hasQueryItems = idsFromQuery.length > 0;
-  const hasSelectedItems = Object.values(selectedItems ?? {}).some(Boolean);
-
-  const checkoutItems = hasQueryItems
-    ? items.filter((item) => idsFromQuery.includes(String(item.id)))
-    : hasSelectedItems
-    ? items.filter((item) => selectedItems[item.id])
-    : [];
+export default function OrderSummary({
+  shippingCostOverride = 0,
+  selectedAddressId,
+  shippingQuote,
+  checkoutCartItemIds,
+}: OrderSummaryProps) {
+  const { items } = useCart();
+  const checkoutItems = items.filter((item) => checkoutCartItemIds.includes(String(item.id)));
 
   const subtotal = checkoutItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  const shippingCost = checkoutItems.length > 0 ? 35000 : 0;
+  const shippingCost = checkoutItems.length > 0 ? shippingCostOverride : 0;
   const totalPayment = subtotal + shippingCost;
 
   return (
@@ -59,6 +57,10 @@ export default function OrderSummary() {
         subtotal={subtotal}
         shippingCost={shippingCost}
         totalPayment={totalPayment}
+        selectedAddressId={selectedAddressId}
+        shippingQuote={shippingQuote}
+        checkoutCartItemIds={checkoutCartItemIds}
+        hasCheckoutItems={checkoutItems.length > 0}
       />
     </div>
   );
