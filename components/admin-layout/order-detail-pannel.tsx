@@ -7,6 +7,7 @@ import { Loader2, MapPin, Phone, Printer, X } from "lucide-react";
 import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { downloadAdminOrderReceiptPdf } from "@/lib/orders/admin-receipt-pdf";
 import {
   Select,
   SelectContent,
@@ -147,6 +148,7 @@ export default function OrderDetailPanel({
   const [order, setOrder] = useState<AdminOrderDetail | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const [shippingStatus, setShippingStatus] = useState<ShippingStatusOption>("WAITING_FULFILLMENT");
   const [trackingNumber, setTrackingNumber] = useState("");
   const [feedback, setFeedback] = useState<{
@@ -196,8 +198,45 @@ export default function OrderDetailPanel({
     return () => window.clearTimeout(timer);
   }, [loadOrderDetail]);
 
-  const handlePrint = () => {
-    window.print();
+  const handlePrint = async () => {
+    if (!order) return;
+
+    setIsPrinting(true);
+    try {
+      await downloadAdminOrderReceiptPdf({
+        orderNumber: order.orderNumber,
+        items: order.items.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          lineSubtotal: item.lineSubtotal,
+        })),
+        shippingAddress: {
+          recipientName: order.shippingAddress.recipientName,
+          phone: order.shippingAddress.phone || order.customer.phone || null,
+          street: order.shippingAddress.street,
+          detail: order.shippingAddress.detail,
+          subdistrictName: order.shippingAddress.subdistrictName,
+          districtName: order.shippingAddress.districtName,
+          cityName: order.shippingAddress.cityName,
+          provinceName: order.shippingAddress.provinceName,
+          postalCode: order.shippingAddress.postalCode,
+        },
+        totals: {
+          subtotalAmount: order.totals.subtotalAmount,
+          shippingAmount: order.totals.shippingAmount,
+          grandTotalAmount: order.totals.grandTotalAmount,
+        },
+      });
+    } catch {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Mengunduh PDF",
+        description: "Struk PDF tidak berhasil dibuat. Coba lagi.",
+      });
+    } finally {
+      setIsPrinting(false);
+    }
   };
 
   const handleUpdate = async () => {
@@ -401,10 +440,13 @@ export default function OrderDetailPanel({
           <Button
             size="icon"
             variant="ghost"
-            onClick={handlePrint}
+            disabled={!order || isPrinting}
+            onClick={() => {
+              void handlePrint();
+            }}
             className="size-11 shrink-0 text-primary-orange cursor-pointer hover:bg-[#FFF2E8] hover:text-primary-orange"
           >
-            <Printer className="size-5" />
+            {isPrinting ? <Loader2 className="size-5 animate-spin" /> : <Printer className="size-5" />}
           </Button>
           <Button
             disabled={!order || !order.canUpdateShipment || isSaving}

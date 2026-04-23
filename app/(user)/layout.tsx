@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Navbar from "@/components/user-layout/Navbar";
 import Footer from "@/components/user-layout/Footer";
 import Container from "@/components/user-layout/Container";
+import WhatsAppFab from "@/components/user-layout/whatsapp-fab";
 import { CartProvider } from "@/components/cart-components/cart-context";
 import { UserAuthProvider } from "@/components/auth/user-auth-context";
 
@@ -21,6 +22,7 @@ export default function UserLayout({
           <main className="flex-1 mt-35 mb-50">
             <Container>{children}</Container>
           </main>
+          <WhatsAppFab />
           <Footer />
         </div>
       </CartProvider>

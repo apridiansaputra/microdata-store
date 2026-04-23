@@ -170,14 +170,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           <div className="mb-4 flex flex-row items-start justify-between">
             <div className="flex flex-col gap-2">
               <p className="text-xl font-semibold">{product.name}</p>
-              <p className="text-2xl">
-                Rp {(toSafeNumber(product.basePrice) ?? 0).toLocaleString("id-ID")}
-              </p>
-              {product.compareAtPrice ? (
-                <p className="text-sm text-dark-grey/70 line-through">
-                  Rp {(toSafeNumber(product.compareAtPrice) ?? 0).toLocaleString("id-ID")}
+              <div className="flex gap 1">
+                <p className="text-2xl">
+                  Rp {(toSafeNumber(product.basePrice) ?? 0).toLocaleString("id-ID")}
                 </p>
-              ) : null}
+                {product.compareAtPrice ? (
+                  <p className="text-sm text-dark-grey/70 line-through">
+                    Rp {(toSafeNumber(product.compareAtPrice) ?? 0).toLocaleString("id-ID")}
+                  </p>
+                ) : null}
+              </div>
             </div>
 
             <div className="flex items-center gap-1">

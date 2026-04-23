@@ -24,8 +24,6 @@ import CartSheet from "@/components/cart-components/CartSheet";
 import { useCart } from "@/components/cart-components/cart-context";
 import { useUserAuth } from "@/components/auth/user-auth-context";
 
-const POPULAR_SEARCHES = ["Laptop Gaming", "Mouse Wireless", "Keyboard Mechanical"];
-
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   const [desktopSearch, setDesktopSearch] = React.useState("");
@@ -116,33 +114,9 @@ export default function Header() {
                 placeholder="Cari produk impianmu"
                 value={desktopSearch}
                 onChange={(event) => setDesktopSearch(event.target.value)}
-                onFocus={() => setIsSearchOpen(true)}
               />
             </InputGroup>
           </form>
-
-          {isSearchOpen ? (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setIsSearchOpen(false)} />
-              <div className="absolute top-full z-50 mt-2 max-h-96 w-full overflow-y-auto rounded-lg border bg-white shadow-lg">
-                <div className="p-4">
-                  <h3 className="mb-3 text-sm font-semibold text-gray-500">Pencarian Terpopuler</h3>
-                  <ul className="space-y-2">
-                    {POPULAR_SEARCHES.map((keyword) => (
-                      <li
-                        key={keyword}
-                        className="flex cursor-pointer items-center gap-2 rounded p-2 hover:bg-gray-100"
-                        onClick={() => goToSearchResult(keyword)}
-                      >
-                        <SearchIcon className="h-4 w-4 text-gray-400" />
-                        <span className="text-sm">{keyword}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </>
-          ) : null}
         </div>
 
         <div className="flex items-center gap-3 sm:gap-4 md:gap-6">
