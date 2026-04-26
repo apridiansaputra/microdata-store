@@ -58,24 +58,28 @@ export default function Menu() {
 
   return (
     <Container>
-      <div className="mt-6 overflow-x-auto pb-2">
-        <div className="flex w-max min-w-full items-center justify-between gap-6 text-sm">
-          {menuItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/" && pathname.startsWith(`${item.href}/`));
+      <div className="relative mt-6">
+        <div className="no-scrollbar overflow-x-auto pb-2">
+          <div className="flex w-max min-w-full items-center justify-between gap-6 pr-8 text-sm">
+            {menuItems.map((item) => {
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/" && pathname.startsWith(`${item.href}/`));
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`whitespace-nowrap text-xs ${isActive ? "font-semibold text-primary-orange" : ""}`}
-              >
-                {item.title}
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`whitespace-nowrap text-xs ${isActive ? "font-semibold text-primary-orange" : ""}`}
+                >
+                  {item.title}
+                </Link>
+              );
+            })}
+          </div>
         </div>
+
+        <div className="pointer-events-none absolute top-0 right-0 h-full w-8 bg-gradient-to-l from-white/95 via-white/60 to-transparent backdrop-blur-[2px] md:w-12 md:from-white md:via-white/90 md:backdrop-blur-[1px]" />
       </div>
     </Container>
   );

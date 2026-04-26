@@ -6,12 +6,14 @@ import { useState } from "react";
 import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/cart-components/cart-context";
+import { cn } from "@/lib/utils";
 
 type Props = {
   productId: string;
+  className?: string;
 };
 
-export function AddToCartButton({ productId }: Props) {
+export function AddToCartButton({ productId, className }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{
     open: boolean;
@@ -46,7 +48,10 @@ export function AddToCartButton({ productId }: Props) {
     <>
       <Button
         disabled={isSubmitting}
-        className="mt-12 cursor-pointer bg-primary-orange py-6 text-sm hover:bg-primary-orange/90"
+        className={cn(
+          "mt-12 cursor-pointer bg-primary-orange py-6 text-sm hover:bg-primary-orange/90",
+          className,
+        )}
         onClick={() => {
           void handleClick();
         }}

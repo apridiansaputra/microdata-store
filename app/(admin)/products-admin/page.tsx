@@ -312,77 +312,81 @@ export default function ProductsPage() {
       <Header title="Produk" />
 
       <Container className="flex flex-col gap-6 py-6 pb-24">
-        <section className="flex items-stretch gap-4 overflow-x-auto pb-2">
-          {categoryButtons.map((category) => {
-            const isActive = category.slug === activeCategory;
-            const realCategory = categories.find((item) => item.id === category.id);
+        <section className="relative">
+          <div className="no-scrollbar flex items-stretch gap-4 overflow-x-auto pb-2 pr-14">
+            {categoryButtons.map((category) => {
+              const isActive = category.slug === activeCategory;
+              const realCategory = categories.find((item) => item.id === category.id);
 
-            return (
-              <div
-                key={category.id}
-                className={cn(
-                  "relative min-w-48 rounded-lg border bg-white px-4 py-3",
-                  isActive ? "border-primary-orange" : "border-transparent hover:border-dark-grey/25",
-                )}
-              >
-                <div className="absolute top-2 right-2 z-20 flex items-center gap-1">
-                  {!category.isSystem && realCategory ? (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <button
-                          type="button"
-                          className="flex h-7 w-7 items-center justify-center rounded-md border border-border-grey text-dark-grey/70 hover:bg-light-grey"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                          }}
-                          aria-label={`Aksi kategori ${category.name}`}
-                        >
-                          <MoreVertical className="size-4" />
-                        </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" sideOffset={6}>
-                        <DropdownMenuItem
-                          onClick={() => openEditCategoryDialog(realCategory)}
-                          className="cursor-pointer"
-                        >
-                          <Pencil className="size-4" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => openDeleteCategoryDialog(realCategory)}
-                          className="cursor-pointer text-rose-600 focus:text-rose-600"
-                        >
-                          <Trash2 className="size-4" />
-                          Hapus
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : null}
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsLoading(true);
-                    setActiveCategory(category.slug);
-                  }}
-                  className="block w-full cursor-pointer pr-9 text-left"
+              return (
+                <div
+                  key={category.id}
+                  className={cn(
+                    "relative min-w-48 rounded-lg border bg-white px-4 py-3",
+                    isActive ? "border-primary-orange" : "border-transparent hover:border-dark-grey/25",
+                  )}
                 >
-                  <p
-                    className={cn(
-                      "text-xs",
-                      isActive ? "font-semibold text-primary-orange" : "font-normal text-secondary/80",
-                    )}
+                  <div className="absolute top-2 right-2 z-20 flex items-center gap-1">
+                    {!category.isSystem && realCategory ? (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            type="button"
+                            className="flex h-7 w-7 items-center justify-center rounded-md border border-border-grey text-dark-grey/70 hover:bg-light-grey"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                            }}
+                            aria-label={`Aksi kategori ${category.name}`}
+                          >
+                            <MoreVertical className="size-4" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" sideOffset={6}>
+                          <DropdownMenuItem
+                            onClick={() => openEditCategoryDialog(realCategory)}
+                            className="cursor-pointer"
+                          >
+                            <Pencil className="size-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={() => openDeleteCategoryDialog(realCategory)}
+                            className="cursor-pointer text-rose-600 focus:text-rose-600"
+                          >
+                            <Trash2 className="size-4" />
+                            Hapus
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ) : null}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLoading(true);
+                      setActiveCategory(category.slug);
+                    }}
+                    className="block w-full cursor-pointer pr-9 text-left"
                   >
-                    {category.name}
-                  </p>
-                  <p className={cn("mt-2 text-xs text-dark-grey/80", isActive ? "text-primary-orange" : "")}>
-                    {category.productCount} items
-                  </p>
-                </button>
-              </div>
-            );
-          })}
+                    <p
+                      className={cn(
+                        "text-xs",
+                        isActive ? "font-semibold text-primary-orange" : "font-normal text-secondary/80",
+                      )}
+                    >
+                      {category.name}
+                    </p>
+                    <p className={cn("mt-2 text-xs text-dark-grey/80", isActive ? "text-primary-orange" : "")}>
+                      {category.productCount} items
+                    </p>
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="pointer-events-none absolute top-0 right-0 h-[calc(100%-0.5rem)] w-8 bg-gradient-to-l from-light-grey/95 via-light-grey/60 to-transparent backdrop-blur-[2px] md:w-16 md:from-light-grey md:via-light-grey/95 md:backdrop-blur-[1px]" />
         </section>
 
         <section className="space-y-5">

@@ -32,9 +32,6 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       slug,
       status: "PUBLISHED",
       deletedAt: null,
-      stock: {
-        gt: 0,
-      },
     },
     select: {
       id: true,
@@ -114,6 +111,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       slug: true,
       name: true,
       basePrice: true,
+      stock: true,
       images: {
         orderBy: { sortOrder: "asc" },
         select: {
@@ -148,11 +146,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       slug: item.slug,
       title: item.name,
       price: toSafeNumber(item.basePrice) ?? 0,
+      stock: item.stock,
       imageSrc: image,
     };
   });
 
   const ratingAverage = product.ratingAverage ? Number(product.ratingAverage) : 0;
+  const basePrice = toSafeNumber(product.basePrice) ?? 0;
+  const compareAtPrice = toSafeNumber(product.compareAtPrice);
 
   return (
     <section className="mt-12 mb-32 flex flex-col gap-32">
@@ -166,43 +167,44 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           />
         </div>
 
-        <div className="flex w-full flex-col gap-4 lg:w-[44%]">
-          <div className="mb-4 flex flex-row items-start justify-between">
-            <div className="flex flex-col gap-2">
-              <p className="text-xl font-semibold">{product.name}</p>
-              <div className="flex gap 1">
-                <p className="text-2xl">
-                  Rp {(toSafeNumber(product.basePrice) ?? 0).toLocaleString("id-ID")}
-                </p>
-                {product.compareAtPrice ? (
-                  <p className="text-sm text-dark-grey/70 line-through">
-                    Rp {(toSafeNumber(product.compareAtPrice) ?? 0).toLocaleString("id-ID")}
-                  </p>
-                ) : null}
-              </div>
-            </div>
+        <div className="flex w-full flex-col gap-6 lg:w-[44%]">
+          <div className="flex flex-row items-start justify-between gap-4">
+            <p className="text-xl leading-tight font-semibold text-secondary md:text-2xl">
+              {product.name}
+            </p>
 
-            <div className="flex items-center gap-1">
-              <StarIcon className="inline-block size-4 text-yellow-500" />
-              <p className="text-sm">
-                {ratingAverage.toFixed(1)}/5.0
+            <div className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#FFF1E4] px-3 py-1.5 text-sm font-semibold text-secondary">
+              <StarIcon className="size-4 fill-[#F79A39] text-[#F79A39]" />
+              <span>{ratingAverage.toFixed(1)}/5.0</span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="text-2xl leading-none font-semibold text-secondary md:text-3xl">
+              Rp. {basePrice.toLocaleString("id-ID")},-
+            </p>
+            {compareAtPrice ? (
+              <p className="text-sm leading-none text-dark-grey/55 line-through md:text-base">
+                Rp. {compareAtPrice.toLocaleString("id-ID")},-
               </p>
-            </div>
+            ) : null}
           </div>
 
-          <div className="space-y-2">
-            <p className="text-sm font-semibold text-dark-grey">Deskripsi Produk</p>
-            <ProductDescriptionViewer value={productDescription} />
-          </div>
+          <ProductDescriptionViewer value={productDescription} maxLines={5} />
 
-          <AddToCartButton productId={product.id} />
-
-          <div className="rounded-lg border border-border-grey p-3 text-xs text-dark-grey/80">
-            Stok tersedia:{" "}
+          <div className="pt-2 text-sm text-secondary md:text-base">
+            Stok :{" "}
             <span className="font-semibold">
-              {product.stock > 0 ? `${product.stock} unit` : "Habis"}
+              {product.stock > 0 ? `${product.stock} Pcs` : "Habis"}
             </span>
           </div>
+
+          {product.stock > 0 ? (
+            <AddToCartButton
+              productId={product.id}
+              className="mt-0 h-12 w-full rounded-xl py-0 text-base font-semibold"
+            />
+          ) : null}
         </div>
       </div>
 

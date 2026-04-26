@@ -19,11 +19,11 @@ type ProductItem = {
   slug: string;
   name: string;
   basePrice: number;
+  stock: number;
   coverImageUrl: string;
   isNew: boolean;
 };
 
-type DateSort = "newest" | "oldest";
 type PriceSort = "none" | "price_desc" | "price_asc";
 
 function toTitleCaseFromSlug(slug: string) {
@@ -37,15 +37,11 @@ function toTitleCaseFromSlug(slug: string) {
 export default function CategorySlugPage() {
   const params = useParams<{ slug: string }>();
   const slug = params?.slug ?? "";
-  const [dateSort, setDateSort] = useState<DateSort>("newest");
   const [priceSort, setPriceSort] = useState<PriceSort>("none");
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const sort = useMemo(() => {
-    if (priceSort !== "none") return priceSort;
-    return dateSort;
-  }, [dateSort, priceSort]);
+  const sort = priceSort !== "none" ? priceSort : "newest";
 
   useEffect(() => {
     if (!slug) return;
@@ -85,16 +81,6 @@ export default function CategorySlugPage() {
         </div>
 
         <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-          <Select value={dateSort} onValueChange={(value) => setDateSort(value as DateSort)}>
-            <SelectTrigger className="w-full bg-white sm:w-44">
-              <SelectValue placeholder="Terbaru" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Terbaru</SelectItem>
-              <SelectItem value="oldest">Terlama</SelectItem>
-            </SelectContent>
-          </Select>
-
           <Select value={priceSort} onValueChange={(value) => setPriceSort(value as PriceSort)}>
             <SelectTrigger className="w-full bg-white sm:w-48">
               <SelectValue placeholder="Harga" />
@@ -124,6 +110,7 @@ export default function CategorySlugPage() {
                 image={product.coverImageUrl || "/image.png"}
                 name={product.name}
                 price={product.basePrice}
+                stock={product.stock}
                 isNew={product.isNew}
               />
             </Link>

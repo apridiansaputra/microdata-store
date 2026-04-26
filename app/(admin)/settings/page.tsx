@@ -5,6 +5,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Camera,
   CheckCircle2,
+  Circle,
+  Eye,
+  EyeOff,
   Loader2,
   Pencil,
   Plus,
@@ -102,6 +105,7 @@ export default function AdminSettingsPage() {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [isLoadingAdmins, setIsLoadingAdmins] = useState(false);
   const [isCreatingAdmin, setIsCreatingAdmin] = useState(false);
+  const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [adminForm, setAdminForm] = useState({
     fullName: "",
     email: "",
@@ -109,6 +113,26 @@ export default function AdminSettingsPage() {
     phone: "",
     password: "",
   });
+
+  const adminPasswordRules = [
+    { label: "Minimal 12 karakter", isValid: adminForm.password.length >= 12 },
+    {
+      label: "Mengandung huruf kapital (A-Z)",
+      isValid: /[A-Z]/.test(adminForm.password),
+    },
+    {
+      label: "Mengandung huruf kecil (a-z)",
+      isValid: /[a-z]/.test(adminForm.password),
+    },
+    {
+      label: "Mengandung angka (0-9)",
+      isValid: /\d/.test(adminForm.password),
+    },
+    {
+      label: "Mengandung simbol (contoh: !@#$%)",
+      isValid: /[^A-Za-z0-9]/.test(adminForm.password),
+    },
+  ];
 
   const [feedback, setFeedback] = useState<{
     open: boolean;
@@ -634,13 +658,50 @@ export default function AdminSettingsPage() {
                   className="h-9 border-border-grey text-xs"
                   placeholder="Nomor telepon (opsional)"
                 />
-                <Input
-                  type="password"
-                  value={adminForm.password}
-                  onChange={(event) => setAdminForm((prev) => ({ ...prev, password: event.target.value }))}
-                  className="h-9 border-border-grey text-xs"
-                  placeholder="Password admin"
-                />
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Input
+                      type={showAdminPassword ? "text" : "password"}
+                      value={adminForm.password}
+                      onChange={(event) =>
+                        setAdminForm((prev) => ({ ...prev, password: event.target.value }))
+                      }
+                      className="h-9 border-border-grey pr-10 text-xs"
+                      placeholder="Password admin"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowAdminPassword((prev) => !prev)}
+                      aria-label={showAdminPassword ? "Sembunyikan password" : "Tampilkan password"}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-dark-grey/70 transition-colors hover:text-secondary"
+                    >
+                      {showAdminPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <div className="rounded-md border border-border-grey bg-light-grey/30 px-3 py-2">
+                    <p className="mb-2 text-[11px] font-medium text-dark-grey/80">
+                      Password harus memenuhi:
+                    </p>
+                    <div className="space-y-1">
+                      {adminPasswordRules.map((rule) => (
+                        <div
+                          key={rule.label}
+                          className={cn(
+                            "flex items-center gap-2 text-[11px]",
+                            rule.isValid ? "text-emerald-700" : "text-dark-grey/70",
+                          )}
+                        >
+                          {rule.isValid ? (
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                          ) : (
+                            <Circle className="h-3.5 w-3.5" />
+                          )}
+                          <span>{rule.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
                 <Button
                   type="button"
                   disabled={isCreatingAdmin}

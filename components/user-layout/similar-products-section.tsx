@@ -19,6 +19,7 @@ export type SimilarProductItem = {
   slug: string
   title: string
   price: number
+  stock?: number
   imageSrc: string
   isNew?: boolean
 }
@@ -76,6 +77,7 @@ export default function SimilarProductsSection({
                   image={item.imageSrc}
                   name={item.title}
                   price={item.price}
+                  stock={item.stock}
                   isNew={item.isNew}
                 />
               </Link>

@@ -46,6 +46,7 @@ export default async function HomePage() {
       slug: true,
       name: true,
       basePrice: true,
+      stock: true,
       images: {
         orderBy: { sortOrder: "asc" },
         select: {
@@ -115,6 +116,7 @@ export default async function HomePage() {
                   image={coverImageUrl}
                   name={product.name}
                   price={toSafeNumber(product.basePrice) ?? 0}
+                  stock={product.stock}
                 />
               </Link>
             );
