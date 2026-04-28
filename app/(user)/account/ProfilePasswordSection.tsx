@@ -1,14 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { ChevronDown, Eye, EyeOff, Loader2 } from "lucide-react";
+import { CheckCircle2, ChevronDown, Circle, Eye, EyeOff, Loader2 } from "lucide-react";
 
+import { useUserAuth } from "@/components/auth/user-auth-context";
 import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AccountSection from "./AccountSection";
 
 export default function ProfilePasswordSection() {
+  const { user } = useUserAuth();
   const [showPassword, setShowPassword] = useState({
     old: false,
     next: false,
@@ -30,6 +33,17 @@ export default function ProfilePasswordSection() {
   const togglePasswordVisibility = (key: "old" | "next" | "confirm") => {
     setShowPassword((prev) => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const passwordRules = [
+    { label: "Minimal 12 karakter", isValid: form.newPassword.length >= 12 },
+    { label: "Mengandung huruf kapital (A-Z)", isValid: /[A-Z]/.test(form.newPassword) },
+    { label: "Mengandung huruf kecil (a-z)", isValid: /[a-z]/.test(form.newPassword) },
+    { label: "Mengandung angka (0-9)", isValid: /\d/.test(form.newPassword) },
+    {
+      label: "Mengandung simbol (contoh: !@#$%)",
+      isValid: /[^A-Za-z0-9]/.test(form.newPassword),
+    },
+  ];
 
   const handleSavePassword = async () => {
     setIsSaving(true);
@@ -151,14 +165,28 @@ export default function ProfilePasswordSection() {
                   )}
                 </button>
               </div>
-              <ul className="list-inside list-disc space-y-1 text-xs text-dark-grey">
-                <li>Biar kata sandimu makin kuat, pastikan ada:</li>
-                <li>Minimal 12 karakter</li>
-                <li>1 huruf besar</li>
-                <li>1 huruf kecil</li>
-                <li>1 simbol khusus</li>
-                <li>1 angka</li>
-              </ul>
+              <div className="rounded-md border border-dark-grey/10 bg-white px-3 py-2">
+                <p className="mb-2 text-xs font-medium text-dark-grey/70">
+                  Kata sandi harus memenuhi:
+                </p>
+                <div className="space-y-1">
+                  {passwordRules.map((rule) => (
+                    <div
+                      key={rule.label}
+                      className={`flex items-center gap-2 text-xs ${
+                        rule.isValid ? "text-emerald-700" : "text-dark-grey/65"
+                      }`}
+                    >
+                      {rule.isValid ? (
+                        <CheckCircle2 className="size-3.5" />
+                      ) : (
+                        <Circle className="size-3.5" />
+                      )}
+                      <span>{rule.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -200,7 +228,13 @@ export default function ProfilePasswordSection() {
             </div>
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Link
+              href={`/forgot-password${user?.email ? `?email=${encodeURIComponent(user.email)}` : ""}`}
+              className="text-xs font-medium text-primary-orange hover:underline"
+            >
+              Lupa password?
+            </Link>
             <Button
               type="submit"
               disabled={isSaving}

@@ -34,3 +34,24 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Internal Job: Sync Expired Orders
+
+To keep pending orders synced to `EXPIRED` without adding load to read endpoints:
+
+1. Set `INTERNAL_CRON_SECRET` in `.env`.
+2. Trigger:
+   - `POST /api/internal/orders/sync-expired`
+   - or `GET /api/internal/orders/sync-expired`
+3. Send one of these headers:
+   - `Authorization: Bearer <INTERNAL_CRON_SECRET>`
+   - or `x-cron-secret: <INTERNAL_CRON_SECRET>`
+
+Example (PowerShell):
+
+```powershell
+Invoke-WebRequest `
+  -Method POST `
+  -Uri "http://localhost:3000/api/internal/orders/sync-expired" `
+  -Headers @{ "Authorization" = "Bearer <INTERNAL_CRON_SECRET>" }
+```

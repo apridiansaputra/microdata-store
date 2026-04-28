@@ -11,6 +11,7 @@ type AdminListOrderRecord = {
   id: string;
   orderNumber: string;
   placedAt: Date;
+  expiresAt: Date | null;
   status: OrderStatus;
   paymentStatus: PaymentStatus;
   shippingStatus: ShipmentStatus;
@@ -86,16 +87,39 @@ function normalizeImage(url: string | null) {
   return normalized;
 }
 
+function getEffectiveOrderState(input: {
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  expiresAt: Date | null;
+}) {
+  const now = Date.now();
+  const isDisplayExpired =
+    input.status === "PENDING_PAYMENT" &&
+    input.paymentStatus === "PENDING" &&
+    !!input.expiresAt &&
+    input.expiresAt.getTime() <= now;
+
+  return {
+    status: isDisplayExpired ? ("EXPIRED" as const) : input.status,
+    paymentStatus: isDisplayExpired ? ("EXPIRED" as const) : input.paymentStatus,
+  };
+}
+
 export function serializeAdminOrderListItem(order: AdminListOrderRecord) {
-  const orderStatus = getOrderStatusMeta(order.status);
+  const effective = getEffectiveOrderState({
+    status: order.status,
+    paymentStatus: order.paymentStatus,
+    expiresAt: order.expiresAt,
+  });
+  const orderStatus = getOrderStatusMeta(effective.status);
   return {
     id: order.id,
     orderNumber: order.orderNumber,
     placedAt: order.placedAt.toISOString(),
-    status: order.status,
+    status: effective.status,
     statusLabel: orderStatus.label,
-    paymentStatus: order.paymentStatus,
-    paymentStatusLabel: getPaymentStatusLabel(order.paymentStatus),
+    paymentStatus: effective.paymentStatus,
+    paymentStatusLabel: getPaymentStatusLabel(effective.paymentStatus),
     shippingStatus: order.shippingStatus,
     shippingStatusLabel: getShippingStatusLabel(order.shippingStatus),
     customerName: order.user.fullName,
@@ -106,9 +130,14 @@ export function serializeAdminOrderListItem(order: AdminListOrderRecord) {
 }
 
 export function serializeAdminOrderDetail(order: AdminOrderDetailRecord) {
-  const orderStatus = getOrderStatusMeta(order.status);
+  const effective = getEffectiveOrderState({
+    status: order.status,
+    paymentStatus: order.paymentStatus,
+    expiresAt: order.expiresAt,
+  });
+  const orderStatus = getOrderStatusMeta(effective.status);
   const shippingStatusLabel = getShippingStatusLabel(order.shippingStatus);
-  const paymentStatusLabel = getPaymentStatusLabel(order.paymentStatus);
+  const paymentStatusLabel = getPaymentStatusLabel(effective.paymentStatus);
 
   return {
     id: order.id,
@@ -117,15 +146,15 @@ export function serializeAdminOrderDetail(order: AdminOrderDetailRecord) {
     paidAt: order.paidAt ? order.paidAt.toISOString() : null,
     cancelledAt: order.cancelledAt ? order.cancelledAt.toISOString() : null,
     expiresAt: order.expiresAt ? order.expiresAt.toISOString() : null,
-    status: order.status,
+    status: effective.status,
     statusLabel: orderStatus.label,
-    paymentStatus: order.paymentStatus,
+    paymentStatus: effective.paymentStatus,
     paymentStatusLabel,
     shippingStatus: order.shippingStatus,
     shippingStatusLabel,
     canUpdateShipment:
-      !["CANCELLED", "EXPIRED", "REFUNDED", "COMPLETED"].includes(order.status) &&
-      order.paymentStatus === "SETTLED",
+      !["CANCELLED", "EXPIRED", "REFUNDED", "COMPLETED"].includes(effective.status) &&
+      effective.paymentStatus === "SETTLED",
     totals: {
       subtotalAmount: toSafeNumber(order.subtotalAmount) ?? 0,
       shippingAmount: toSafeNumber(order.shippingAmount) ?? 0,

@@ -523,105 +523,109 @@ export default function AdminSettingsPage() {
 
         </section>
 
-        <section className="rounded-2xl bg-white p-6">
-          <div>
-            <h2 className="text-sm font-semibold text-secondary">Kelola Ekspedisi</h2>
-            <p className="mt-1 text-xs text-dark-grey">
-              Ekspedisi ini akan menjadi pilihan default di checkout.
-            </p>
-          </div>
-
-          {isLoadingSettings || !settings ? (
-            <div className="mt-4 flex items-center gap-2 text-xs text-dark-grey/70">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Memuat pengaturan...
+        {isSuperAdmin ? (
+          <section className="rounded-2xl bg-white p-6">
+            <div>
+              <h2 className="text-sm font-semibold text-secondary">Kelola Ekspedisi</h2>
+              <p className="mt-1 text-xs text-dark-grey">
+                Ekspedisi ini akan menjadi pilihan default di checkout.
+              </p>
             </div>
-          ) : (
-            <div className="mt-5 grid gap-4 lg:grid-cols-[240px_1fr]">
-              <div className="rounded-lg border border-border-grey bg-light-grey/40 p-4 text-xs text-dark-grey">
-                <p className="text-xs font-semibold text-secondary">Ekspedisi Aktif</p>
-                <p className="mt-2 text-sm font-semibold text-primary-orange">{courierLabel}</p>
-                <p className="mt-1 text-[11px] text-dark-grey/80">
-                  Kode: {settings.shippingCourierCode}
-                </p>
+
+            {isLoadingSettings || !settings ? (
+              <div className="mt-4 flex items-center gap-2 text-xs text-dark-grey/70">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Memuat pengaturan...
               </div>
-              <div className="grid gap-3 md:grid-cols-2">
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold text-secondary">Pilih Ekspedisi</p>
-                  <Select
-                    value={settings.shippingCourierCode}
-                    onValueChange={(value) =>
-                      setSettings((prev) =>
-                        prev
-                          ? {
-                              ...prev,
-                              shippingCourierCode: value,
-                              shippingCourierName:
-                                COURIER_OPTIONS.find((item) => item.code === value)?.name ??
-                                prev.shippingCourierName,
-                            }
-                          : prev,
-                      )
-                    }
-                  >
-                    <SelectTrigger className="h-9 border-border-grey bg-white text-xs text-secondary">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {COURIER_OPTIONS.map((option) => (
-                        <SelectItem key={option.code} value={option.code}>
-                          {option.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <p className="text-xs font-semibold text-secondary">Nama Ekspedisi</p>
-                  <Input
-                    value={settings.shippingCourierName}
-                    onChange={(event) =>
-                      setSettings((prev) =>
-                        prev ? { ...prev, shippingCourierName: event.target.value } : prev,
-                      )
-                    }
-                    className="h-9 border-border-grey text-xs"
-                    placeholder="Nama ekspedisi"
-                  />
-                </div>
-
-                <div className="space-y-2 md:col-span-2">
-                  <p className="text-xs font-semibold text-secondary">Tautan Ekspedisi</p>
-                  <Input
-                    value={settings.shippingTrackingBaseUrl ?? ""}
-                    onChange={(event) =>
-                      setSettings((prev) =>
-                        prev ? { ...prev, shippingTrackingBaseUrl: event.target.value } : prev,
-                      )
-                    }
-                    className="h-9 border-border-grey text-xs"
-                    placeholder="https://ekspedisi.com/cek-resi"
-                  />
-                  <p className="text-[11px] text-dark-grey/80">
-                    Tautan ini akan tampil di halaman pesanan user.
+            ) : (
+              <div className="mt-5 grid gap-4 lg:grid-cols-[240px_1fr]">
+                <div className="rounded-lg border border-border-grey bg-light-grey/40 p-4 text-xs text-dark-grey">
+                  <p className="text-xs font-semibold text-secondary">Ekspedisi Aktif</p>
+                  <p className="mt-2 text-sm font-semibold text-primary-orange">{courierLabel}</p>
+                  <p className="mt-1 text-[11px] text-dark-grey/80">
+                    Kode: {settings.shippingCourierCode}
                   </p>
                 </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-secondary">Pilih Ekspedisi</p>
+                    <Select
+                      value={settings.shippingCourierCode}
+                      onValueChange={(value) =>
+                        setSettings((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                shippingCourierCode: value,
+                                shippingCourierName:
+                                  COURIER_OPTIONS.find((item) => item.code === value)?.name ??
+                                  prev.shippingCourierName,
+                              }
+                            : prev,
+                        )
+                      }
+                    >
+                      <SelectTrigger className="h-9 border-border-grey bg-white text-xs text-secondary">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {COURIER_OPTIONS.map((option) => (
+                          <SelectItem key={option.code} value={option.code}>
+                            {option.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div className="flex items-end">
-                  <Button
-                    type="button"
-                    disabled={isSavingSettings}
-                    onClick={handleSaveSettings}
-                    className="h-9 rounded-md bg-primary-orange px-4 text-xs font-semibold text-white hover:bg-primary-orange/90"
-                  >
-                    {isSavingSettings ? <Loader2 className="h-4 w-4 animate-spin" /> : "Simpan"}
-                  </Button>
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold text-secondary">Nama Ekspedisi</p>
+                    <Input
+                      value={settings.shippingCourierName}
+                      onChange={(event) =>
+                        setSettings((prev) =>
+                          prev ? { ...prev, shippingCourierName: event.target.value } : prev,
+                        )
+                      }
+                      className="h-9 border-border-grey text-xs"
+                      placeholder="Nama ekspedisi"
+                    />
+                  </div>
+
+                  <div className="space-y-2 md:col-span-2">
+                    <p className="text-xs font-semibold text-secondary">Tautan Ekspedisi</p>
+                    <Input
+                      type="url"
+                      inputMode="url"
+                      value={settings.shippingTrackingBaseUrl ?? ""}
+                      onChange={(event) =>
+                        setSettings((prev) =>
+                          prev ? { ...prev, shippingTrackingBaseUrl: event.target.value } : prev,
+                        )
+                      }
+                      className="h-9 border-border-grey text-xs"
+                      placeholder="https://ekspedisi.com/cek-resi"
+                    />
+                    <p className="text-[11px] text-dark-grey/80">
+                      Tautan ini akan tampil di halaman pesanan user.
+                    </p>
+                  </div>
+
+                  <div className="flex items-end">
+                    <Button
+                      type="button"
+                      disabled={isSavingSettings}
+                      onClick={handleSaveSettings}
+                      className="h-9 rounded-md bg-primary-orange px-4 text-xs font-semibold text-white hover:bg-primary-orange/90"
+                    >
+                      {isSavingSettings ? <Loader2 className="h-4 w-4 animate-spin" /> : "Simpan"}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </section>
+            )}
+          </section>
+        ) : null}
 
         {isSuperAdmin ? (
           <section className="rounded-2xl bg-white p-6">
@@ -641,6 +645,9 @@ export default function AdminSettingsPage() {
                   placeholder="Nama lengkap"
                 />
                 <Input
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
                   value={adminForm.email}
                   onChange={(event) => setAdminForm((prev) => ({ ...prev, email: event.target.value }))}
                   className="h-9 border-border-grey text-xs"
@@ -653,6 +660,9 @@ export default function AdminSettingsPage() {
                   placeholder="Username (opsional)"
                 />
                 <Input
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel"
                   value={adminForm.phone}
                   onChange={(event) => setAdminForm((prev) => ({ ...prev, phone: event.target.value }))}
                   className="h-9 border-border-grey text-xs"
@@ -798,6 +808,8 @@ export default function AdminSettingsPage() {
                 placeholder="Deskripsi singkat"
               />
               <Input
+                type="url"
+                inputMode="url"
                 value={bannerForm.targetUrl}
                 onChange={(event) => setBannerForm((prev) => ({ ...prev, targetUrl: event.target.value }))}
                 className="h-9 border-border-grey text-xs"
@@ -811,6 +823,10 @@ export default function AdminSettingsPage() {
               />
               <div className="grid gap-3 md:grid-cols-2">
                 <Input
+                  type="number"
+                  min={0}
+                  step={1}
+                  inputMode="numeric"
                   value={bannerForm.sortOrder}
                   onChange={(event) => setBannerForm((prev) => ({ ...prev, sortOrder: event.target.value }))}
                   className="h-9 border-border-grey text-xs"

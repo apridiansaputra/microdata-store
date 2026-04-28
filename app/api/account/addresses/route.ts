@@ -5,6 +5,21 @@ import { prisma } from "@/lib/prisma";
 import { resolveRegionPayload, toRegionLabel } from "@/lib/account/address";
 import { accountAddressCreateSchema } from "@/lib/account/validation";
 
+function normalizePhoneForPayload(rawValue: unknown) {
+  if (typeof rawValue !== "string") return rawValue;
+
+  const compact = rawValue
+    .normalize("NFKC")
+    .trim()
+    .replace(/[^0-9+]/g, "");
+
+  const hasLeadingPlus = compact.startsWith("+");
+  const digitsOnly = compact.replace(/\+/g, "");
+
+  if (!digitsOnly) return "";
+  return hasLeadingPlus ? `+${digitsOnly}` : digitsOnly;
+}
+
 function serializeAddress(address: {
   id: string;
   recipientName: string;
@@ -85,10 +100,32 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json().catch(() => null);
-  const parsedBody = accountAddressCreateSchema.safeParse(body);
+  const normalizedBody =
+    body && typeof body === "object"
+      ? {
+          ...body,
+          phone: normalizePhoneForPayload(
+            (body as { phone?: unknown }).phone,
+          ),
+        }
+      : body;
+  const parsedBody = accountAddressCreateSchema.safeParse(normalizedBody);
   if (!parsedBody.success) {
+    const firstIssue = parsedBody.error.issues[0];
     return NextResponse.json(
-      { error: parsedBody.error.issues[0]?.message ?? "Payload tidak valid." },
+      {
+        error: firstIssue?.message ?? "Payload tidak valid.",
+        ...(process.env.NODE_ENV !== "production"
+          ? {
+              debugIssue: firstIssue
+                ? {
+                    path: firstIssue.path.join("."),
+                    code: firstIssue.code,
+                  }
+                : null,
+            }
+          : {}),
+      },
       { status: 400 },
     );
   }

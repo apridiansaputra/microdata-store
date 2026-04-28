@@ -56,6 +56,15 @@ export const OTP_MAX_REQUESTS_PER_WINDOW = readNumberEnv(
   20,
 );
 
+export const PASSWORD_RESET_SESSION_MINUTES = readNumberEnv(
+  "PASSWORD_RESET_SESSION_MINUTES",
+  15,
+  5,
+  60,
+);
+export const PASSWORD_RESET_SESSION_MS =
+  PASSWORD_RESET_SESSION_MINUTES * MINUTES_IN_MS;
+
 export const OAUTH_STATE_COOKIE_NAME = "mds_google_oauth_state";
 export const OAUTH_STATE_TTL_MINUTES = 10;
 export const OAUTH_STATE_TTL_MS = OAUTH_STATE_TTL_MINUTES * MINUTES_IN_MS;

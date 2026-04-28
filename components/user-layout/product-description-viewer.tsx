@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { ListNode, ListItemNode } from "@lexical/list";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
@@ -14,37 +14,43 @@ import { editorTheme } from "@/components/editor/themes/editor-theme";
 import { parseProductDescriptionToEditorState } from "@/lib/products/rich-text";
 import { cn } from "@/lib/utils";
 
-function getNodeTextLength(node: unknown): number {
-  if (!node || typeof node !== "object") return 0;
-
-  const current = node as { text?: unknown; children?: unknown };
-  let total = 0;
-
-  if (typeof current.text === "string") {
-    total += current.text.trim().length;
-  }
-
-  if (Array.isArray(current.children)) {
-    total += current.children.reduce((sum, child) => sum + getNodeTextLength(child), 0);
-  }
-
-  return total;
-}
-
 export function ProductDescriptionViewer({
   value,
-  maxLines = 5,
+  maxLines = 4,
 }: {
   value: string | null | undefined;
   maxLines?: number;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const state = parseProductDescriptionToEditorState(value);
-  const descriptionTextLength = useMemo(() => getNodeTextLength(state), [state]);
-  const isExpandable = descriptionTextLength > 240;
+  const [isExpandable, setIsExpandable] = useState(false);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+  const state = useMemo(() => parseProductDescriptionToEditorState(value), [value]);
+
+  useEffect(() => {
+    if (!contentRef.current || expanded) return;
+
+    const contentNode = contentRef.current;
+    const checkOverflow = () => {
+      setIsExpandable(contentNode.scrollHeight - contentNode.clientHeight > 1);
+    };
+
+    const frameId = window.requestAnimationFrame(checkOverflow);
+    const timeoutId = window.setTimeout(checkOverflow, 50);
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(checkOverflow);
+      resizeObserver.observe(contentNode);
+    }
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+      resizeObserver?.disconnect();
+    };
+  }, [expanded, maxLines, state]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 bg-light-grey p-4 rounded-sm">
       <LexicalComposer
         initialConfig={{
           namespace: "ProductDescriptionViewer",
@@ -61,9 +67,10 @@ export function ProductDescriptionViewer({
           <RichTextPlugin
             contentEditable={
               <ContentEditable
+                ref={contentRef}
                 className={cn("text-sm leading-relaxed text-secondary focus:outline-none", !expanded && "overflow-hidden")}
                 style={
-                  !expanded && isExpandable
+                  !expanded
                     ? ({
                         display: "-webkit-box",
                         WebkitBoxOrient: "vertical",

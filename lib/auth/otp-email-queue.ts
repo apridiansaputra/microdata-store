@@ -1,6 +1,6 @@
 import { sendOtpEmail } from "@/lib/auth/email";
 
-type OtpEmailPurpose = "register";
+type OtpEmailPurpose = "register" | "password_reset";
 
 type OtpEmailJob = {
   to: string;

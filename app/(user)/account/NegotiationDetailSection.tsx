@@ -468,6 +468,8 @@ export default function NegotiationDetailSection({
 
                   <TableCell className="px-4 py-2.5 align-middle">
                     <Input
+                      type="tel"
+                      inputMode="numeric"
                       value={offerInputs[item.id] ?? ""}
                       onChange={(event) => handleOfferChange(item.id, event.target.value)}
                       disabled={!record.canSubmitOffer || record.status === "ACCEPTED"}

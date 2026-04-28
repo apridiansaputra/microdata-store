@@ -27,7 +27,6 @@ export default function Menu() {
     void (async () => {
       const response = await fetch("/api/categories", {
         method: "GET",
-        cache: "no-store",
       });
 
       if (!response.ok) return;

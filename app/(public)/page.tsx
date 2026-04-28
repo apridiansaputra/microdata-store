@@ -1,10 +1,18 @@
 import Link from "next/link";
-import { ArrowRight, Search, ShoppingCart, Truck, Wallet } from "lucide-react";
+import {
+  ArrowRight,
+  Handshake,
+  Search,
+  ShoppingCart,
+  Truck,
+  Wallet,
+} from "lucide-react";
 
 import { ProductCard } from "@/components/ui/product-card";
 import HomeBannerCarousel from "@/components/user-layout/home-banner-carousel";
 import { prisma } from "@/lib/prisma";
 import { toSafeNumber } from "@/lib/products/utils";
+import { getAppSettings } from "@/lib/settings/app-settings";
 
 const shoppingGuideSteps = [
   {
@@ -16,6 +24,11 @@ const shoppingGuideSteps = [
     title: "Tambah Keranjang",
     description: "Masukkan produk pilihanmu ke keranjang belanja.",
     icon: ShoppingCart,
+  },
+  {
+    title: "Negosiasi Harga",
+    description: "Jika total harga > 50 juta pembeli dapat melakukan pengajuan negosiasi.",
+    icon: Handshake,
   },
   {
     title: "Lakukan Pembayaran",
@@ -30,7 +43,7 @@ const shoppingGuideSteps = [
 ];
 
 export default async function HomePage() {
-  const [latestProducts, banners, settings] = await prisma.$transaction([
+  const [latestProducts, banners, settings] = await Promise.all([
     prisma.product.findMany({
     where: {
       status: "PUBLISHED",
@@ -69,16 +82,7 @@ export default async function HomePage() {
         targetUrl: true,
       },
     }),
-    prisma.appSetting.upsert({
-      where: { id: "default" },
-      create: {
-        id: "default",
-        shippingCourierCode: "jne",
-        shippingCourierName: "JNE",
-        bannerAutoplayMs: 5000,
-      },
-      update: {},
-    }),
+    getAppSettings(),
   ]);
 
   return (
@@ -124,25 +128,45 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="rounded-2xl bg-secondary px-6 py-10 text-white md:px-12 md:py-14">
+      <section className="rounded-[28px] bg-secondary px-6 py-10 text-white md:px-10 md:py-12">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-xl font-semibold">Panduan Belanja Microdata Store</h2>
-          <p className="mt-2 text-sm text-slate-300">
+          <h2 className="text-2xl font-semibold">Panduan Belanja</h2>
+          <p className="mt-2 text-sm text-slate-300/90">
             Telusuri dan pilih produk yang kamu inginkan.
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 md:mt-24 md:grid-cols-2 xl:grid-cols-4">
-          {shoppingGuideSteps.map((step) => {
+        <div className="mt-10 grid grid-cols-1 gap-9 md:mt-24 md:grid-cols-3 md:gap-x-12 md:gap-y-10">
+          {shoppingGuideSteps.slice(0, 3).map((step) => {
             const Icon = step.icon;
 
             return (
               <div key={step.title} className="flex flex-col items-center text-center">
-                <div className="mb-4 flex size-12 items-center justify-center rounded-lg bg-slate-600/70">
-                  <Icon className="size-6 text-white" />
+                <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-slate-500/70">
+                  <Icon className="size-5 text-white" />
                 </div>
                 <h3 className="text-base font-semibold">{step.title}</h3>
-                <p className="mt-1 max-w-xs text-xs text-slate-300">{step.description}</p>
+                <p className="mt-1 max-w-[240px] text-xs leading-relaxed text-slate-300/90">
+                  {step.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-9 grid grid-cols-1 gap-9 md:mx-auto md:mt-14 md:max-w-3xl md:grid-cols-2 md:gap-x-16">
+          {shoppingGuideSteps.slice(3).map((step) => {
+            const Icon = step.icon;
+
+            return (
+              <div key={step.title} className="flex flex-col items-center text-center">
+                <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-slate-500/70">
+                  <Icon className="size-5 text-white" />
+                </div>
+                <h3 className="text-base font-semibold">{step.title}</h3>
+                <p className="mt-1 max-w-[240px] text-xs leading-relaxed text-slate-300/90">
+                  {step.description}
+                </p>
               </div>
             );
           })}

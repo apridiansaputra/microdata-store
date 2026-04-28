@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireUser } from "@/lib/auth/api-guard";
-import { syncExpiredPendingOrders } from "@/lib/orders/expiration";
 import { serializeOrderListItem } from "@/lib/orders/serializers";
 import { prisma } from "@/lib/prisma";
+import { getAppSettings } from "@/lib/settings/app-settings";
 
 function parsePositiveInt(value: string | null, fallback: number) {
   const parsed = Number(value);
@@ -19,14 +19,12 @@ export async function GET(request: NextRequest) {
     return auth.response;
   }
 
-  await syncExpiredPendingOrders();
-
   const searchParams = request.nextUrl.searchParams;
   const page = parsePositiveInt(searchParams.get("page"), 1);
   const pageSize = Math.min(parsePositiveInt(searchParams.get("pageSize"), 10), 20);
   const skip = (page - 1) * pageSize;
 
-  const [total, orders, settings] = await prisma.$transaction([
+  const [total, orders, settings] = await Promise.all([
     prisma.order.count({
       where: {
         userId: auth.user.id,
@@ -72,16 +70,7 @@ export async function GET(request: NextRequest) {
         },
       },
     }),
-    prisma.appSetting.upsert({
-      where: { id: "default" },
-      create: {
-        id: "default",
-        shippingCourierCode: "jne",
-        shippingCourierName: "JNE",
-        bannerAutoplayMs: 5000,
-      },
-      update: {},
-    }),
+    getAppSettings(),
   ]);
 
   return NextResponse.json(

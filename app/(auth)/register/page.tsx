@@ -163,7 +163,9 @@ export default function RegisterPage() {
               <Input name="email" type="email" placeholder="Email" required className="py-5" />
               <Input
                 name="phone"
-                type="text"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
                 placeholder="Nomor Telepon"
                 required
                 className="py-5"

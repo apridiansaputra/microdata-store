@@ -42,11 +42,17 @@ export default function AdminSidebar() {
   const isAccountMenuOpen = isAccountHovered || isAccountPinnedOpen;
   const adminName = user?.fullName ?? (isLoading ? "Memuat..." : "Admin");
   const adminInitial = adminName.trim().charAt(0).toUpperCase() || "A";
+  const filteredNavItems =
+    user?.role === "ADMIN"
+      ? navItems.filter((item) => item.href !== "/dashboard")
+      : navItems;
 
   useEffect(() => {
     let mounted = true;
 
     const loadBadgeCounts = async () => {
+      if (document.visibilityState !== "visible") return;
+
       const response = await fetch("/api/admin/sidebar-badges", {
         method: "GET",
         credentials: "include",
@@ -66,13 +72,18 @@ export default function AdminSidebar() {
     };
 
     void loadBadgeCounts();
-    const timer = window.setInterval(() => {
+    const runRefresh = () => {
       void loadBadgeCounts();
-    }, 30000);
+    };
+    const timer = window.setInterval(runRefresh, 60000);
+    window.addEventListener("focus", runRefresh);
+    document.addEventListener("visibilitychange", runRefresh);
 
     return () => {
       mounted = false;
       window.clearInterval(timer);
+      window.removeEventListener("focus", runRefresh);
+      document.removeEventListener("visibilitychange", runRefresh);
     };
   }, []);
 
@@ -120,7 +131,7 @@ export default function AdminSidebar() {
         </div>
 
         <nav className="flex-1 space-y-1 overflow-y-auto p-5">
-          {navItems.map((item) => {
+          {filteredNavItems.map((item) => {
             const Icon = item.icon;
             const isActive =
               pathname === item.href ||

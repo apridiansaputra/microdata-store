@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth/api-guard";
-import { syncExpiredPendingOrders } from "@/lib/orders/expiration";
 import {
   getPaymentStatusLabel,
   getShippingStatusLabel,
@@ -222,8 +221,6 @@ export async function GET(request: NextRequest) {
   if (!auth.ok) {
     return auth.response;
   }
-
-  await syncExpiredPendingOrders();
 
   const range = normalizeRange(request.nextUrl.searchParams.get("range"));
   const now = new Date();

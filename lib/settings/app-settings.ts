@@ -15,13 +15,19 @@ const DEFAULT_SETTINGS: AppSettingsPayload = {
 };
 
 export async function getAppSettings() {
-  return prisma.appSetting.upsert({
+  const existing = await prisma.appSetting.findUnique({
     where: { id: "default" },
-    create: {
+  });
+
+  if (existing) {
+    return existing;
+  }
+
+  return prisma.appSetting.create({
+    data: {
       id: "default",
       ...DEFAULT_SETTINGS,
     },
-    update: {},
   });
 }
 

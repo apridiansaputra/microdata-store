@@ -157,6 +157,8 @@ export default function OrderDetailPanel({
     title: string;
     description: string;
   } | null>(null);
+  const isTrackingEditable =
+    !!order?.canUpdateShipment && shippingStatus === "SHIPPED";
 
   const loadOrderDetail = useCallback(async () => {
     if (!orderNumber) {
@@ -243,16 +245,23 @@ export default function OrderDetailPanel({
     if (!order) return;
 
     setIsSaving(true);
+    const payload: {
+      shippingStatus: ShippingStatusOption;
+      trackingNumber?: string;
+    } = {
+      shippingStatus,
+    };
+    if (shippingStatus === "SHIPPED") {
+      payload.trackingNumber = trackingNumber.trim() || undefined;
+    }
+
     const response = await fetch(`/api/admin/orders/${encodeURIComponent(order.orderNumber)}`, {
       method: "PATCH",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        shippingStatus,
-        trackingNumber: trackingNumber.trim() || undefined,
-      }),
+      body: JSON.stringify(payload),
     });
     const data = (await response.json().catch(() => ({}))) as OrderUpdateResponse;
     setIsSaving(false);
@@ -420,14 +429,22 @@ export default function OrderDetailPanel({
                     <Input
                       value={trackingNumber}
                       onChange={(event) => setTrackingNumber(event.target.value)}
-                      placeholder="Masukkan Nomor Resi"
-                      disabled={!order.canUpdateShipment}
+                      placeholder={
+                        shippingStatus === "SHIPPED"
+                          ? "Masukkan Nomor Resi"
+                          : "Nomor resi hanya diisi saat status Dikirim"
+                      }
+                      disabled={!isTrackingEditable}
                       className="placeholder:text-dark-grey placeholder:text-xs"
                     />
                   </div>
                   {!order.canUpdateShipment ? (
                     <p className="text-[11px] text-dark-grey">
                       Status pengiriman hanya bisa diperbarui saat pembayaran sudah lunas.
+                    </p>
+                  ) : shippingStatus !== "SHIPPED" ? (
+                    <p className="text-[11px] text-dark-grey">
+                      Ubah status ke <span className="font-medium">Dikirim</span> untuk mengisi nomor resi.
                     </p>
                   ) : null}
                 </div>

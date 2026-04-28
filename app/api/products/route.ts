@@ -101,6 +101,11 @@ export async function GET(request: NextRequest) {
         pageCount: Math.max(1, Math.ceil(total / pageSize)),
       },
     },
-    { status: 200 },
+    {
+      status: 200,
+      headers: {
+        "Cache-Control": "public, max-age=30, s-maxage=30, stale-while-revalidate=120",
+      },
+    },
   );
 }

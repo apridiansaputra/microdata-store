@@ -1,6 +1,42 @@
 import { Gender } from "@prisma/client";
 import { z } from "zod";
 
+function normalizePhoneNumber(rawValue: string) {
+  const compact = rawValue
+    .normalize("NFKC")
+    .trim()
+    .replace(/[^0-9+]/g, "");
+
+  const hasLeadingPlus = compact.startsWith("+");
+  const digitsOnly = compact.replace(/\+/g, "");
+
+  if (!/^\d+$/.test(digitsOnly)) {
+    return null;
+  }
+
+  if (digitsOnly.length < 8 || digitsOnly.length > 24) {
+    return null;
+  }
+
+  return hasLeadingPlus ? `+${digitsOnly}` : digitsOnly;
+}
+
+const phoneNumberSchema = z.preprocess(
+  (value) => {
+    if (value === null || value === undefined) return value;
+    if (typeof value === "string") return value;
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
+    return String(value);
+  },
+  z
+    .string()
+    .trim()
+    .min(1, "Nomor telepon wajib diisi.")
+    .max(64, "Nomor telepon tidak valid.")
+    .transform((value) => normalizePhoneNumber(value))
+    .refine((value): value is string => value !== null, "Nomor telepon tidak valid."),
+);
+
 export const accountProfileUpdateSchema = z.object({
   username: z
     .string()
@@ -10,12 +46,7 @@ export const accountProfileUpdateSchema = z.object({
     .optional()
     .nullable(),
   fullName: z.string().trim().min(1, "Nama wajib diisi.").max(120),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^\+?[0-9]{8,24}$/, "Nomor telepon tidak valid.")
-    .optional()
-    .nullable(),
+  phone: phoneNumberSchema.optional().nullable(),
   gender: z.nativeEnum(Gender),
   birthDate: z
     .string()
@@ -38,10 +69,7 @@ export const accountPasswordUpdateSchema = z
 
 export const accountAddressCreateSchema = z.object({
   fullName: z.string().trim().min(1, "Nama penerima wajib diisi.").max(120),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^\+?[0-9]{8,24}$/, "Nomor telepon tidak valid."),
+  phone: phoneNumberSchema,
   region: z.string().trim().min(3, "Region wajib diisi.").optional().nullable(),
   provinceCode: z.string().trim().min(1).max(16).optional().nullable(),
   provinceName: z.string().trim().min(2, "Provinsi wajib dipilih.").max(100),
@@ -57,11 +85,7 @@ export const accountAddressCreateSchema = z.object({
 
 export const accountAddressUpdateSchema = z.object({
   fullName: z.string().trim().min(1, "Nama penerima wajib diisi.").max(120).optional(),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^\+?[0-9]{8,24}$/, "Nomor telepon tidak valid.")
-    .optional(),
+  phone: phoneNumberSchema.optional(),
   region: z.string().trim().min(3, "Region wajib diisi.").optional().nullable(),
   provinceCode: z.string().trim().min(1).max(16).optional().nullable(),
   provinceName: z.string().trim().min(2, "Provinsi wajib dipilih.").max(100).optional(),

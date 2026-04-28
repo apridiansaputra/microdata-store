@@ -21,6 +21,11 @@ export async function GET() {
     {
       categories,
     },
-    { status: 200 },
+    {
+      status: 200,
+      headers: {
+        "Cache-Control": "public, max-age=120, s-maxage=120, stale-while-revalidate=600",
+      },
+    },
   );
 }

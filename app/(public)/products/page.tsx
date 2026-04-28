@@ -45,7 +45,6 @@ export default function AllProductsPage() {
 
       const response = await fetch(`/api/products?${params.toString()}`, {
         method: "GET",
-        cache: "no-store",
       });
       const data = (await response.json().catch(() => ({}))) as {
         items?: ProductItem[];

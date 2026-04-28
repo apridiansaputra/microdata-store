@@ -83,6 +83,21 @@ function findOptionByName(items: LocationOption[], name: string) {
   return items.find((item) => item.name.trim().toLowerCase() === normalized) ?? null;
 }
 
+function normalizePhoneInput(rawValue: string) {
+  const compact = rawValue
+    .normalize("NFKC")
+    .trim()
+    .replace(/[^0-9+]/g, "");
+
+  const hasLeadingPlus = compact.startsWith("+");
+  const digitsOnly = compact.replace(/\+/g, "");
+
+  if (!/^\d+$/.test(digitsOnly)) return null;
+  if (digitsOnly.length < 8 || digitsOnly.length > 24) return null;
+
+  return hasLeadingPlus ? `+${digitsOnly}` : digitsOnly;
+}
+
 export default function ProfileAddressSection() {
   const [addresses, setAddresses] = useState<ShippingAddress[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -364,9 +379,21 @@ export default function ProfileAddressSection() {
       return;
     }
 
+    const normalizedPhone = normalizePhoneInput(addressForm.phone);
+    if (!normalizedPhone) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Nomor Telepon Tidak Valid",
+        description:
+          "Gunakan format nomor telepon yang valid, contoh: 081234567890 atau +6281234567890.",
+      });
+      return;
+    }
+
     const payload = {
       fullName: addressForm.fullName.trim(),
-      phone: addressForm.phone.trim(),
+      phone: normalizedPhone,
       provinceCode: addressForm.provinceCode,
       provinceName: addressForm.provinceName,
       cityCode: addressForm.cityCode,
@@ -398,7 +425,13 @@ export default function ProfileAddressSection() {
         body: JSON.stringify(payload),
       },
     );
-    const data = (await response.json().catch(() => ({}))) as { error?: string };
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+      debugIssue?: {
+        path?: string;
+        code?: string;
+      } | null;
+    };
     setIsSavingAddress(false);
 
     if (!response.ok) {
@@ -406,7 +439,10 @@ export default function ProfileAddressSection() {
         open: true,
         variant: "error",
         title: "Gagal Menyimpan Alamat",
-        description: data.error ?? "Periksa kembali data alamat yang diisi.",
+        description:
+          process.env.NODE_ENV !== "production" && data.debugIssue?.path
+            ? `${data.error ?? "Periksa kembali data alamat yang diisi."} (field: ${data.debugIssue.path})`
+            : (data.error ?? "Periksa kembali data alamat yang diisi."),
       });
       return;
     }
@@ -608,6 +644,9 @@ export default function ProfileAddressSection() {
               />
               <Input
                 name="phone"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
                 placeholder="Nomor Telepon"
                 value={addressForm.phone}
                 onChange={(event) => updateAddressForm("phone", event.target.value)}
@@ -682,6 +721,7 @@ export default function ProfileAddressSection() {
 
               <Input
                 name="postalCode"
+                type="tel"
                 placeholder="Kode Pos"
                 inputMode="numeric"
                 pattern="[0-9]{4,10}"

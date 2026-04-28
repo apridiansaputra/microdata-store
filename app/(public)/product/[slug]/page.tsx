@@ -167,44 +167,49 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           />
         </div>
 
-        <div className="flex w-full flex-col gap-6 lg:w-[44%]">
-          <div className="flex flex-row items-start justify-between gap-4">
-            <p className="text-xl leading-tight font-semibold text-secondary md:text-2xl">
-              {product.name}
-            </p>
+        <div className="flex w-full flex-col gap-10 lg:w-[44%]">
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <p className="text-xl leading-tight font-semibold text-secondary md:text-2xl">
+                {product.name}
+              </p>
 
-            <div className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#FFF1E4] px-3 py-1.5 text-sm font-semibold text-secondary">
-              <StarIcon className="size-4 fill-[#F79A39] text-[#F79A39]" />
-              <span>{ratingAverage.toFixed(1)}/5.0</span>
+              <div className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[#FFF1E4] px-3 py-1.5 text-xs font-semibold text-secondary">
+                <StarIcon className="size-3 fill-[#F79A39] text-[#F79A39]" />
+                <span>{ratingAverage.toFixed(1)}/5.0</span>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <p className="text-xl leading-none text-secondary md:text-2xl">
+                Rp. {basePrice.toLocaleString("id-ID")},-
+              </p>
+              {compareAtPrice ? (
+                <p className="text-sm leading-none text-dark-grey/55 line-through md:text-base">
+                  Rp. {compareAtPrice.toLocaleString("id-ID")},-
+                </p>
+              ) : null}
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-4">
-            <p className="text-2xl leading-none font-semibold text-secondary md:text-3xl">
-              Rp. {basePrice.toLocaleString("id-ID")},-
-            </p>
-            {compareAtPrice ? (
-              <p className="text-sm leading-none text-dark-grey/55 line-through md:text-base">
-                Rp. {compareAtPrice.toLocaleString("id-ID")},-
-              </p>
-            ) : null}
+          <ProductDescriptionViewer value={productDescription} maxLines={4} />
+
+          <div className="flex flex-col gap-3">
+
+              <div className="pt-2 text-sm text-secondary md:text-sm">
+                Stok :{" "}
+                <span className="font-semibold">
+                  {product.stock > 0 ? `${product.stock} Pcs` : "Habis"}
+                </span>
+              </div>
+
+              {product.stock > 0 ? (
+                <AddToCartButton
+                  productId={product.id}
+                  className="mt-0 h-12 w-full rounded-xl py-0 text-base font-semibold"
+                />
+              ) : null}
           </div>
-
-          <ProductDescriptionViewer value={productDescription} maxLines={5} />
-
-          <div className="pt-2 text-sm text-secondary md:text-base">
-            Stok :{" "}
-            <span className="font-semibold">
-              {product.stock > 0 ? `${product.stock} Pcs` : "Habis"}
-            </span>
-          </div>
-
-          {product.stock > 0 ? (
-            <AddToCartButton
-              productId={product.id}
-              className="mt-0 h-12 w-full rounded-xl py-0 text-base font-semibold"
-            />
-          ) : null}
         </div>
       </div>
 

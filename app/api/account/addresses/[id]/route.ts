@@ -9,6 +9,21 @@ type RouteContext = {
   params: Promise<{ id: string }>;
 };
 
+function normalizePhoneForPayload(rawValue: unknown) {
+  if (typeof rawValue !== "string") return rawValue;
+
+  const compact = rawValue
+    .normalize("NFKC")
+    .trim()
+    .replace(/[^0-9+]/g, "");
+
+  const hasLeadingPlus = compact.startsWith("+");
+  const digitsOnly = compact.replace(/\+/g, "");
+
+  if (!digitsOnly) return "";
+  return hasLeadingPlus ? `+${digitsOnly}` : digitsOnly;
+}
+
 export async function PATCH(request: NextRequest, context: RouteContext) {
   const auth = await requireUser(request);
   if (!auth.ok) {
@@ -41,10 +56,32 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   }
 
   const body = await request.json().catch(() => null);
-  const parsedBody = accountAddressUpdateSchema.safeParse(body);
+  const normalizedBody =
+    body && typeof body === "object"
+      ? {
+          ...body,
+          phone: normalizePhoneForPayload(
+            (body as { phone?: unknown }).phone,
+          ),
+        }
+      : body;
+  const parsedBody = accountAddressUpdateSchema.safeParse(normalizedBody);
   if (!parsedBody.success) {
+    const firstIssue = parsedBody.error.issues[0];
     return NextResponse.json(
-      { error: parsedBody.error.issues[0]?.message ?? "Payload tidak valid." },
+      {
+        error: firstIssue?.message ?? "Payload tidak valid.",
+        ...(process.env.NODE_ENV !== "production"
+          ? {
+              debugIssue: firstIssue
+                ? {
+                    path: firstIssue.path.join("."),
+                    code: firstIssue.code,
+                  }
+                : null,
+            }
+          : {}),
+      },
       { status: 400 },
     );
   }

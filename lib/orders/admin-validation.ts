@@ -9,25 +9,38 @@ export const adminOrdersQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(50).default(20),
 });
 
-export const adminOrderShippingUpdateSchema = z.object({
-  shippingStatus: z.enum([
-    "WAITING_FULFILLMENT",
-    "READY_TO_SHIP",
-    "SHIPPED",
-    "DELIVERED",
-  ]),
-  trackingNumber: z.preprocess(
-    (value) =>
-      typeof value === "string" && value.trim() === "" ? undefined : value,
-    z
+export const adminOrderShippingUpdateSchema = z
+  .object({
+    shippingStatus: z.enum([
+      "WAITING_FULFILLMENT",
+      "READY_TO_SHIP",
+      "SHIPPED",
+      "DELIVERED",
+    ]),
+    trackingNumber: z.preprocess(
+      (value) =>
+        typeof value === "string" && value.trim() === "" ? undefined : value,
+      z
+        .string()
+        .trim()
+        .max(128, "Nomor resi terlalu panjang.")
+        .optional(),
+    ),
+    adminNote: z
       .string()
       .trim()
-      .max(128, "Nomor resi terlalu panjang.")
+      .max(500, "Catatan admin maksimal 500 karakter.")
       .optional(),
-  ),
-  adminNote: z
-    .string()
-    .trim()
-    .max(500, "Catatan admin maksimal 500 karakter.")
-    .optional(),
-});
+  })
+  .superRefine((value, ctx) => {
+    if (
+      value.trackingNumber !== undefined &&
+      value.shippingStatus !== "SHIPPED"
+    ) {
+      ctx.addIssue({
+        path: ["trackingNumber"],
+        code: z.ZodIssueCode.custom,
+        message: "Nomor resi hanya dapat diisi saat status Dikirim.",
+      });
+    }
+  });

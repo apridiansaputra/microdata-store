@@ -32,3 +32,27 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(128),
 });
 
+export const forgotPasswordRequestSchema = z.object({
+  email: z.string().trim().email().max(320),
+});
+
+export const forgotPasswordVerifyOtpSchema = z.object({
+  email: z.string().trim().email().max(320),
+  code: z.string().trim().regex(/^\d{6}$/, "Kode OTP harus 6 digit"),
+});
+
+export const forgotPasswordResetSchema = z
+  .object({
+    email: z.string().trim().email().max(320),
+    resetToken: z.string().trim().min(24).max(256),
+    newPassword: z.string().min(12, "Password baru minimal 12 karakter").max(128),
+    confirmNewPassword: z
+      .string()
+      .min(1, "Konfirmasi password baru wajib diisi.")
+      .max(128),
+  })
+  .refine((value) => value.newPassword === value.confirmNewPassword, {
+    message: "Konfirmasi password baru tidak sama.",
+    path: ["confirmNewPassword"],
+  });
+

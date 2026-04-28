@@ -187,11 +187,22 @@ export default function Dashboard() {
   }, [dateFilter, loadDashboard]);
 
   useEffect(() => {
-    const intervalId = window.setInterval(() => {
+    const runRefresh = () => {
+      if (document.visibilityState !== "visible") {
+        return;
+      }
       void loadDashboard(dateFilter, true);
-    }, 30000);
+    };
 
-    return () => window.clearInterval(intervalId);
+    const intervalId = window.setInterval(runRefresh, 60000);
+    window.addEventListener("focus", runRefresh);
+    document.addEventListener("visibilitychange", runRefresh);
+
+    return () => {
+      window.clearInterval(intervalId);
+      window.removeEventListener("focus", runRefresh);
+      document.removeEventListener("visibilitychange", runRefresh);
+    };
   }, [dateFilter, loadDashboard]);
 
   const highestLocationUsers = useMemo(

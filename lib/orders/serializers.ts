@@ -164,7 +164,15 @@ export function serializeOrderListItem(
   order: ListOrderRecord,
   options?: { defaultTrackingUrl?: string | null },
 ) {
-  const statusMeta = getOrderStatusMeta(order.status);
+  const now = Date.now();
+  const isDisplayExpired =
+    order.status === "PENDING_PAYMENT" &&
+    order.paymentStatus === "PENDING" &&
+    !!order.expiresAt &&
+    order.expiresAt.getTime() <= now;
+  const effectiveOrderStatus: OrderStatus = isDisplayExpired ? "EXPIRED" : order.status;
+  const effectivePaymentStatus: PaymentStatus = isDisplayExpired ? "EXPIRED" : order.paymentStatus;
+  const statusMeta = getOrderStatusMeta(effectiveOrderStatus);
   const firstItem = order.items[0] ?? null;
   const itemCount = order.items.length;
   const totalQuantity = order.items.reduce((sum, item) => sum + Math.max(1, item.quantity), 0);
@@ -174,11 +182,11 @@ export function serializeOrderListItem(
     orderNumber: order.orderNumber,
     placedAt: order.placedAt.toISOString(),
     expiresAt: order.expiresAt ? order.expiresAt.toISOString() : null,
-    status: order.status,
+    status: effectiveOrderStatus,
     statusLabel: statusMeta.label,
     statusTone: statusMeta.tone,
-    paymentStatus: order.paymentStatus,
-    paymentStatusLabel: getPaymentStatusLabel(order.paymentStatus),
+    paymentStatus: effectivePaymentStatus,
+    paymentStatusLabel: getPaymentStatusLabel(effectivePaymentStatus),
     shippingStatus: order.shippingStatus,
     shippingStatusLabel: getShippingStatusLabel(order.shippingStatus),
     totalAmount,
@@ -202,7 +210,15 @@ export function serializeOrderDetail(
   order: DetailOrderRecord,
   options?: { defaultTrackingUrl?: string | null },
 ) {
-  const statusMeta = getOrderStatusMeta(order.status);
+  const now = Date.now();
+  const isDisplayExpired =
+    order.status === "PENDING_PAYMENT" &&
+    order.paymentStatus === "PENDING" &&
+    !!order.expiresAt &&
+    order.expiresAt.getTime() <= now;
+  const effectiveOrderStatus: OrderStatus = isDisplayExpired ? "EXPIRED" : order.status;
+  const effectivePaymentStatus: PaymentStatus = isDisplayExpired ? "EXPIRED" : order.paymentStatus;
+  const statusMeta = getOrderStatusMeta(effectiveOrderStatus);
 
   return {
     id: order.id,
@@ -211,12 +227,12 @@ export function serializeOrderDetail(
     paidAt: order.paidAt ? order.paidAt.toISOString() : null,
     cancelledAt: order.cancelledAt ? order.cancelledAt.toISOString() : null,
     expiresAt: order.expiresAt ? order.expiresAt.toISOString() : null,
-    status: order.status,
+    status: effectiveOrderStatus,
     statusLabel: statusMeta.label,
     statusTone: statusMeta.tone,
     progressStep: statusMeta.progressStep,
-    paymentStatus: order.paymentStatus,
-    paymentStatusLabel: getPaymentStatusLabel(order.paymentStatus),
+    paymentStatus: effectivePaymentStatus,
+    paymentStatusLabel: getPaymentStatusLabel(effectivePaymentStatus),
     shippingStatus: order.shippingStatus,
     shippingStatusLabel: getShippingStatusLabel(order.shippingStatus),
     subtotalAmount: toSafeNumber(order.subtotalAmount) ?? 0,

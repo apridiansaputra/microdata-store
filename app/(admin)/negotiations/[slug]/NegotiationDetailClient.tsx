@@ -382,6 +382,8 @@ export default function NegotiationDetailClient({
                       <td className="border-b border-border-grey py-3">
                         <div className="ml-auto w-full max-w-3xs">
                           <Input
+                            type="tel"
+                            inputMode="numeric"
                             value={counterInputs[item.id] ?? ""}
                             disabled={!detail.canRespond}
                             onChange={(event) => updateCounterInput(item.id, event.target.value)}

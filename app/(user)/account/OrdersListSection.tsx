@@ -631,7 +631,7 @@ function OrderCard({
   useEffect(() => {
     const timer = window.setInterval(() => {
       setNowMs(Date.now());
-    }, 30_000);
+    }, 60_000);
 
     return () => window.clearInterval(timer);
   }, []);

@@ -1,6 +1,6 @@
 "use client";
 
-import type { HTMLInputTypeAttribute } from "react";
+import type { ComponentProps, HTMLInputTypeAttribute } from "react";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -32,6 +32,8 @@ function FieldRow({
   label,
   name,
   type = "text",
+  inputMode,
+  autoComplete,
   value,
   onChange,
   readOnly = false,
@@ -39,6 +41,8 @@ function FieldRow({
   label: string;
   name: string;
   type?: HTMLInputTypeAttribute;
+  inputMode?: ComponentProps<"input">["inputMode"];
+  autoComplete?: string;
   value: string;
   onChange?: (nextValue: string) => void;
   readOnly?: boolean;
@@ -52,6 +56,8 @@ function FieldRow({
         id={name}
         name={name}
         type={type}
+        inputMode={inputMode}
+        autoComplete={autoComplete}
         value={value}
         readOnly={readOnly}
         onChange={(event) => onChange?.(event.target.value)}
@@ -197,6 +203,9 @@ export default function ProfileGeneralSection() {
             <FieldRow
               label="Nomor Telepon"
               name="phone"
+              type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
               value={form.phone}
               onChange={(nextValue) => setForm((prev) => (prev ? { ...prev, phone: nextValue } : prev))}
             />

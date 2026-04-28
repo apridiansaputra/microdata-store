@@ -118,8 +118,6 @@ export async function GET(request: NextRequest, context: RouteContext) {
     return auth.response;
   }
 
-  await syncExpiredPendingOrders();
-
   const { orderNumber } = await context.params;
   const normalizedOrderNumber = normalizeOrderNumber(orderNumber);
   if (!normalizedOrderNumber) {
@@ -210,22 +208,43 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
   }
 
   const nextTrackingNumber =
-    payload.trackingNumber !== undefined
-      ? payload.trackingNumber.trim().replace(/^#/, "") || null
+    payload.shippingStatus === "SHIPPED"
+      ? payload.trackingNumber !== undefined
+        ? payload.trackingNumber.trim().replace(/^#/, "") || null
+        : existing.shipment?.trackingNumber ?? null
       : existing.shipment?.trackingNumber ?? null;
 
-  const nextTrackingUrl = trackingBaseUrl;
+  const nextTrackingUrl = nextTrackingNumber
+    ? trackingBaseUrl ?? existing.shipment?.trackingUrl ?? null
+    : null;
 
   if (
-    (payload.shippingStatus === "SHIPPED" || payload.shippingStatus === "DELIVERED") &&
-    (!nextTrackingNumber || !nextTrackingUrl)
+    payload.trackingNumber !== undefined &&
+    payload.shippingStatus !== "SHIPPED"
   ) {
+    return NextResponse.json(
+      { error: "Nomor resi hanya dapat diisi saat status Dikirim." },
+      { status: 400 },
+    );
+  }
+
+  if (payload.shippingStatus === "SHIPPED" && (!nextTrackingNumber || !nextTrackingUrl)) {
     return NextResponse.json(
       {
         error:
           !nextTrackingNumber
-            ? "Nomor resi wajib diisi untuk status Dikirim/Selesai."
+            ? "Nomor resi wajib diisi untuk status Dikirim."
             : "Tautan ekspedisi belum diatur. Silakan isi di Settings admin.",
+      },
+      { status: 400 },
+    );
+  }
+
+  if (payload.shippingStatus === "DELIVERED" && !nextTrackingNumber) {
+    return NextResponse.json(
+      {
+        error:
+          "Nomor resi belum tersedia. Ubah status ke Dikirim dan isi nomor resi terlebih dahulu.",
       },
       { status: 400 },
     );

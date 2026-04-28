@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireAdmin } from "@/lib/auth/api-guard";
-import { syncExpiredPendingOrders } from "@/lib/orders/expiration";
 import { serializeAdminOrderListItem } from "@/lib/orders/admin-serializers";
 import { adminOrdersQuerySchema } from "@/lib/orders/admin-validation";
 import { prisma } from "@/lib/prisma";
@@ -18,8 +17,6 @@ export async function GET(request: NextRequest) {
   if (!auth.ok) {
     return auth.response;
   }
-
-  await syncExpiredPendingOrders();
 
   const parsedQuery = adminOrdersQuerySchema.safeParse(
     Object.fromEntries(request.nextUrl.searchParams.entries()),
@@ -51,6 +48,7 @@ export async function GET(request: NextRequest) {
         id: true,
         orderNumber: true,
         placedAt: true,
+        expiresAt: true,
         status: true,
         paymentStatus: true,
         shippingStatus: true,

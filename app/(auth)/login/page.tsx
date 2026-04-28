@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -57,6 +57,7 @@ function sanitizeNextPath(rawPath: string | null, fallback: string) {
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [identifier, setIdentifier] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{
     open: boolean;
@@ -67,7 +68,15 @@ export default function LoginPage() {
   } | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const redirectTimerRef = useRef<number | null>(null);
   const nextPath = sanitizeNextPath(searchParams.get("next"), "/");
+  const forgotPasswordHref = useMemo(() => {
+    const normalized = identifier.trim();
+    if (normalized.includes("@")) {
+      return `/forgot-password?email=${encodeURIComponent(normalized)}`;
+    }
+    return "/forgot-password";
+  }, [identifier]);
   const oauthError = useMemo(
     () => mapOAuthErrorMessage(searchParams.get("error")),
     [searchParams],
@@ -87,13 +96,18 @@ export default function LoginPage() {
   useEffect(() => {
     if (!feedback?.open || !feedback.redirectTo) return;
 
-    const timer = setTimeout(() => {
-      router.push(feedback.redirectTo!);
-      router.refresh();
-    }, 1400);
+    const target = feedback.redirectTo;
+    redirectTimerRef.current = window.setTimeout(() => {
+      window.location.assign(target);
+    }, 1200);
 
-    return () => clearTimeout(timer);
-  }, [feedback, router]);
+    return () => {
+      if (redirectTimerRef.current !== null) {
+        window.clearTimeout(redirectTimerRef.current);
+        redirectTimerRef.current = null;
+      }
+    };
+  }, [feedback?.open, feedback?.redirectTo]);
 
   const handleGoogleLogin = () => {
     const returnTo = nextPath;
@@ -114,6 +128,7 @@ export default function LoginPage() {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -162,6 +177,8 @@ export default function LoginPage() {
           <Input
             name="identifier"
             type="text"
+            value={identifier}
+            onChange={(event) => setIdentifier(event.target.value)}
             placeholder="Email atau Username"
             required
             className="py-5"
@@ -180,6 +197,14 @@ export default function LoginPage() {
         >
           {showPassword ? <EyeOff /> : <Eye />}
         </button>
+          </div>
+          <div className="flex justify-end">
+            <Link
+              href={forgotPasswordHref}
+              className="text-xs font-medium text-primary-orange hover:underline"
+            >
+              Lupa password?
+            </Link>
           </div>
           <Button
             type="submit"
@@ -220,6 +245,10 @@ export default function LoginPage() {
         open={feedback?.open ?? false}
         onOpenChange={(open) => {
           if (!open && feedback?.redirectTo) {
+            if (redirectTimerRef.current !== null) {
+              window.clearTimeout(redirectTimerRef.current);
+              redirectTimerRef.current = null;
+            }
             router.push(feedback.redirectTo);
             router.refresh();
           }

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { requireUser } from "@/lib/auth/api-guard";
-import { syncExpiredPendingOrders } from "@/lib/orders/expiration";
 import { serializeOrderDetail } from "@/lib/orders/serializers";
 import { prisma } from "@/lib/prisma";
+import { getAppSettings } from "@/lib/settings/app-settings";
 
 type RouteContext = {
   params: Promise<{
@@ -17,8 +17,6 @@ export async function GET(request: NextRequest, context: RouteContext) {
     return auth.response;
   }
 
-  await syncExpiredPendingOrders();
-
   const { orderNumber } = await context.params;
   let normalizedOrderNumber = orderNumber.trim();
   try {
@@ -30,7 +28,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
     return NextResponse.json({ error: "Nomor pesanan tidak valid." }, { status: 400 });
   }
 
-  const [order, settings] = await prisma.$transaction([
+  const [order, settings] = await Promise.all([
     prisma.order.findFirst({
       where: {
         orderNumber: normalizedOrderNumber,
@@ -92,16 +90,7 @@ export async function GET(request: NextRequest, context: RouteContext) {
       },
       },
     }),
-    prisma.appSetting.upsert({
-      where: { id: "default" },
-      create: {
-        id: "default",
-        shippingCourierCode: "jne",
-        shippingCourierName: "JNE",
-        bannerAutoplayMs: 5000,
-      },
-      update: {},
-    }),
+    getAppSettings(),
   ]);
 
   if (!order) {

@@ -4,7 +4,7 @@ import nodemailer from "nodemailer";
 type SendOtpEmailInput = {
   to: string;
   code: string;
-  purpose: "register";
+  purpose: "register" | "password_reset";
 };
 
 type EmailConfig =
@@ -83,12 +83,19 @@ export function assertEmailDeliveryConfigured() {
   }
 }
 
-function buildOtpTemplate(code: string) {
-  const subject = "Kode OTP Verifikasi Microdata Store";
+function buildOtpTemplate(code: string, purpose: SendOtpEmailInput["purpose"]) {
+  const isPasswordReset = purpose === "password_reset";
+  const subject = isPasswordReset
+    ? "Kode OTP Reset Password Microdata Store"
+    : "Kode OTP Verifikasi Microdata Store";
+  const intro = isPasswordReset
+    ? "Gunakan kode OTP berikut untuk reset password akun Anda:"
+    : "Gunakan kode OTP berikut untuk menyelesaikan pendaftaran akun Anda:";
+
   const text = [
     "Halo,",
     "",
-    `Kode OTP verifikasi Anda: ${code}`,
+    `${isPasswordReset ? "Kode OTP reset password" : "Kode OTP verifikasi"} Anda: ${code}`,
     `Kode ini berlaku selama ${OTP_EXPIRES_MINUTES} menit.`,
     "",
     "Jika Anda tidak meminta kode ini, abaikan email ini.",
@@ -96,8 +103,10 @@ function buildOtpTemplate(code: string) {
 
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 520px; margin: 0 auto; color: #1f2937;">
-      <h2 style="margin-bottom: 8px;">Verifikasi Email</h2>
-      <p style="margin-top: 0;">Gunakan kode OTP berikut untuk menyelesaikan pendaftaran akun Anda:</p>
+      <h2 style="margin-bottom: 8px;">${
+        isPasswordReset ? "Reset Password" : "Verifikasi Email"
+      }</h2>
+      <p style="margin-top: 0;">${intro}</p>
       <div style="font-size: 28px; font-weight: 700; letter-spacing: 8px; margin: 20px 0; color: #ea580c;">
         ${code}
       </div>
@@ -172,7 +181,7 @@ async function sendViaResend(input: {
 
 export async function sendOtpEmail({ to, code, purpose }: SendOtpEmailInput) {
   const config = getEmailConfig();
-  const template = buildOtpTemplate(code);
+  const template = buildOtpTemplate(code, purpose);
 
   if (config?.provider === "smtp") {
     await sendViaSmtp({
