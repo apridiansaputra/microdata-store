@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Circle, Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import { AuthBannerPanel } from "@/components/auth/auth-banner-panel";
 import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -196,9 +197,8 @@ export default function RegisterPage() {
                   {passwordRules.map((rule) => (
                     <div
                       key={rule.label}
-                      className={`flex items-center gap-2 text-xs ${
-                        rule.isValid ? "text-emerald-700" : "text-dark-grey/65"
-                      }`}
+                      className={`flex items-center gap-2 text-xs ${rule.isValid ? "text-emerald-700" : "text-dark-grey/65"
+                        }`}
                     >
                       {rule.isValid ? (
                         <CheckCircle2 className="size-3.5" />
@@ -252,8 +252,9 @@ export default function RegisterPage() {
           </div>
         </section>
 
+        {/* Bagian kanan: Auth Banner */}
         <aside className="hidden h-screen p-6 lg:block">
-          <div className="h-full rounded-xl bg-dark-grey" />
+          <AuthBannerPanel />
         </aside>
       </div>
       <AuthFeedbackDialog

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CheckCircle2, Circle, Eye, EyeOff, Loader2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useMemo, useState } from "react";
+import { CheckCircle2, Circle, Eye, EyeOff, Loader2, XCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
@@ -19,11 +19,9 @@ type ForgotStep = "request" | "verify" | "reset";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const autoRequestedRef = useRef(false);
 
   const [step, setStep] = useState<ForgotStep>("request");
-  const [email, setEmail] = useState(() => searchParams.get("email")?.trim() ?? "");
+  const [email, setEmail] = useState("");
   const [otpCode, setOtpCode] = useState("");
   const [resetToken, setResetToken] = useState<string | null>(null);
   const [passwordForm, setPasswordForm] = useState({
@@ -37,7 +35,6 @@ export default function ForgotPasswordPage() {
   const [isRequestingOtp, setIsRequestingOtp] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [isResettingPassword, setIsResettingPassword] = useState(false);
-  const [devOtp, setDevOtp] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{
     open: boolean;
     variant: "success" | "error";
@@ -48,29 +45,22 @@ export default function ForgotPasswordPage() {
 
   const passwordRules = useMemo(
     () => [
-      {
-        label: "Minimal 12 karakter",
-        isValid: passwordForm.newPassword.length >= 12,
-      },
-      {
-        label: "Mengandung huruf kapital (A-Z)",
-        isValid: /[A-Z]/.test(passwordForm.newPassword),
-      },
-      {
-        label: "Mengandung huruf kecil (a-z)",
-        isValid: /[a-z]/.test(passwordForm.newPassword),
-      },
-      {
-        label: "Mengandung angka (0-9)",
-        isValid: /\d/.test(passwordForm.newPassword),
-      },
-      {
-        label: "Mengandung simbol (contoh: !@#$%)",
-        isValid: /[^A-Za-z0-9]/.test(passwordForm.newPassword),
-      },
+      { label: "Minimal 12 karakter", isValid: passwordForm.newPassword.length >= 12 },
+      { label: "Mengandung huruf kapital (A-Z)", isValid: /[A-Z]/.test(passwordForm.newPassword) },
+      { label: "Mengandung huruf kecil (a-z)", isValid: /[a-z]/.test(passwordForm.newPassword) },
+      { label: "Mengandung angka (0-9)", isValid: /\d/.test(passwordForm.newPassword) },
+      { label: "Mengandung simbol (contoh: !@#$%)", isValid: /[^A-Za-z0-9]/.test(passwordForm.newPassword) },
     ],
     [passwordForm.newPassword],
   );
+
+  const passwordsMatch =
+    passwordForm.confirmNewPassword.length > 0 &&
+    passwordForm.newPassword === passwordForm.confirmNewPassword;
+
+  const passwordsMismatch =
+    passwordForm.confirmNewPassword.length > 0 &&
+    passwordForm.newPassword !== passwordForm.confirmNewPassword;
 
   const handleRequestOtp = useCallback(async () => {
     if (!email.trim()) {
@@ -84,8 +74,6 @@ export default function ForgotPasswordPage() {
     }
 
     setIsRequestingOtp(true);
-    setDevOtp(null);
-
     try {
       const response = await fetch("/api/auth/forgot-password/request", {
         method: "POST",
@@ -95,7 +83,6 @@ export default function ForgotPasswordPage() {
       const data = (await response.json().catch(() => ({}))) as {
         error?: string;
         message?: string;
-        devOtp?: string;
         devCanReset?: boolean;
         devReason?: string;
       };
@@ -110,9 +97,6 @@ export default function ForgotPasswordPage() {
         return;
       }
 
-      if (data.devOtp) {
-        setDevOtp(String(data.devOtp));
-      }
       setStep("verify");
       setFeedback({
         open: true,
@@ -137,7 +121,6 @@ export default function ForgotPasswordPage() {
 
   const handleVerifyOtp = async () => {
     if (otpCode.length !== 6) return;
-
     setIsVerifyingOtp(true);
     try {
       const response = await fetch("/api/auth/forgot-password/verify-otp", {
@@ -238,17 +221,9 @@ export default function ForgotPasswordPage() {
     }
   };
 
-  useEffect(() => {
-    if (step !== "request" || autoRequestedRef.current) return;
-    if (!email.trim()) return;
-
-    autoRequestedRef.current = true;
-    void handleRequestOtp();
-  }, [email, handleRequestOtp, step]);
-
   return (
-    <div className="grid min-h-screen grid-cols-1 items-end gap-8 px-4 py-6 md:px-8 lg:grid-cols-2 lg:items-center">
-      <div className="mx-auto flex h-fit w-full max-w-[500px] flex-col justify-center">
+    <div className="flex min-h-screen items-center justify-center px-4 py-12">
+      <div className="w-full max-w-[440px]">
         <h1 className="mb-2 text-2xl text-primary-orange">Lupa Password</h1>
         <p className="mb-12 font-light text-dark-grey/80">
           {step === "request"
@@ -258,18 +233,16 @@ export default function ForgotPasswordPage() {
               : "Buat password baru untuk akun Anda."}
         </p>
 
+        {/* Step 1: Request OTP */}
         {step === "request" ? (
           <form
             className="space-y-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void handleRequestOtp();
-            }}
+            onSubmit={(e) => { e.preventDefault(); void handleRequestOtp(); }}
           >
             <Input
               type="email"
               value={email}
-              onChange={(event) => setEmail(event.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Email"
               required
               className="py-5"
@@ -280,17 +253,13 @@ export default function ForgotPasswordPage() {
               className="mt-6 h-11 w-full bg-primary-orange text-white hover:bg-primary-orange/90 disabled:opacity-70"
             >
               {isRequestingOtp ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  Mengirim OTP...
-                </>
-              ) : (
-                "Kirim OTP"
-              )}
+                <><Loader2 className="size-4 animate-spin" /> Mengirim OTP...</>
+              ) : "Kirim OTP"}
             </Button>
           </form>
         ) : null}
 
+        {/* Step 2: Verify OTP */}
         {step === "verify" ? (
           <div className="space-y-6">
             <InputOTP maxLength={6} value={otpCode} onChange={setOtpCode}>
@@ -312,9 +281,7 @@ export default function ForgotPasswordPage() {
 
             <button
               type="button"
-              onClick={() => {
-                void handleRequestOtp();
-              }}
+              onClick={() => { void handleRequestOtp(); }}
               disabled={isRequestingOtp}
               className="w-fit text-xs text-dark-grey"
             >
@@ -324,37 +291,21 @@ export default function ForgotPasswordPage() {
               </span>
             </button>
 
-            {devOtp ? (
-              <p className="text-xs text-emerald-700">
-                OTP dev: <span className="font-semibold">{devOtp}</span>
-              </p>
-            ) : null}
-
             <div className="flex flex-col gap-3 pt-4">
               <Button
                 type="button"
-                onClick={() => {
-                  void handleVerifyOtp();
-                }}
+                onClick={() => { void handleVerifyOtp(); }}
                 disabled={isVerifyingOtp || otpCode.length !== 6}
                 className="h-11 w-full bg-primary-orange text-white hover:bg-primary-orange/90 disabled:opacity-70"
               >
                 {isVerifyingOtp ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    Memverifikasi...
-                  </>
-                ) : (
-                  "Verifikasi OTP"
-                )}
+                  <><Loader2 className="size-4 animate-spin" /> Memverifikasi...</>
+                ) : "Verifikasi OTP"}
               </Button>
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => {
-                  setStep("request");
-                  setOtpCode("");
-                }}
+                onClick={() => { setStep("request"); setOtpCode(""); }}
                 className="h-11 w-full border-dark-grey/20 text-dark-grey"
               >
                 Kembali
@@ -363,116 +314,101 @@ export default function ForgotPasswordPage() {
           </div>
         ) : null}
 
+        {/* Step 3: Reset Password */}
         {step === "reset" ? (
           <form
             className="space-y-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              void handleResetPassword();
-            }}
+            onSubmit={(e) => { e.preventDefault(); void handleResetPassword(); }}
           >
+            {/* Input Password Baru */}
             <div className="relative">
               <Input
                 type={showPassword.next ? "text" : "password"}
                 value={passwordForm.newPassword}
-                onChange={(event) =>
-                  setPasswordForm((prev) => ({
-                    ...prev,
-                    newPassword: event.target.value,
-                  }))
-                }
+                onChange={(e) => setPasswordForm((p) => ({ ...p, newPassword: e.target.value }))}
                 placeholder="Password baru"
                 required
                 className="py-5 pr-10"
               />
               <button
                 type="button"
-                onClick={() =>
-                  setShowPassword((prev) => ({ ...prev, next: !prev.next }))
-                }
+                onClick={() => setShowPassword((p) => ({ ...p, next: !p.next }))}
                 className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
               >
                 {showPassword.next ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
 
-            <div className="relative">
-              <Input
-                type={showPassword.confirm ? "text" : "password"}
-                value={passwordForm.confirmNewPassword}
-                onChange={(event) =>
-                  setPasswordForm((prev) => ({
-                    ...prev,
-                    confirmNewPassword: event.target.value,
-                  }))
-                }
-                placeholder="Konfirmasi password baru"
-                required
-                className="py-5 pr-10"
-              />
-              <button
-                type="button"
-                onClick={() =>
-                  setShowPassword((prev) => ({ ...prev, confirm: !prev.confirm }))
-                }
-                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
-              >
-                {showPassword.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-
+            {/* Syarat Password — di bawah input password baru */}
             <div className="rounded-md border border-dark-grey/10 bg-white px-3 py-2">
-              <p className="mb-2 text-xs font-medium text-dark-grey/70">
-                Kata sandi harus memenuhi:
-              </p>
+              <p className="mb-2 text-xs font-medium text-dark-grey/70">Kata sandi harus memenuhi:</p>
               <div className="space-y-1">
                 {passwordRules.map((rule) => (
                   <div
                     key={rule.label}
-                    className={`flex items-center gap-2 text-xs ${
-                      rule.isValid ? "text-emerald-700" : "text-dark-grey/65"
-                    }`}
+                    className={`flex items-center gap-2 text-xs ${rule.isValid ? "text-emerald-600" : "text-dark-grey/65"}`}
                   >
-                    {rule.isValid ? (
-                      <CheckCircle2 className="size-3.5" />
-                    ) : (
-                      <Circle className="size-3.5" />
-                    )}
+                    {rule.isValid
+                      ? <CheckCircle2 className="size-3.5" />
+                      : <Circle className="size-3.5" />}
                     <span>{rule.label}</span>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Input Konfirmasi Password */}
+            <div className="relative">
+              <Input
+                type={showPassword.confirm ? "text" : "password"}
+                value={passwordForm.confirmNewPassword}
+                onChange={(e) => setPasswordForm((p) => ({ ...p, confirmNewPassword: e.target.value }))}
+                placeholder="Ulangi password baru"
+                required
+                className="py-5 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((p) => ({ ...p, confirm: !p.confirm }))}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
+              >
+                {showPassword.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+
+            {/* Hint kesesuaian password — di bawah konfirmasi */}
+            {passwordsMatch && (
+              <p className="flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+                <CheckCircle2 className="size-3.5 shrink-0" />
+                Password cocok
+              </p>
+            )}
+            {passwordsMismatch && (
+              <p className="flex items-center gap-1.5 text-xs font-medium text-red-500">
+                <XCircle className="size-3.5 shrink-0" />
+                Password tidak sama, periksa kembali
+              </p>
+            )}
+
             <Button
               type="submit"
-              disabled={isResettingPassword}
-              className="mt-6 h-11 w-full bg-primary-orange text-white hover:bg-primary-orange/90 disabled:opacity-70"
+              disabled={isResettingPassword || passwordsMismatch || !passwordsMatch}
+              className="mt-4 h-11 w-full bg-primary-orange text-white hover:bg-primary-orange/90 disabled:opacity-70"
             >
               {isResettingPassword ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" />
-                  Menyimpan...
-                </>
-              ) : (
-                "Simpan Password Baru"
-              )}
+                <><Loader2 className="size-4 animate-spin" /> Menyimpan...</>
+              ) : "Simpan Password Baru"}
             </Button>
           </form>
         ) : null}
 
-        <p className="mt-6 text-center text-sm">
+        <p className="mt-8 text-center text-sm">
           Ingat password?{" "}
-          <Link
-            href="/login"
-            className="text-base font-semibold text-primary-orange hover:underline"
-          >
+          <Link href="/login" className="text-base font-semibold text-primary-orange hover:underline">
             Kembali ke Masuk
           </Link>
         </p>
       </div>
-
-      <aside className="hidden h-full items-center justify-center rounded-xl bg-dark-grey lg:flex" />
 
       <AuthFeedbackDialog
         open={feedback?.open ?? false}

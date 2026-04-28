@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { AuthBannerPanel } from "@/components/auth/auth-banner-panel";
 import { AuthFeedbackDialog } from "@/components/ui/auth-feedback-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -163,16 +164,15 @@ export default function LoginPage() {
   };
 
   return (
-    //Container utama untuk halaman register
-    <div className="grid min-h-screen grid-cols-1 items-end gap-8 px-4 py-6 md:px-8 lg:grid-cols-2 lg:items-center"> 
+    <div className="grid min-h-screen grid-cols-1 items-end gap-8 px-4 py-6 md:px-8 lg:grid-cols-2 lg:items-center">
       {/* Bagian kiri dengan judul dan deskripsi */}
-      <div className="mx-auto flex h-fit w-full max-w-[500px] flex-col justify-center"> 
+      <div className="mx-auto flex h-fit w-full max-w-[500px] flex-col justify-center">
         <h1 className="text-2xl mb-2 text-primary-orange">Masuk</h1>
         <p className="text-dark-grey/80 mb-16 font-light">
           Masuk ke akun Anda untuk melanjutkan berbelanja di Microdata Store.
         </p>
 
-        {/* Formulir pendaftaran */}
+        {/* Formulir login */}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <Input
             name="identifier"
@@ -184,19 +184,19 @@ export default function LoginPage() {
             className="py-5"
           />
           <div className="relative">
-        <Input
-          name="password"
-          type={showPassword ? "text" : "password"}
-          placeholder="Kata Sandi"
-          required className="py-5"
-        />
-        <button
-          type="button"
-          onClick={() => setShowPassword(!showPassword)}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
-        >
-          {showPassword ? <EyeOff /> : <Eye />}
-        </button>
+            <Input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Kata Sandi"
+              required className="py-5"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+            >
+              {showPassword ? <EyeOff /> : <Eye />}
+            </button>
           </div>
           <div className="flex justify-end">
             <Link
@@ -211,14 +211,14 @@ export default function LoginPage() {
             disabled={isSubmitting}
             className="w-full p-5 mt-10 bg-primary-orange hover:bg-primary-orange/90 cursor-pointer disabled:cursor-not-allowed disabled:opacity-70"
           >
-        {isSubmitting ? (
-          <>
-            <Loader2 className="size-4 animate-spin" />
-            Memproses...
-          </>
-        ) : (
-          "Masuk"
-        )}
+            {isSubmitting ? (
+              <>
+                <Loader2 className="size-4 animate-spin" />
+                Memproses...
+              </>
+            ) : (
+              "Masuk"
+            )}
           </Button>
         </form>
         <Button
@@ -233,13 +233,13 @@ export default function LoginPage() {
         <p className="text-sm mt-4 text-center">
           Belum punya akun?{" "}
           <Link href="/register" className="text-primary-orange font-semibold hover:underline text-base cursor-pointer">
-        Daftar
+            Daftar
           </Link>
         </p>
       </div>
 
-      {/* Bagian kanan gambar atau ilustrasi (bisa diganti dengan gambar yang sesuai) */}
-      <aside className="hidden h-full items-center justify-center rounded-xl bg-dark-grey lg:flex" />
+      {/* Bagian kanan: Auth Banner */}
+      <AuthBannerPanel />
 
       <AuthFeedbackDialog
         open={feedback?.open ?? false}
@@ -258,7 +258,6 @@ export default function LoginPage() {
         title={feedback?.title ?? ""}
         description={feedback?.description ?? ""}
       />
-
     </div>
   );
 }

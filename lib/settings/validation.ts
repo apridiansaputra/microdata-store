@@ -28,6 +28,19 @@ export const bannerUpdateSchema = bannerSchema.partial().extend({
   imageUrl: z.string().trim().min(1).max(2048).optional(),
 });
 
+export const authBannerSchema = z.object({
+  imageUrl: z.string().trim().min(1, "Gambar banner wajib diisi.").max(2048),
+  altText: z.string().trim().max(255).optional(),
+  title: z.string().trim().max(120).optional(),
+  subtitle: z.string().trim().max(180).optional(),
+  isActive: z.boolean().optional(),
+  sortOrder: z.coerce.number().int().min(0).max(999).optional(),
+});
+
+export const authBannerUpdateSchema = authBannerSchema.partial().extend({
+  imageUrl: z.string().trim().min(1).max(2048).optional(),
+});
+
 export const createAdminSchema = z.object({
   fullName: z.string().trim().min(2, "Nama wajib diisi.").max(120),
   email: z.string().trim().email("Email tidak valid.").max(320),
@@ -45,4 +58,25 @@ export const createAdminSchema = z.object({
     .optional()
     .or(z.literal("")),
   password: z.string().min(12, "Password minimal 12 karakter").max(128),
+});
+
+export const updateAdminSchema = z.object({
+  fullName: z.string().trim().min(2, "Nama wajib diisi.").max(120).optional(),
+  email: z.string().trim().email("Email tidak valid.").max(320).optional(),
+  username: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .regex(/^[a-z0-9_]{3,30}$/, "Username harus 3-30 karakter (a-z, 0-9, _)")
+    .optional()
+    .or(z.literal("")),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^\+?[0-9]{8,24}$/, "Nomor telepon tidak valid")
+    .optional()
+    .or(z.literal("")),
+  role: z.enum(["ADMIN", "SUPER_ADMIN"]).optional(),
+  status: z.enum(["ACTIVE", "SUSPENDED"]).optional(),
+  password: z.string().min(12, "Password minimal 12 karakter").max(128).optional(),
 });

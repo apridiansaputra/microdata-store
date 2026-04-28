@@ -45,29 +45,30 @@ const shoppingGuideSteps = [
 export default async function HomePage() {
   const [latestProducts, banners, settings] = await Promise.all([
     prisma.product.findMany({
-    where: {
-      status: "PUBLISHED",
-      deletedAt: null,
-      stock: {
-        gt: 0,
-      },
-    },
-    orderBy: [{ createdAt: "desc" }],
-    take: 4,
-    select: {
-      id: true,
-      slug: true,
-      name: true,
-      basePrice: true,
-      stock: true,
-      images: {
-        orderBy: { sortOrder: "asc" },
-        select: {
-          url: true,
-          isPrimary: true,
-          sortOrder: true,
+      where: {
+        status: "PUBLISHED",
+        deletedAt: null,
+        stock: {
+          gt: 0,
         },
       },
+      orderBy: [{ createdAt: "desc" }],
+      take: 4,
+      select: {
+        id: true,
+        slug: true,
+        name: true,
+        basePrice: true,
+        stock: true,
+        createdAt: true,
+        images: {
+          orderBy: { sortOrder: "asc" },
+          select: {
+            url: true,
+            isPrimary: true,
+            sortOrder: true,
+          },
+        },
       },
     }),
     prisma.homeBanner.findMany({
@@ -121,6 +122,7 @@ export default async function HomePage() {
                   name={product.name}
                   price={toSafeNumber(product.basePrice) ?? 0}
                   stock={product.stock}
+                  isNew={Date.now() - product.createdAt.getTime() <= 1000 * 60 * 60 * 24 * 21}
                 />
               </Link>
             );

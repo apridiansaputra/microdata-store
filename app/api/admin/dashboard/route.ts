@@ -8,7 +8,7 @@ import {
 import { toSafeNumber } from "@/lib/products/utils";
 import { prisma } from "@/lib/prisma";
 
-type DashboardRange = "today" | "last-7-days" | "this-month" | "this-year";
+type DashboardRange = "today" | "last-7-days" | "this-month" | "this-year" | "custom";
 
 type DateRange = {
   currentStart: Date;
@@ -67,7 +67,22 @@ function addYears(date: Date, value: number) {
   );
 }
 
-function resolveDateRange(range: DashboardRange, now: Date): DateRange {
+function resolveDateRange(
+  range: DashboardRange,
+  now: Date,
+  customFrom?: Date,
+  customTo?: Date,
+): DateRange {
+  // Custom range: gunakan from-to langsung, previous = durasi yang sama di belakangnya
+  if (range === "custom" && customFrom && customTo) {
+    const currentStart = startOfDay(customFrom);
+    const currentEnd = endOfDay(customTo);
+    const durationMs = currentEnd.getTime() - currentStart.getTime();
+    const previousEnd = new Date(currentStart.getTime() - 1);
+    const previousStart = new Date(previousEnd.getTime() - durationMs);
+    return { currentStart, currentEnd, previousStart, previousEnd };
+  }
+
   if (range === "today") {
     const currentStart = startOfDay(now);
     const currentEnd = now;
@@ -104,7 +119,8 @@ function normalizeRange(raw: string | null): DashboardRange {
     raw === "today" ||
     raw === "last-7-days" ||
     raw === "this-month" ||
-    raw === "this-year"
+    raw === "this-year" ||
+    raw === "custom"
   ) {
     return raw;
   }
@@ -134,7 +150,40 @@ type ChartPoint = {
   pendapatan: number;
 };
 
-function buildChartPoints(range: DashboardRange, revenues: Array<{ placedAt: Date; amount: number }>) {
+function buildChartPoints(
+  range: DashboardRange,
+  revenues: Array<{ placedAt: Date; amount: number }>,
+  customFrom?: Date,
+  customTo?: Date,
+) {
+  // Custom range: grouping per hari
+  if (range === "custom" && customFrom && customTo) {
+    const dateFormatter = new Intl.DateTimeFormat("id-ID", {
+      day: "2-digit",
+      month: "short",
+    });
+    const labels: string[] = [];
+    const map = new Map<string, number>();
+    let cur = startOfDay(customFrom);
+    const end = startOfDay(customTo);
+    while (cur <= end) {
+      const label = dateFormatter.format(cur);
+      if (!map.has(label)) {
+        labels.push(label);
+        map.set(label, 0);
+      }
+      cur = addDays(cur, 1);
+    }
+    for (const item of revenues) {
+      const label = dateFormatter.format(item.placedAt);
+      map.set(label, (map.get(label) ?? 0) + item.amount);
+    }
+    return labels.map<ChartPoint>((label) => ({
+      label,
+      pendapatan: map.get(label) ?? 0,
+    }));
+  }
+
   if (range === "today") {
     const labels = ["00", "03", "06", "09", "12", "15", "18", "21"];
     const map = new Map<string, number>(labels.map((label) => [label, 0]));
@@ -224,7 +273,14 @@ export async function GET(request: NextRequest) {
 
   const range = normalizeRange(request.nextUrl.searchParams.get("range"));
   const now = new Date();
-  const dateRange = resolveDateRange(range, now);
+
+  // Parse custom date range
+  const fromParam = request.nextUrl.searchParams.get("from");
+  const toParam = request.nextUrl.searchParams.get("to");
+  const customFrom = fromParam ? new Date(fromParam) : undefined;
+  const customTo = toParam ? new Date(toParam) : undefined;
+
+  const dateRange = resolveDateRange(range, now, customFrom, customTo);
 
   const currentOrderWhere = {
     deletedAt: null,
@@ -362,30 +418,30 @@ export async function GET(request: NextRequest) {
   const topProductDetails =
     topProductIds.length > 0
       ? await prisma.product.findMany({
-          where: {
-            id: {
-              in: topProductIds,
+        where: {
+          id: {
+            in: topProductIds,
+          },
+        },
+        select: {
+          id: true,
+          basePrice: true,
+          category: {
+            select: {
+              name: true,
             },
           },
-          select: {
-            id: true,
-            basePrice: true,
-            category: {
-              select: {
-                name: true,
-              },
+          images: {
+            orderBy: {
+              sortOrder: "asc",
             },
-            images: {
-              orderBy: {
-                sortOrder: "asc",
-              },
-              select: {
-                url: true,
-                isPrimary: true,
-              },
+            select: {
+              url: true,
+              isPrimary: true,
             },
           },
-        })
+        },
+      })
       : [];
 
   const totalRevenue = toSafeNumber(currentRevenueAggregate._sum.grandTotalAmount) ?? 0;
@@ -407,6 +463,8 @@ export async function GET(request: NextRequest) {
       placedAt: item.placedAt,
       amount: toSafeNumber(item.grandTotalAmount) ?? 0,
     })),
+    customFrom,
+    customTo,
   );
 
   const productMetaById = new Map(

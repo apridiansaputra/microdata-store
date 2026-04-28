@@ -52,6 +52,16 @@ type BannerItem = {
   sortOrder: number;
 };
 
+type AuthBannerItem = {
+  id: string;
+  imageUrl: string;
+  altText: string | null;
+  title: string | null;
+  subtitle: string | null;
+  isActive: boolean;
+  sortOrder: number;
+};
+
 type AdminUser = {
   id: string;
   fullName: string;
@@ -84,6 +94,16 @@ const emptyBannerForm = {
   sortOrder: "",
 };
 
+const emptyAuthBannerForm = {
+  id: "",
+  imageUrl: "",
+  altText: "",
+  title: "",
+  subtitle: "",
+  isActive: true,
+  sortOrder: "",
+};
+
 export default function AdminSettingsPage() {
   const { user } = useAdminAuth();
   const isSuperAdmin = user?.role === "SUPER_ADMIN";
@@ -102,6 +122,17 @@ export default function AdminSettingsPage() {
   const [isDeleteBannerOpen, setIsDeleteBannerOpen] = useState(false);
   const [deletingBannerId, setDeletingBannerId] = useState<string | null>(null);
 
+  // Auth Banner state
+  const [authBanners, setAuthBanners] = useState<AuthBannerItem[]>([]);
+  const [isLoadingAuthBanners, setIsLoadingAuthBanners] = useState(true);
+  const [isAuthBannerDialogOpen, setIsAuthBannerDialogOpen] = useState(false);
+  const [authBannerDialogMode, setAuthBannerDialogMode] = useState<"create" | "edit">("create");
+  const [authBannerForm, setAuthBannerForm] = useState({ ...emptyAuthBannerForm });
+  const [isUploadingAuthBanner, setIsUploadingAuthBanner] = useState(false);
+  const [isSavingAuthBanner, setIsSavingAuthBanner] = useState(false);
+  const [isDeleteAuthBannerOpen, setIsDeleteAuthBannerOpen] = useState(false);
+  const [deletingAuthBannerId, setDeletingAuthBannerId] = useState<string | null>(null);
+
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [isLoadingAdmins, setIsLoadingAdmins] = useState(false);
   const [isCreatingAdmin, setIsCreatingAdmin] = useState(false);
@@ -113,6 +144,25 @@ export default function AdminSettingsPage() {
     phone: "",
     password: "",
   });
+
+  // Edit admin state
+  const [isEditAdminDialogOpen, setIsEditAdminDialogOpen] = useState(false);
+  const [isSavingEditAdmin, setIsSavingEditAdmin] = useState(false);
+  const [showEditAdminPassword, setShowEditAdminPassword] = useState(false);
+  const [editAdminForm, setEditAdminForm] = useState({
+    id: "",
+    fullName: "",
+    email: "",
+    username: "",
+    phone: "",
+    role: "ADMIN" as "ADMIN" | "SUPER_ADMIN",
+    status: "ACTIVE" as "ACTIVE" | "SUSPENDED",
+    password: "",
+  });
+
+  // Delete admin state
+  const [isDeleteAdminOpen, setIsDeleteAdminOpen] = useState(false);
+  const [deletingAdminId, setDeletingAdminId] = useState<string | null>(null);
 
   const adminPasswordRules = [
     { label: "Minimal 12 karakter", isValid: adminForm.password.length >= 12 },
@@ -197,6 +247,31 @@ export default function AdminSettingsPage() {
     setBanners(data.banners ?? []);
   }, []);
 
+  const loadAuthBanners = useCallback(async () => {
+    setIsLoadingAuthBanners(true);
+    const response = await fetch("/api/admin/settings/auth-banner", {
+      method: "GET",
+      credentials: "include",
+      cache: "no-store",
+    });
+    const data = (await response.json().catch(() => ({}))) as {
+      banners?: AuthBannerItem[];
+      error?: string;
+    };
+    setIsLoadingAuthBanners(false);
+
+    if (!response.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Memuat Auth Banner",
+        description: data.error ?? "Daftar auth banner belum dapat ditampilkan.",
+      });
+      return;
+    }
+    setAuthBanners(data.banners ?? []);
+  }, []);
+
   const loadAdmins = useCallback(async () => {
     if (!isSuperAdmin) return;
     setIsLoadingAdmins(true);
@@ -227,10 +302,11 @@ export default function AdminSettingsPage() {
     const timer = window.setTimeout(() => {
       void loadSettings();
       void loadBanners();
+      void loadAuthBanners();
       void loadAdmins();
     }, 0);
     return () => window.clearTimeout(timer);
-  }, [loadAdmins, loadBanners, loadSettings]);
+  }, [loadAdmins, loadBanners, loadAuthBanners, loadSettings]);
 
   const handleSaveSettings = async () => {
     if (!settings) return;
@@ -265,6 +341,8 @@ export default function AdminSettingsPage() {
       description: "Pengaturan ekspedisi berhasil diperbarui.",
     });
   };
+
+  // ── HomeBanner handlers ────────────────────────────────────────────────────
 
   const openCreateBanner = () => {
     setBannerDialogMode("create");
@@ -384,6 +462,126 @@ export default function AdminSettingsPage() {
     await loadBanners();
   };
 
+  // ── AuthBanner handlers ────────────────────────────────────────────────────
+
+  const openCreateAuthBanner = () => {
+    setAuthBannerDialogMode("create");
+    setAuthBannerForm({ ...emptyAuthBannerForm });
+    setIsAuthBannerDialogOpen(true);
+  };
+
+  const openEditAuthBanner = (banner: AuthBannerItem) => {
+    setAuthBannerDialogMode("edit");
+    setAuthBannerForm({
+      id: banner.id,
+      imageUrl: banner.imageUrl,
+      altText: banner.altText ?? "",
+      title: banner.title ?? "",
+      subtitle: banner.subtitle ?? "",
+      isActive: banner.isActive,
+      sortOrder: String(banner.sortOrder ?? 0),
+    });
+    setIsAuthBannerDialogOpen(true);
+  };
+
+  const handleUploadAuthBanner = async (file: File | null) => {
+    if (!file) return;
+    setIsUploadingAuthBanner(true);
+    const uploaded = await uploadBannerImageFile(file);
+    setIsUploadingAuthBanner(false);
+
+    if (!uploaded.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Upload Gambar Gagal",
+        description: uploaded.error,
+      });
+      return;
+    }
+
+    setAuthBannerForm((prev) => ({ ...prev, imageUrl: uploaded.url }));
+  };
+
+  const handleSaveAuthBanner = async () => {
+    if (!authBannerForm.imageUrl) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gambar Banner Kosong",
+        description: "Silakan upload gambar banner terlebih dahulu.",
+      });
+      return;
+    }
+
+    setIsSavingAuthBanner(true);
+    const payload = {
+      imageUrl: authBannerForm.imageUrl,
+      altText: authBannerForm.altText.trim() || undefined,
+      title: authBannerForm.title.trim() || undefined,
+      subtitle: authBannerForm.subtitle.trim() || undefined,
+      isActive: authBannerForm.isActive,
+      sortOrder: authBannerForm.sortOrder ? Number(authBannerForm.sortOrder) : undefined,
+    };
+
+    const response = await fetch(
+      authBannerDialogMode === "create"
+        ? "/api/admin/settings/auth-banner"
+        : `/api/admin/settings/auth-banner/${authBannerForm.id}`,
+      {
+        method: authBannerDialogMode === "create" ? "POST" : "PATCH",
+        credentials: "include",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload),
+      },
+    );
+    const data = (await response.json().catch(() => ({}))) as { error?: string };
+    setIsSavingAuthBanner(false);
+
+    if (!response.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Menyimpan Auth Banner",
+        description: data.error ?? "Perubahan auth banner belum tersimpan.",
+      });
+      return;
+    }
+
+    setIsAuthBannerDialogOpen(false);
+    await loadAuthBanners();
+    setFeedback({
+      open: true,
+      variant: "success",
+      title: "Auth Banner Tersimpan",
+      description: "Banner halaman login/register berhasil diperbarui.",
+    });
+  };
+
+  const handleDeleteAuthBanner = async () => {
+    if (!deletingAuthBannerId) return;
+    const response = await fetch(`/api/admin/settings/auth-banner/${deletingAuthBannerId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const data = (await response.json().catch(() => ({}))) as { error?: string };
+
+    if (!response.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Menghapus Auth Banner",
+        description: data.error ?? "Auth banner belum terhapus.",
+      });
+      return;
+    }
+    setIsDeleteAuthBannerOpen(false);
+    setDeletingAuthBannerId(null);
+    await loadAuthBanners();
+  };
+
+  // ── Admin handlers ─────────────────────────────────────────────────────────
+
   const handleCreateAdmin = async () => {
     if (!isSuperAdmin) return;
     setIsCreatingAdmin(true);
@@ -422,11 +620,96 @@ export default function AdminSettingsPage() {
     });
   };
 
+  const openEditAdmin = (admin: AdminUser) => {
+    setEditAdminForm({
+      id: admin.id,
+      fullName: admin.fullName,
+      email: admin.email,
+      username: admin.username ?? "",
+      phone: "",
+      role: admin.role,
+      status: admin.status === "ACTIVE" || admin.status === "SUSPENDED" ? admin.status : "ACTIVE",
+      password: "",
+    });
+    setShowEditAdminPassword(false);
+    setIsEditAdminDialogOpen(true);
+  };
+
+  const handleSaveEditAdmin = async () => {
+    setIsSavingEditAdmin(true);
+    const payload: Record<string, unknown> = {
+      fullName: editAdminForm.fullName,
+      email: editAdminForm.email,
+      username: editAdminForm.username.trim() || undefined,
+      phone: editAdminForm.phone.trim() || undefined,
+      role: editAdminForm.role,
+      status: editAdminForm.status,
+    };
+    if (editAdminForm.password.trim()) {
+      payload.password = editAdminForm.password;
+    }
+    const response = await fetch(`/api/admin/settings/admins/${editAdminForm.id}`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = (await response.json().catch(() => ({}))) as { error?: string };
+    setIsSavingEditAdmin(false);
+
+    if (!response.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Memperbarui Admin",
+        description: data.error ?? "Data admin belum tersimpan.",
+      });
+      return;
+    }
+    setIsEditAdminDialogOpen(false);
+    await loadAdmins();
+    setFeedback({
+      open: true,
+      variant: "success",
+      title: "Admin Diperbarui",
+      description: "Data admin berhasil diperbarui.",
+    });
+  };
+
+  const handleDeleteAdmin = async () => {
+    if (!deletingAdminId) return;
+    const response = await fetch(`/api/admin/settings/admins/${deletingAdminId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const data = (await response.json().catch(() => ({}))) as { error?: string };
+    if (!response.ok) {
+      setFeedback({
+        open: true,
+        variant: "error",
+        title: "Gagal Menghapus Admin",
+        description: data.error ?? "Admin belum terhapus.",
+      });
+      return;
+    }
+    setIsDeleteAdminOpen(false);
+    setDeletingAdminId(null);
+    await loadAdmins();
+    setFeedback({
+      open: true,
+      variant: "success",
+      title: "Admin Dihapus",
+      description: "Admin berhasil dihapus dari sistem.",
+    });
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header title="Settings" />
 
       <Container className="space-y-6 py-6 pb-24">
+
+        {/* ── Section: Home Banner ──────────────────────────────────────── */}
         <section className="rounded-2xl bg-white p-6">
           <div className="flex items-center justify-between gap-3">
             <div>
@@ -520,9 +803,105 @@ export default function AdminSettingsPage() {
               ))}
             </div>
           )}
-
         </section>
 
+        {/* ── Section: Auth Banner (Login & Register) ───────────────────── */}
+        <section className="rounded-2xl bg-white p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold text-secondary">Banner Halaman Login &amp; Register</h2>
+              <p className="mt-1 text-xs text-dark-grey">
+                Atur gambar dekoratif yang tampil di sisi kanan halaman login dan register.
+              </p>
+            </div>
+            <Button
+              type="button"
+              onClick={openCreateAuthBanner}
+              className="h-9 rounded-md bg-primary-orange px-4 text-xs font-semibold text-white hover:bg-primary-orange/90"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Tambah Banner
+            </Button>
+          </div>
+
+          {isLoadingAuthBanners ? (
+            <div className="mt-4 flex items-center gap-2 text-xs text-dark-grey/70">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Memuat auth banner...
+            </div>
+          ) : authBanners.length === 0 ? (
+            <div className="mt-4 rounded-lg border border-dashed border-border-grey bg-light-grey/30 p-6 text-center text-xs text-dark-grey">
+              Belum ada banner. Tambahkan banner untuk ditampilkan di halaman login &amp; register.
+            </div>
+          ) : (
+            <div className="mt-5 grid gap-4 lg:grid-cols-2">
+              {authBanners.map((banner) => (
+                <div key={banner.id} className="rounded-xl border border-border-grey bg-white p-4">
+                  <div className="flex gap-4">
+                    <div className="relative h-24 w-36 overflow-hidden rounded-lg bg-light-grey">
+                      <Image
+                        src={banner.imageUrl}
+                        alt={banner.altText ?? banner.title ?? "Auth Banner"}
+                        fill
+                        className="object-cover"
+                        sizes="144px"
+                      />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="text-sm font-semibold text-secondary">
+                          {banner.title ?? "Banner tanpa judul"}
+                        </h3>
+                        <span
+                          className={cn(
+                            "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold",
+                            banner.isActive ? "bg-emerald-100 text-emerald-600" : "bg-gray-100 text-gray-500",
+                          )}
+                        >
+                          <CheckCircle2 className="h-3 w-3" />
+                          {banner.isActive ? "Aktif" : "Nonaktif"}
+                        </span>
+                      </div>
+                      <p className="text-xs text-dark-grey">
+                        {banner.subtitle ?? "Tidak ada deskripsi tambahan."}
+                      </p>
+                      <p className="text-[11px] text-dark-grey">
+                        Urutan tampil: {banner.sortOrder}
+                      </p>
+                      <div className="flex gap-2 pt-1">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 border-primary-orange text-[11px] text-primary-orange hover:bg-primary-orange/10"
+                          onClick={() => openEditAuthBanner(banner)}
+                        >
+                          <Pencil className="mr-1 h-3 w-3" />
+                          Edit
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="h-7 border-rose-200 text-[11px] text-rose-600 hover:bg-rose-50"
+                          onClick={() => {
+                            setDeletingAuthBannerId(banner.id);
+                            setIsDeleteAuthBannerOpen(true);
+                          }}
+                        >
+                          <Trash2 className="mr-1 h-3 w-3" />
+                          Hapus
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* ── Section: Shipping Settings (Super Admin only) ─────────────── */}
         {isSuperAdmin ? (
           <section className="rounded-2xl bg-white p-6">
             <div>
@@ -555,12 +934,12 @@ export default function AdminSettingsPage() {
                         setSettings((prev) =>
                           prev
                             ? {
-                                ...prev,
-                                shippingCourierCode: value,
-                                shippingCourierName:
-                                  COURIER_OPTIONS.find((item) => item.code === value)?.name ??
-                                  prev.shippingCourierName,
-                              }
+                              ...prev,
+                              shippingCourierCode: value,
+                              shippingCourierName:
+                                COURIER_OPTIONS.find((item) => item.code === value)?.name ??
+                                prev.shippingCourierName,
+                            }
                             : prev,
                         )
                       }
@@ -627,6 +1006,7 @@ export default function AdminSettingsPage() {
           </section>
         ) : null}
 
+        {/* ── Section: Add Admin (Super Admin only) ─────────────────────── */}
         {isSuperAdmin ? (
           <section className="rounded-2xl bg-white p-6">
             <div>
@@ -735,11 +1115,44 @@ export default function AdminSettingsPage() {
                   <div className="mt-3 space-y-3">
                     {adminUsers.map((admin) => (
                       <div key={admin.id} className="rounded-md border border-border-grey/70 p-3">
-                        <p className="text-xs font-semibold text-secondary">{admin.fullName}</p>
-                        <p className="text-[11px] text-dark-grey">{admin.email}</p>
-                        <div className="mt-1 flex items-center gap-2 text-[10px] text-dark-grey/80">
-                          <span className="rounded-full bg-light-grey px-2 py-0.5">{admin.role}</span>
-                          <span className="rounded-full bg-light-grey px-2 py-0.5">{admin.status}</span>
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <p className="text-xs font-semibold text-secondary">{admin.fullName}</p>
+                            <p className="text-[11px] text-dark-grey">{admin.email}</p>
+                            <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px] text-dark-grey/80">
+                              <span className={cn(
+                                "rounded-full px-2 py-0.5 font-semibold",
+                                admin.role === "SUPER_ADMIN" ? "bg-amber-100 text-amber-700" : "bg-light-grey"
+                              )}>{admin.role === "SUPER_ADMIN" ? "Super Admin" : "Admin"}</span>
+                              <span className={cn(
+                                "rounded-full px-2 py-0.5",
+                                admin.status === "ACTIVE" ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-600"
+                              )}>{admin.status}</span>
+                            </div>
+                          </div>
+                          <div className="flex shrink-0 gap-1.5">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-7 border-primary-orange px-2 text-[11px] text-primary-orange hover:bg-primary-orange/10"
+                              onClick={() => openEditAdmin(admin)}
+                            >
+                              <Pencil className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-7 border-rose-200 px-2 text-[11px] text-rose-600 hover:bg-rose-50"
+                              onClick={() => {
+                                setDeletingAdminId(admin.id);
+                                setIsDeleteAdminOpen(true);
+                              }}
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -751,6 +1164,7 @@ export default function AdminSettingsPage() {
         ) : null}
       </Container>
 
+      {/* ── Dialog: HomeBanner ────────────────────────────────────────────── */}
       <Dialog open={isBannerDialogOpen} onOpenChange={setIsBannerDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
@@ -882,6 +1296,239 @@ export default function AdminSettingsPage() {
         confirmIcon={<Trash2 className="h-4 w-4" />}
         cancelLabel=""
         onConfirm={handleDeleteBanner}
+      />
+
+      {/* ── Dialog: AuthBanner ────────────────────────────────────────────── */}
+      <Dialog open={isAuthBannerDialogOpen} onOpenChange={setIsAuthBannerDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              {authBannerDialogMode === "create" ? "Tambah Auth Banner" : "Edit Auth Banner"}
+            </DialogTitle>
+            <DialogDescription>
+              Lengkapi informasi banner yang akan tampil di sisi kanan halaman login dan register.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 md:grid-cols-[180px_1fr]">
+            <div className="space-y-3">
+              <div className="relative h-40 w-full overflow-hidden rounded-lg border border-border-grey bg-light-grey">
+                {authBannerForm.imageUrl ? (
+                  <Image
+                    src={authBannerForm.imageUrl}
+                    alt="Preview auth banner"
+                    fill
+                    className="object-cover"
+                    sizes="180px"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-xs text-dark-grey">
+                    Preview Banner
+                  </div>
+                )}
+              </div>
+              <label className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-primary-orange px-3 py-2 text-xs font-semibold text-primary-orange">
+                {isUploadingAuthBanner ? <Loader2 className="h-4 w-4 animate-spin" /> : <Camera className="h-4 w-4" />}
+                Upload Gambar
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0] ?? null;
+                    void handleUploadAuthBanner(file);
+                    event.currentTarget.value = "";
+                  }}
+                />
+              </label>
+              <p className="text-[11px] text-dark-grey/80">Ukuran disarankan: 720x960</p>
+            </div>
+            <div className="space-y-3">
+              <Input
+                value={authBannerForm.title}
+                onChange={(event) => setAuthBannerForm((prev) => ({ ...prev, title: event.target.value }))}
+                className="h-9 border-border-grey text-xs"
+                placeholder="Judul banner (opsional)"
+              />
+              <Textarea
+                value={authBannerForm.subtitle}
+                onChange={(event) => setAuthBannerForm((prev) => ({ ...prev, subtitle: event.target.value }))}
+                className="min-h-[90px] border-border-grey text-xs"
+                placeholder="Deskripsi singkat (opsional)"
+              />
+              <Input
+                value={authBannerForm.altText}
+                onChange={(event) => setAuthBannerForm((prev) => ({ ...prev, altText: event.target.value }))}
+                className="h-9 border-border-grey text-xs"
+                placeholder="Teks alternatif (opsional)"
+              />
+              <div className="grid gap-3 md:grid-cols-2">
+                <Input
+                  type="number"
+                  min={0}
+                  step={1}
+                  inputMode="numeric"
+                  value={authBannerForm.sortOrder}
+                  onChange={(event) => setAuthBannerForm((prev) => ({ ...prev, sortOrder: event.target.value }))}
+                  className="h-9 border-border-grey text-xs"
+                  placeholder="Urutan tampil (angka)"
+                />
+                <Select
+                  value={authBannerForm.isActive ? "active" : "inactive"}
+                  onValueChange={(value) =>
+                    setAuthBannerForm((prev) => ({ ...prev, isActive: value === "active" }))
+                  }
+                >
+                  <SelectTrigger className="h-9 border-border-grey bg-white text-xs text-secondary">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="active">Aktif</SelectItem>
+                    <SelectItem value="inactive">Nonaktif</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isSavingAuthBanner}
+              onClick={() => setIsAuthBannerDialogOpen(false)}
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              disabled={isSavingAuthBanner || isUploadingAuthBanner}
+              onClick={handleSaveAuthBanner}
+              className="bg-primary-orange text-white hover:bg-primary-orange/90"
+            >
+              {isSavingAuthBanner ? <Loader2 className="h-4 w-4 animate-spin" /> : "Simpan Banner"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmActionDialog
+        open={isDeleteAuthBannerOpen}
+        onOpenChange={setIsDeleteAuthBannerOpen}
+        variant="error"
+        visualStyle="dangerCard"
+        title="Hapus auth banner?"
+        description="Banner yang dihapus tidak bisa dipulihkan. Yakin ingin melanjutkan?"
+        confirmLabel="Ya, hapus banner"
+        confirmTone="dangerSoft"
+        confirmIcon={<Trash2 className="h-4 w-4" />}
+        cancelLabel=""
+        onConfirm={handleDeleteAuthBanner}
+      />
+
+
+      {/* ── Dialog: Edit Admin ──────────────────────────────────────────── */}
+      <Dialog open={isEditAdminDialogOpen} onOpenChange={setIsEditAdminDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Edit Admin</DialogTitle>
+            <DialogDescription>Perbarui data admin. Kosongkan password jika tidak ingin mengubahnya.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Input
+              value={editAdminForm.fullName}
+              onChange={(e) => setEditAdminForm((p) => ({ ...p, fullName: e.target.value }))}
+              className="h-9 border-border-grey text-xs"
+              placeholder="Nama lengkap"
+            />
+            <Input
+              type="email"
+              value={editAdminForm.email}
+              onChange={(e) => setEditAdminForm((p) => ({ ...p, email: e.target.value }))}
+              className="h-9 border-border-grey text-xs"
+              placeholder="Email"
+            />
+            <Input
+              value={editAdminForm.username}
+              onChange={(e) => setEditAdminForm((p) => ({ ...p, username: e.target.value }))}
+              className="h-9 border-border-grey text-xs"
+              placeholder="Username (opsional)"
+            />
+            <Input
+              type="tel"
+              value={editAdminForm.phone}
+              onChange={(e) => setEditAdminForm((p) => ({ ...p, phone: e.target.value }))}
+              className="h-9 border-border-grey text-xs"
+              placeholder="Nomor telepon (opsional)"
+            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Select
+                value={editAdminForm.role}
+                onValueChange={(v) => setEditAdminForm((p) => ({ ...p, role: v as "ADMIN" | "SUPER_ADMIN" }))}
+              >
+                <SelectTrigger className="h-9 border-border-grey bg-white text-xs text-secondary">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ADMIN">Admin</SelectItem>
+                  <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
+                value={editAdminForm.status}
+                onValueChange={(v) => setEditAdminForm((p) => ({ ...p, status: v as "ACTIVE" | "SUSPENDED" }))}
+              >
+                <SelectTrigger className="h-9 border-border-grey bg-white text-xs text-secondary">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ACTIVE">Aktif</SelectItem>
+                  <SelectItem value="SUSPENDED">Suspended</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="relative">
+              <Input
+                type={showEditAdminPassword ? "text" : "password"}
+                value={editAdminForm.password}
+                onChange={(e) => setEditAdminForm((p) => ({ ...p, password: e.target.value }))}
+                className="h-9 border-border-grey pr-10 text-xs"
+                placeholder="Password baru (kosongkan jika tidak diubah)"
+              />
+              <button
+                type="button"
+                onClick={() => setShowEditAdminPassword((p) => !p)}
+                className="absolute inset-y-0 right-0 flex items-center pr-3 text-dark-grey/70"
+              >
+                {showEditAdminPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditAdminDialogOpen(false)} disabled={isSavingEditAdmin}>
+              Batal
+            </Button>
+            <Button
+              onClick={handleSaveEditAdmin}
+              disabled={isSavingEditAdmin}
+              className="bg-primary-orange text-white hover:bg-primary-orange/90"
+            >
+              {isSavingEditAdmin ? <Loader2 className="h-4 w-4 animate-spin" /> : "Simpan"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmActionDialog
+        open={isDeleteAdminOpen}
+        onOpenChange={setIsDeleteAdminOpen}
+        variant="error"
+        visualStyle="dangerCard"
+        title="Hapus admin?"
+        description="Admin yang dihapus tidak bisa dipulihkan. Yakin ingin melanjutkan?"
+        confirmLabel="Ya, hapus admin"
+        confirmTone="dangerSoft"
+        confirmIcon={<Trash2 className="h-4 w-4" />}
+        cancelLabel=""
+        onConfirm={handleDeleteAdmin}
       />
 
       <AuthFeedbackDialog

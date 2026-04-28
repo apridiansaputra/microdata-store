@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --color-light-grey: #F8FAFC;
+  --color-light-grey: #F8FAFC;
   --color-dark-grey: #6B7280;
   --color-primary-orange: #FF9644;
   --color-secondary: #0F172A;
@@ -136,6 +136,7 @@
     scrollbar-width: thin;
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
   }
+
   body {
     @apply bg-background text-foreground font-sans overflow-x-hidden;
   }
@@ -176,4 +177,31 @@
   }
 }
 
+/* ── Print styles ─────────────────────────────────────────────────────────── */
+/* Portal div dipasang langsung ke document.body sehingga bisa dikontrol
+   secara independen dari layout tree */
+.print-portal {
+  display: none;
+}
 
+@media print {
+
+  /* Sembunyikan semua direct children of body kecuali print portal */
+  body>*:not(.print-portal) {
+    display: none !important;
+  }
+
+  /* Tampilkan portal */
+  .print-portal {
+    display: block !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 16mm 16mm 16mm 16mm;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+}
