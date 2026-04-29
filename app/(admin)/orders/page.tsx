@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 
 import Container from "@/components/admin-layout/container";
@@ -246,6 +247,18 @@ export default function OrdersPage() {
 
     return () => window.clearTimeout(timer);
   }, [loadOrders]);
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const orderParam = searchParams.get("order");
+    if (orderParam) {
+      setSelectedOrderNumber(orderParam);
+      setIsDetailOpen(true);
+      router.replace("/orders", { scroll: false });
+    }
+  }, [searchParams, router]);
 
   const orderCountLabel = useMemo(
     () => `${totalOrders} pesanan`,

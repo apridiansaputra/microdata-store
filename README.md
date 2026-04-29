@@ -1,57 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Microdata Store
 
-## Getting Started
+E-commerce platform untuk penjualan produk IT. Dibangun dengan Next.js 16, Prisma, PostgreSQL, dan Tailwind CSS 4.
 
-First, run the development server:
+## Prasyarat
+
+- **Node.js** ≥ 20
+- **PostgreSQL** ≥ 14 (running & bisa diakses)
+- **Git**
+
+## Cara Setup
+
+### 1. Clone & Install
+
+```bash
+git clone https://github.com/apridiansaputra/microdata-store.git
+cd microdata-store
+npm install
+```
+
+### 2. Konfigurasi Environment
+
+Taruh file `.env` (dikirim terpisah via WA) ke root folder project.
+
+Setelah itu, sesuaikan variabel berikut di `.env` sesuai environment lokal:
+
+| Variabel | Yang perlu disesuaikan |
+|----------|----------------------|
+| `DATABASE_URL` | Ganti user, password, host, dan nama database sesuai PostgreSQL lokal |
+| `AUTH_URL` | Ganti ke alamat server jika bukan `http://localhost:3000` |
+| `GOOGLE_REDIRECT_URI` | Samakan domain-nya dengan `AUTH_URL` (contoh: `http://localhost:3000/api/auth/google/callback`) |
+| `XENDIT_SUCCESS_REDIRECT_URL` | Samakan domain-nya dengan `AUTH_URL` |
+| `XENDIT_FAILURE_REDIRECT_URL` | Samakan domain-nya dengan `AUTH_URL` |
+
+> Variabel lain (API key, secret, SMTP) tidak perlu diubah — sudah terisi di file `.env` yang dikirim.
+
+### 3. Setup Database
+
+Pastikan PostgreSQL sudah running, lalu jalankan:
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+npm run prisma:seed
+```
+
+> Setelah seed, catat email dan password super admin yang muncul di terminal.
+
+### 4. Jalankan
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000) di browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Internal Job: Sync Expired Orders
-
-To keep pending orders synced to `EXPIRED` without adding load to read endpoints:
-
-1. Set `INTERNAL_CRON_SECRET` in `.env`.
-2. Trigger:
-   - `POST /api/internal/orders/sync-expired`
-   - or `GET /api/internal/orders/sync-expired`
-3. Send one of these headers:
-   - `Authorization: Bearer <INTERNAL_CRON_SECRET>`
-   - or `x-cron-secret: <INTERNAL_CRON_SECRET>`
-
-Example (PowerShell):
-
-```powershell
-Invoke-WebRequest `
-  -Method POST `
-  -Uri "http://localhost:3000/api/internal/orders/sync-expired" `
-  -Headers @{ "Authorization" = "Bearer <INTERNAL_CRON_SECRET>" }
-```
+Login admin di [http://localhost:3000/admin](http://localhost:3000/admin) menggunakan akun super admin dari hasil seed.

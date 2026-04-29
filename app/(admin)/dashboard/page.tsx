@@ -42,7 +42,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 type ProductPanelView = "produk" | "lokasi";
 type DashboardRange = "today" | "last-7-days" | "this-month" | "this-year" | "custom";
@@ -82,7 +82,9 @@ type LatestOrderItem = {
   customer: string;
   total: number;
   paymentStatus: string;
+  paymentStatusLabel: string;
   shippingStatus: string;
+  shippingStatusLabel: string;
 };
 
 type DashboardPayload = {
@@ -106,9 +108,16 @@ const dashboardDateFilters: Array<{ value: DashboardRange; label: string }> = [
 const chartConfig = {
   pendapatan: {
     label: "Pendapatan",
-    color: "var(--chart-1)",
+    color: "var(--color-primary-orange)",
   },
 } satisfies ChartConfig;
+
+function formatCompactRupiah(value: number) {
+  if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1)}M`;
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)}Jt`;
+  if (value >= 1_000) return `${(value / 1_000).toFixed(0)}Rb`;
+  return String(value);
+}
 
 const ICON_MAP = {
   WalletCards,
@@ -116,6 +125,65 @@ const ICON_MAP = {
   UserRoundPlus,
   BadgeDollarSign,
 } as const;
+
+type BadgeTone = "green" | "yellow" | "blue" | "neutral" | "red";
+
+const BADGE_TONE_CLASS: Record<BadgeTone, string> = {
+  green: "bg-[#E7F4EC] text-[#4FA57D]",
+  yellow: "bg-[#E8E5F6] text-[#7B75C5]",
+  blue: "bg-[#E8E5F6] text-[#7B75C5]",
+  red: "bg-[#F7E1D6] text-[#D37E55]",
+  neutral: "bg-gray-100 text-gray-700",
+};
+
+function getPaymentBadgeTone(status: string): BadgeTone {
+  switch (status) {
+    case "SETTLED":
+    case "CAPTURED":
+    case "AUTHORIZED":
+      return "green";
+    case "PENDING":
+    case "CHALLENGE":
+      return "yellow";
+    case "FAILED":
+    case "CANCELLED":
+    case "DENIED":
+    case "CHARGEBACK":
+    case "REFUNDED":
+    case "PARTIAL_REFUNDED":
+      return "neutral";
+    case "EXPIRED":
+      return "red";
+    default:
+      return "neutral";
+  }
+}
+
+function getShippingBadgeTone(status: string): BadgeTone {
+  switch (status) {
+    case "WAITING_FULFILLMENT":
+      return "yellow";
+    case "READY_TO_SHIP":
+      return "blue";
+    case "SHIPPED":
+    case "DELIVERED":
+      return "green";
+    case "CANCELLED":
+      return "neutral";
+    default:
+      return "neutral";
+  }
+}
+
+function StatusBadge({ label, tone }: { label: string; tone: BadgeTone }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] leading-none font-semibold ${BADGE_TONE_CLASS[tone]}`}
+    >
+      {label}
+    </span>
+  );
+}
 
 const EMPTY_DASHBOARD: DashboardPayload = {
   range: "today",
@@ -360,36 +428,57 @@ export default function Dashboard() {
 
               <CardContent className="px-3">
                 <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                  <LineChart
+                  <AreaChart
                     accessibilityLayer
                     data={dashboardData.salesData}
-                    margin={{ top: 18, right: 8, bottom: 10, left: 8 }}
+                    margin={{ top: 12, right: 12, bottom: 0, left: 0 }}
                   >
-                    <CartesianGrid vertical={false} />
+                    <defs>
+                      <linearGradient id="fillPendapatan" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="var(--color-pendapatan)" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="var(--color-pendapatan)" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid vertical={false} strokeDasharray="3 3" />
                     <XAxis
                       dataKey="label"
                       tickLine={false}
                       axisLine={false}
                       tickMargin={8}
+                      fontSize={11}
+                    />
+                    <YAxis
+                      tickLine={false}
+                      axisLine={false}
+                      tickMargin={4}
+                      fontSize={11}
+                      width={48}
+                      tickFormatter={formatCompactRupiah}
                     />
                     <ChartTooltip
-                      cursor={false}
+                      cursor={{ stroke: "var(--color-pendapatan)", strokeWidth: 1, strokeDasharray: "4 4" }}
                       content={
                         <ChartTooltipContent
-                          hideLabel
                           indicator="line"
                           formatter={(value) => formatRupiah(Number(value))}
                         />
                       }
                     />
-                    <Line
+                    <Area
                       dataKey="pendapatan"
-                      type="natural"
+                      type="monotone"
                       stroke="var(--color-pendapatan)"
-                      strokeWidth={2.5}
+                      strokeWidth={2}
+                      fill="url(#fillPendapatan)"
                       dot={false}
+                      activeDot={{
+                        r: 4,
+                        fill: "var(--color-pendapatan)",
+                        stroke: "#fff",
+                        strokeWidth: 2,
+                      }}
                     />
-                  </LineChart>
+                  </AreaChart>
                 </ChartContainer>
               </CardContent>
             </Card>
@@ -538,11 +627,17 @@ export default function Dashboard() {
                         <TableCell className="text-xs text-secondary">
                           {formatRupiah(order.total)}
                         </TableCell>
-                        <TableCell className="text-xs text-secondary">
-                          {order.paymentStatus}
+                        <TableCell>
+                          <StatusBadge
+                            label={order.paymentStatusLabel}
+                            tone={getPaymentBadgeTone(order.paymentStatus)}
+                          />
                         </TableCell>
-                        <TableCell className="text-xs text-secondary">
-                          {order.shippingStatus}
+                        <TableCell>
+                          <StatusBadge
+                            label={order.shippingStatusLabel}
+                            tone={getShippingBadgeTone(order.shippingStatus)}
+                          />
                         </TableCell>
                         <TableCell className="text-xs text-secondary">
                           <Button
@@ -551,7 +646,7 @@ export default function Dashboard() {
                             size="xs"
                             className="cursor-pointer border-0 text-secondary shadow-none hover:bg-white hover:text-primary-orange"
                           >
-                            <a href="/orders">
+                            <a href={`/orders?order=${encodeURIComponent(order.id)}`}>
                               Detail
                               <ArrowUpRight className="size-4" />
                             </a>

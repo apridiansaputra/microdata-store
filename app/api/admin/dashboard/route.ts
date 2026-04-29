@@ -520,8 +520,10 @@ export async function GET(request: NextRequest) {
     id: order.orderNumber,
     customer: order.user.fullName,
     total: toSafeNumber(order.grandTotalAmount) ?? 0,
-    paymentStatus: getPaymentStatusLabel(order.paymentStatus),
-    shippingStatus: getShippingStatusLabel(order.shippingStatus),
+    paymentStatus: order.paymentStatus,
+    paymentStatusLabel: getPaymentStatusLabel(order.paymentStatus),
+    shippingStatus: order.shippingStatus,
+    shippingStatusLabel: getShippingStatusLabel(order.shippingStatus),
   }));
 
   return NextResponse.json(
