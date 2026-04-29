@@ -108,7 +108,7 @@ export default async function HomePage() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {latestProducts.map((product) => {
             const coverImageUrl =
               product.images.find((image) => image.isPrimary)?.url ??
@@ -116,7 +116,7 @@ export default async function HomePage() {
               "/image.png";
 
             return (
-              <Link key={product.id} href={`/product/${product.slug}`} className="mx-auto block h-full">
+              <Link key={product.id} href={`/product/${product.slug}`} className="block h-full">
                 <ProductCard
                   image={coverImageUrl}
                   name={product.name}

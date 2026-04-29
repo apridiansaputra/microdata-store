@@ -8,7 +8,7 @@ interface ProductCardProps {
 
 export function ProductCard({ image, name, price, stock, isNew }: ProductCardProps) {
   return (
-    <div className="relative flex w-full flex-col gap-4 rounded-lg border p-4 pt-5 md:w-65 md:h-85 md:justify-between md:gap-0 md:pt-6">
+    <div className="relative flex h-full w-full flex-col gap-4 rounded-lg border p-4 pt-5 md:justify-between md:gap-0 md:pt-6">
       <div>
         {isNew && (
           <span className="absolute rounded-3xl bg-secondary px-3 py-0.5 text-xs text-white">
