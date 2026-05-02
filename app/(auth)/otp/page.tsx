@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp"
 
-export default function OTPPage() {
+function OTPPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") ?? "";
@@ -167,5 +167,13 @@ export default function OTPPage() {
       <aside className="hidden h-full items-center justify-center rounded-xl bg-dark-grey lg:flex" />
 
     </div>
+  );
+}
+
+export default function OTPPage() {
+  return (
+    <Suspense>
+      <OTPPageContent />
+    </Suspense>
   );
 }

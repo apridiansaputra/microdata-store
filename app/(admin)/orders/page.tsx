@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ArrowUpRight, Loader2 } from "lucide-react";
 
@@ -173,7 +173,7 @@ function formatCurrency(value: number) {
   return `Rp. ${new Intl.NumberFormat("id-ID").format(Math.max(0, value))},00`;
 }
 
-export default function OrdersPage() {
+function OrdersPageContent() {
   const [paymentFilter, setPaymentFilter] = useState<PaymentFilterValue>("ALL");
   const [shippingFilter, setShippingFilter] = useState<ShippingFilterValue>("ALL");
   const [sortFilter, setSortFilter] = useState<SortFilterValue>("newest");
@@ -482,5 +482,13 @@ export default function OrdersPage() {
         description={feedback?.description ?? ""}
       />
     </div>
+  );
+}
+
+export default function OrdersPage() {
+  return (
+    <Suspense>
+      <OrdersPageContent />
+    </Suspense>
   );
 }

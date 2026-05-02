@@ -3,7 +3,7 @@
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { ProductCard } from "@/components/ui/product-card";
 import {
@@ -26,7 +26,7 @@ type ProductItem = {
 
 type PriceSort = "none" | "price_desc" | "price_asc";
 
-export default function AllProductsPage() {
+function AllProductsPageContent() {
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("q")?.trim() ?? "";
   const [priceSort, setPriceSort] = useState<PriceSort>("none");
@@ -99,5 +99,13 @@ export default function AllProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AllProductsPage() {
+  return (
+    <Suspense>
+      <AllProductsPageContent />
+    </Suspense>
   );
 }

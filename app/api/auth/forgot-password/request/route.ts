@@ -80,6 +80,15 @@ export async function POST(request: Request) {
     );
   }
 
+  // TypeScript cannot infer that `user` is non-null from the `canSendOtp` flag,
+  // but at this point user is guaranteed to exist because canSendOtp is true.
+  if (!user) {
+    return NextResponse.json(
+      { success: true, message: GENERIC_SUCCESS_MESSAGE },
+      { status: 200 },
+    );
+  }
+
   try {
     const otpCode = generateOtpCode();
     const ipAddress = request.headers.get("x-forwarded-for");

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import { useCart } from "@/components/cart-components/cart-context";
@@ -9,7 +9,7 @@ import OrderSummary from "./checkout-components/OrderSummary";
 import ShippingSection from "./checkout-components/ShippingSection";
 import type { CheckoutAddress, CheckoutShippingQuote } from "./checkout-components/types";
 
-export default function CheckoutPage() {
+function CheckoutPageContent() {
   const { items, selectedItems, refreshCart } = useCart();
   const searchParams = useSearchParams();
   const [selectedAddress, setSelectedAddress] = useState<CheckoutAddress | null>(
@@ -69,5 +69,13 @@ export default function CheckoutPage() {
         />
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense>
+      <CheckoutPageContent />
+    </Suspense>
   );
 }

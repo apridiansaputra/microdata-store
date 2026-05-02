@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { getCurrentSessionUser, isAdminRole } from "@/lib/auth/server-auth";
@@ -14,5 +15,9 @@ export default async function AdminLoginPage() {
     redirect("/dashboard");
   }
 
-  return <AdminLoginForm />;
+  return (
+    <Suspense>
+      <AdminLoginForm />
+    </Suspense>
+  );
 }
