@@ -1,0 +1,405 @@
+erDiagram
+
+    User {
+        UUID id PK
+        VARCHAR email
+        VARCHAR emailNormalized UK
+        VARCHAR fullName
+        VARCHAR username UK
+        VARCHAR phone
+        VARCHAR passwordHash
+        Role role
+        UserStatus status
+        Gender gender
+        DATE birthDate
+        VARCHAR avatarUrl
+        DATETIME emailVerifiedAt
+        DATETIME lastLoginAt
+        DATETIME createdAt
+        DATETIME updatedAt
+        DATETIME deletedAt
+    }
+
+    Session {
+        UUID id PK
+        UUID userId FK
+        VARCHAR sessionToken UK
+        VARCHAR ipAddress
+        VARCHAR userAgent
+        DATETIME expiresAt
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    AuthAccount {
+        UUID id PK
+        UUID userId FK
+        AuthProvider provider
+        VARCHAR providerAccountId
+        VARCHAR providerEmail
+        TEXT refreshToken
+        TEXT accessToken
+        TEXT scope
+        VARCHAR tokenType
+        TEXT idToken
+        DATETIME expiresAt
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    EmailVerification {
+        UUID id PK
+        UUID userId FK
+        VARCHAR emailNormalized
+        VerificationPurpose purpose
+        VARCHAR codeHash
+        INT attemptCount
+        INT maxAttempts
+        DATETIME expiresAt
+        DATETIME consumedAt
+        VARCHAR requestedByIp
+        VARCHAR requestedUserAgent
+        DATETIME createdAt
+    }
+
+    Address {
+        UUID id PK
+        UUID userId FK
+        AddressLabel label
+        VARCHAR recipientName
+        VARCHAR phone
+        VARCHAR provinceCode
+        VARCHAR provinceName
+        VARCHAR cityCode
+        VARCHAR cityName
+        VARCHAR districtName
+        VARCHAR subdistrictName
+        VARCHAR postalCode
+        VARCHAR street
+        TEXT detail
+        VARCHAR rajaOngkirSubdistrictId
+        BOOLEAN isPrimary
+        BOOLEAN isActive
+        DATETIME createdAt
+        DATETIME updatedAt
+        DATETIME deletedAt
+    }
+
+    Category {
+        UUID id PK
+        UUID parentId FK
+        VARCHAR name UK
+        VARCHAR slug UK
+        TEXT description
+        INT sortOrder
+        BOOLEAN isActive
+        DATETIME createdAt
+        DATETIME updatedAt
+        DATETIME deletedAt
+    }
+
+    Product {
+        UUID id PK
+        UUID categoryId FK
+        UUID createdById FK
+        UUID updatedById FK
+        VARCHAR sku UK
+        VARCHAR slug UK
+        VARCHAR name
+        VARCHAR shortSpec
+        TEXT description
+        BIGINT basePrice
+        BIGINT compareAtPrice
+        INT weightGrams
+        INT stock
+        INT reservedStock
+        INT soldCount
+        DECIMAL ratingAverage
+        INT ratingCount
+        ProductStatus status
+        DATETIME createdAt
+        DATETIME updatedAt
+        DATETIME deletedAt
+    }
+
+    ProductImage {
+        UUID id PK
+        UUID productId FK
+        VARCHAR url
+        VARCHAR altText
+        INT sortOrder
+        BOOLEAN isPrimary
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    Cart {
+        UUID id PK
+        UUID userId FK
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    CartItem {
+        UUID id PK
+        UUID cartId FK
+        UUID productId FK
+        INT quantity
+        BOOLEAN isSelected
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    Order {
+        UUID id PK
+        UUID userId FK
+        UUID shippingAddressId FK
+        VARCHAR orderNumber UK
+        OrderStatus status
+        PaymentStatus paymentStatus
+        ShipmentStatus shippingStatus
+        CHAR currencyCode
+        BIGINT subtotalAmount
+        BIGINT shippingAmount
+        BIGINT discountAmount
+        BIGINT taxAmount
+        BIGINT grandTotalAmount
+        VARCHAR notes
+        VARCHAR adminNote
+        VARCHAR shippingRecipientName
+        VARCHAR shippingPhone
+        VARCHAR shippingProvinceName
+        VARCHAR shippingCityName
+        VARCHAR shippingDistrictName
+        VARCHAR shippingSubdistrictName
+        VARCHAR shippingPostalCode
+        VARCHAR shippingStreet
+        TEXT shippingDetail
+        DATETIME placedAt
+        DATETIME paidAt
+        DATETIME cancelledAt
+        DATETIME expiresAt
+        DATETIME createdAt
+        DATETIME updatedAt
+        DATETIME deletedAt
+    }
+
+    OrderItem {
+        UUID id PK
+        UUID orderId FK
+        UUID productId FK
+        VARCHAR productSku
+        VARCHAR productSlug
+        VARCHAR productName
+        VARCHAR productImageUrl
+        INT quantity
+        BIGINT unitPrice
+        BIGINT negotiatedUnitPrice
+        BIGINT lineSubtotal
+        INT weightGrams
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    Payment {
+        UUID id PK
+        UUID orderId FK
+        PaymentProvider provider
+        VARCHAR providerOrderId UK
+        VARCHAR providerTransactionId UK
+        VARCHAR snapToken
+        VARCHAR paymentUrl
+        VARCHAR method
+        VARCHAR channel
+        PaymentStatus status
+        BIGINT grossAmount
+        VARCHAR fraudStatus
+        DATETIME transactionTime
+        DATETIME settlementTime
+        DATETIME expiryTime
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    PaymentEvent {
+        UUID id PK
+        UUID paymentId FK
+        PaymentProvider provider
+        VARCHAR eventType
+        VARCHAR providerEventId
+        CHAR payloadHash
+        VARCHAR signatureKey
+        BOOLEAN isSignatureValid
+        JSON payload
+        DATETIME processedAt
+        DATETIME createdAt
+    }
+
+    Shipment {
+        UUID id PK
+        UUID orderId FK
+        ShipmentProvider provider
+        VARCHAR courierCode
+        VARCHAR courierName
+        VARCHAR serviceCode
+        VARCHAR serviceName
+        VARCHAR trackingNumber UK
+        VARCHAR trackingUrl
+        ShipmentStatus status
+        DATETIME shippedAt
+        DATETIME deliveredAt
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    Negotiation {
+        UUID id PK
+        UUID userId FK
+        UUID processedById FK
+        UUID finalOrderId FK
+        VARCHAR negotiationNumber UK
+        NegotiationStatus status
+        BIGINT requestedTotalAmount
+        BIGINT counterTotalAmount
+        BIGINT finalTotalAmount
+        DATETIME expiresAt
+        DATETIME submittedAt
+        DATETIME respondedAt
+        DATETIME closedAt
+        VARCHAR notes
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    NegotiationItem {
+        UUID id PK
+        UUID negotiationId FK
+        UUID productId FK
+        INT quantity
+        BIGINT baseUnitPrice
+        BIGINT buyerOfferUnitPrice
+        BIGINT adminCounterUnitPrice
+        BIGINT finalUnitPrice
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    NegotiationMessage {
+        UUID id PK
+        UUID negotiationId FK
+        UUID senderId FK
+        MessageSenderRole senderRole
+        TEXT message
+        DATETIME createdAt
+    }
+
+    Review {
+        UUID id PK
+        UUID userId FK
+        UUID productId FK
+        UUID orderItemId FK
+        INT rating
+        VARCHAR title
+        TEXT content
+        ReviewStatus status
+        DATETIME createdAt
+        DATETIME updatedAt
+        DATETIME deletedAt
+    }
+
+    ReviewImage {
+        UUID id PK
+        UUID reviewId FK
+        VARCHAR url
+        INT sortOrder
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    AdminAuditLog {
+        UUID id PK
+        UUID actorUserId FK
+        VARCHAR action
+        VARCHAR entityType
+        VARCHAR entityId
+        VARCHAR ipAddress
+        VARCHAR userAgent
+        JSON metadata
+        DATETIME createdAt
+    }
+
+    AppSetting {
+        VARCHAR id PK
+        VARCHAR shippingCourierCode
+        VARCHAR shippingCourierName
+        VARCHAR shippingTrackingBaseUrl
+        INT bannerAutoplayMs
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    HomeBanner {
+        UUID id PK
+        VARCHAR title
+        VARCHAR subtitle
+        VARCHAR imageUrl
+        VARCHAR altText
+        VARCHAR targetUrl
+        BOOLEAN isActive
+        INT sortOrder
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    AuthBanner {
+        UUID id PK
+        VARCHAR imageUrl
+        VARCHAR altText
+        VARCHAR title
+        VARCHAR subtitle
+        BOOLEAN isActive
+        INT sortOrder
+        DATETIME createdAt
+        DATETIME updatedAt
+    }
+
+    User ||--o{ Session : "has"
+    User ||--o{ AuthAccount : "has"
+    User ||--o{ EmailVerification : "has"
+    User ||--o{ Address : "has"
+    User ||--o| Cart : "has"
+    User ||--o{ Order : "places"
+    User ||--o{ Review : "writes"
+    User ||--o{ AdminAuditLog : "creates"
+    User ||--o{ Negotiation : "requests"
+    User ||--o{ Negotiation : "processes"
+    User ||--o{ NegotiationMessage : "sends"
+    User ||--o{ Product : "creates"
+    User ||--o{ Product : "updates"
+
+    Category ||--o{ Category : "parent-child"
+    Category ||--o{ Product : "contains"
+
+    Product ||--o{ ProductImage : "has"
+    Product ||--o{ CartItem : "in"
+    Product ||--o{ OrderItem : "ordered-as"
+    Product ||--o{ NegotiationItem : "negotiated"
+    Product ||--o{ Review : "reviewed"
+
+    Cart ||--o{ CartItem : "contains"
+
+    Order ||--o{ OrderItem : "contains"
+    Order ||--o{ Payment : "paid-via"
+    Order ||--o| Shipment : "shipped-via"
+    Order ||--o| Negotiation : "from"
+
+    OrderItem ||--o| Review : "reviewed-in"
+
+    Address ||--o{ Order : "ships-to"
+
+    Payment ||--o{ PaymentEvent : "has"
+
+    Negotiation ||--o{ NegotiationItem : "contains"
+    Negotiation ||--o{ NegotiationMessage : "has"
+
+    Review ||--o{ ReviewImage : "has"
