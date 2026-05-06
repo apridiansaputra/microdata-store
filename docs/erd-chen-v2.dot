@@ -1,0 +1,1392 @@
+digraph ERD {
+  graph [
+    overlap=false,
+    splines=true,
+    pad=1.0,
+    fontname="Arial",
+    bgcolor="#FAFBFC",
+    label=<<b>ERD (Notasi Chen) — Microdata Store</b><br/><font point-size="14">Dibuat otomatis dari prisma/schema.prisma</font>>,
+    labelloc=t,
+    fontsize=24,
+    fontcolor="#2C3E50"
+  ];
+  node [fontname="Arial"];
+  edge [fontname="Arial", fontsize=10, penwidth=1.0];
+
+  User [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="User",
+    width=1.6, height=0.5,
+    pos="19.25,2.5!"
+  ];
+  User_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="19.25,0.33999999999999986!"];
+  User -> User_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_email [shape=ellipse, label="email", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.030281998964252,0.4858599844865914!"];
+  User -> User_email [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_emailNormalized [shape=ellipse, label="emailNormalized", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.705182590276564,0.9037407388033762!"];
+  User -> User_emailNormalized [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_fullName [shape=ellipse, label="fullName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.183552709326936,1.5372051515226772!"];
+  User -> User_fullName [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_username [shape=ellipse, label="username", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.400785820797275,2.3007003435592677!"];
+  User -> User_username [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_phone [shape=ellipse, label="phone", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.32754338925329,3.0911120585556993!"];
+  User -> User_phone [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_passwordHash [shape=ellipse, label="passwordHash", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.97371721092532,3.8016908145791937!"];
+  User -> User_passwordHash [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_role [shape=ellipse, label="role", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.38709347181509,4.336469013175966!"];
+  User -> User_role [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_status [shape=ellipse, label="status", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="19.646898958483792,4.6232218953172275!"];
+  User -> User_status [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_gender [shape=ellipse, label="gender", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.853101041516208,4.6232218953172275!"];
+  User -> User_gender [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_birthDate [shape=ellipse, label="birthDate", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.11290652818491,4.336469013175966!"];
+  User -> User_birthDate [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_avatarUrl [shape=ellipse, label="avatarUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.526282789074685,3.801690814579196!"];
+  User -> User_avatarUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_emailVerifiedAt [shape=ellipse, label="emailVerifiedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.17245661074671,3.0911120585556997!"];
+  User -> User_emailVerifiedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_lastLoginAt [shape=ellipse, label="lastLoginAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.099214179202725,2.300700343559267!"];
+  User -> User_lastLoginAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.316447290673064,1.5372051515226783!"];
+  User -> User_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.794817409723436,0.9037407388033771!"];
+  User -> User_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  User_deletedAt [shape=ellipse, label="deletedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.46971800103575,0.4858599844865914!"];
+  User -> User_deletedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Session [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Session",
+    width=1.6, height=0.5,
+    pos="8.25,2.5!"
+  ];
+  Session_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="8.25,0.7!"];
+  Session -> Session_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Session_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="9.522792206135787,1.2272077938642143!"];
+  Session -> Session_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Session_sessionToken [shape=ellipse, label="sessionToken", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="10.05,2.5!"];
+  Session -> Session_sessionToken [dir=none, color="#BDC3C7", penwidth=0.5];
+  Session_ipAddress [shape=ellipse, label="ipAddress", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="9.522792206135787,3.7727922061357857!"];
+  Session -> Session_ipAddress [dir=none, color="#BDC3C7", penwidth=0.5];
+  Session_userAgent [shape=ellipse, label="userAgent", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="8.25,4.3!"];
+  Session -> Session_userAgent [dir=none, color="#BDC3C7", penwidth=0.5];
+  Session_expiresAt [shape=ellipse, label="expiresAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.977207793864214,3.7727922061357857!"];
+  Session -> Session_expiresAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Session_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.45,2.5!"];
+  Session -> Session_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Session_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.977207793864214,1.2272077938642145!"];
+  Session -> Session_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  AuthAccount [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="AuthAccount",
+    width=1.6, height=0.5,
+    pos="30.25,2.5!"
+  ];
+  AuthAccount_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="30.25,0.5!"];
+  AuthAccount -> AuthAccount_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="31.179446344087538,0.7290879486935802!"];
+  AuthAccount -> AuthAccount_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_provider [shape=ellipse, label="provider", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="31.895967731787312,1.3638705065376884!"];
+  AuthAccount -> AuthAccount_provider [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_providerAccountId [shape=ellipse, label="providerAccountId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="32.235417748196106,2.258926639489354!"];
+  AuthAccount -> AuthAccount_providerAccountId [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_providerEmail [shape=ellipse, label="providerEmail", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="32.12003248537083,3.209209774085071!"];
+  AuthAccount -> AuthAccount_providerEmail [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_refreshToken [shape=ellipse, label="refreshToken", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="31.57624531648159,3.997021496342202!"];
+  AuthAccount -> AuthAccount_refreshToken [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_accessToken [shape=ellipse, label="accessToken", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="30.728631328575116,4.441883634852104!"];
+  AuthAccount -> AuthAccount_accessToken [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_scope [shape=ellipse, label="scope", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.771368671424884,4.441883634852104!"];
+  AuthAccount -> AuthAccount_scope [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_tokenType [shape=ellipse, label="tokenType", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.92375468351841,3.9970214963422026!"];
+  AuthAccount -> AuthAccount_tokenType [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_idToken [shape=ellipse, label="idToken", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.379967514629172,3.2092097740850716!"];
+  AuthAccount -> AuthAccount_idToken [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_expiresAt [shape=ellipse, label="expiresAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.26458225180389,2.2589266394893537!"];
+  AuthAccount -> AuthAccount_expiresAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.604032268212684,1.3638705065376902!"];
+  AuthAccount -> AuthAccount_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthAccount_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.320553655912462,0.72908794869358!"];
+  AuthAccount -> AuthAccount_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  EmailVerification [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="EmailVerification",
+    width=1.6, height=0.5,
+    pos="2.75,7.5!"
+  ];
+  EmailVerification_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="2.75,5.54!"];
+  EmailVerification -> EmailVerification_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="3.7299999999999995,5.8025902085825!"];
+  EmailVerification -> EmailVerification_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_emailNormalized [shape=ellipse, label="emailNormalized", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="4.4474097914175,6.52!"];
+  EmailVerification -> EmailVerification_emailNormalized [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_purpose [shape=ellipse, label="purpose", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="4.71,7.5!"];
+  EmailVerification -> EmailVerification_purpose [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_codeHash [shape=ellipse, label="codeHash", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="4.4474097914175,8.48!"];
+  EmailVerification -> EmailVerification_codeHash [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_attemptCount [shape=ellipse, label="attemptCount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="3.7299999999999995,9.197409791417499!"];
+  EmailVerification -> EmailVerification_attemptCount [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_maxAttempts [shape=ellipse, label="maxAttempts", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="2.75,9.46!"];
+  EmailVerification -> EmailVerification_maxAttempts [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_expiresAt [shape=ellipse, label="expiresAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="1.7700000000000005,9.197409791417499!"];
+  EmailVerification -> EmailVerification_expiresAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_consumedAt [shape=ellipse, label="consumedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="1.0525902085825005,8.48!"];
+  EmailVerification -> EmailVerification_consumedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_requestedByIp [shape=ellipse, label="requestedByIp", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="0.79,7.5!"];
+  EmailVerification -> EmailVerification_requestedByIp [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_requestedUserAgent [shape=ellipse, label="requestedUserAgent", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="1.0525902085825003,6.52!"];
+  EmailVerification -> EmailVerification_requestedUserAgent [dir=none, color="#BDC3C7", penwidth=0.5];
+  EmailVerification_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="1.7699999999999991,5.802590208582501!"];
+  EmailVerification -> EmailVerification_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Address [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Address",
+    width=1.6, height=0.5,
+    pos="13.75,7.5!"
+  ];
+  Address_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="13.75,5.22!"];
+  Address -> Address_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="14.45455874717488,5.331591142847049!"];
+  Address -> Address_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_label [shape=ellipse, label="label", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.09015037522684,5.65544125282512!"];
+  Address -> Address_label [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_recipientName [shape=ellipse, label="recipientName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.59455874717488,6.159849624773161!"];
+  Address -> Address_recipientName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_phone [shape=ellipse, label="phone", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.91840885715295,6.79544125282512!"];
+  Address -> Address_phone [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_provinceCode [shape=ellipse, label="provinceCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.03,7.5!"];
+  Address -> Address_provinceCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_provinceName [shape=ellipse, label="provinceName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.91840885715295,8.20455874717488!"];
+  Address -> Address_provinceName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_cityCode [shape=ellipse, label="cityCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.59455874717488,8.84015037522684!"];
+  Address -> Address_cityCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_cityName [shape=ellipse, label="cityName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.09015037522684,9.34455874717488!"];
+  Address -> Address_cityName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_districtName [shape=ellipse, label="districtName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="14.45455874717488,9.66840885715295!"];
+  Address -> Address_districtName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_subdistrictName [shape=ellipse, label="subdistrictName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="13.75,9.780000000000001!"];
+  Address -> Address_subdistrictName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_postalCode [shape=ellipse, label="postalCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="13.045441252825121,9.66840885715295!"];
+  Address -> Address_postalCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_street [shape=ellipse, label="street", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.40984962477316,9.34455874717488!"];
+  Address -> Address_street [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_detail [shape=ellipse, label="detail", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.90544125282512,8.84015037522684!"];
+  Address -> Address_detail [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_rajaOngkirSubdistrictId [shape=ellipse, label="rajaOngkirSubdistrictId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="11.58159114284705,8.20455874717488!"];
+  Address -> Address_rajaOngkirSubdistrictId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_isPrimary [shape=ellipse, label="isPrimary", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.469999999999999,7.5!"];
+  Address -> Address_isPrimary [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_isActive [shape=ellipse, label="isActive", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.58159114284705,6.79544125282512!"];
+  Address -> Address_isActive [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.90544125282512,6.159849624773162!"];
+  Address -> Address_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.40984962477316,5.65544125282512!"];
+  Address -> Address_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Address_deletedAt [shape=ellipse, label="deletedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="13.04544125282512,5.331591142847049!"];
+  Address -> Address_deletedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  AdminAuditLog [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="AdminAuditLog",
+    width=1.6, height=0.5,
+    pos="35.75,7.5!"
+  ];
+  AdminAuditLog_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="35.75,5.66!"];
+  AdminAuditLog -> AdminAuditLog_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_actorUserId [shape=ellipse, label="actorUserId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="36.932729201823236,6.09047822466108!"];
+  AdminAuditLog -> AdminAuditLog_actorUserId [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_action [shape=ellipse, label="action", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="37.56204626554246,7.180487353092849!"];
+  AdminAuditLog -> AdminAuditLog_action [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_entityType [shape=ellipse, label="entityType", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="37.343486742963364,8.42!"];
+  AdminAuditLog -> AdminAuditLog_entityType [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_entityId [shape=ellipse, label="entityId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="36.37931706371923,9.229034422246071!"];
+  AdminAuditLog -> AdminAuditLog_entityId [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_ipAddress [shape=ellipse, label="ipAddress", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="35.12068293628077,9.229034422246071!"];
+  AdminAuditLog -> AdminAuditLog_ipAddress [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_userAgent [shape=ellipse, label="userAgent", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="34.156513257036636,8.42!"];
+  AdminAuditLog -> AdminAuditLog_userAgent [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_metadata [shape=ellipse, label="metadata", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="33.93795373445754,7.180487353092849!"];
+  AdminAuditLog -> AdminAuditLog_metadata [dir=none, color="#BDC3C7", penwidth=0.5];
+  AdminAuditLog_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="34.567270798176764,6.090478224661081!"];
+  AdminAuditLog -> AdminAuditLog_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Category [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Category",
+    width=1.6, height=0.5,
+    pos="8.25,12.5!"
+  ];
+  Category_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="8.25,10.62!"];
+  Category -> Category_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_parentId [shape=ellipse, label="parentId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="9.35503627430985,10.979048050575098!"];
+  Category -> Category_parentId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_name [shape=ellipse, label="name", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="10.037986250634889,11.9190480505751!"];
+  Category -> Category_name [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_slug [shape=ellipse, label="slug", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="10.037986250634889,13.0809519494249!"];
+  Category -> Category_slug [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_description [shape=ellipse, label="description", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="9.35503627430985,14.020951949424902!"];
+  Category -> Category_description [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_sortOrder [shape=ellipse, label="sortOrder", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="8.25,14.38!"];
+  Category -> Category_sortOrder [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_isActive [shape=ellipse, label="isActive", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="7.14496372569015,14.020951949424902!"];
+  Category -> Category_isActive [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.462013749365111,13.080951949424902!"];
+  Category -> Category_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.462013749365111,11.9190480505751!"];
+  Category -> Category_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Category_deletedAt [shape=ellipse, label="deletedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="7.14496372569015,10.979048050575098!"];
+  Category -> Category_deletedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Product [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Product",
+    width=1.6, height=0.5,
+    pos="19.25,12.5!"
+  ];
+  Product_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="19.25,10.18!"];
+  Product -> Product_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_categoryId [shape=ellipse, label="categoryId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="19.9338320046333,10.283071090576154!"];
+  Product -> Product_categoryId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_createdById [shape=ellipse, label="createdById", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="20.556902534707604,10.583126043586892!"];
+  Product -> Product_createdById [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_updatedById [shape=ellipse, label="updatedById", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="21.06384903932583,11.053503659687738!"];
+  Product -> Product_updatedById [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_sku [shape=ellipse, label="sku", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.409627096854553,11.652408823469964!"];
+  Product -> Product_sku [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_slug [shape=ellipse, label="slug", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.563512809460338,12.326626182879496!"];
+  Product -> Product_slug [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_name [shape=ellipse, label="name", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.511832756261832,13.01624856677865!"];
+  Product -> Product_name [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_shortSpec [shape=ellipse, label="shortSpec", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.259178936779897,13.66!"];
+  Product -> Product_shortSpec [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_description [shape=ellipse, label="description", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.828000751628533,14.200680342645198!"];
+  Product -> Product_description [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_basePrice [shape=ellipse, label="basePrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.256610274752735,14.590247773533612!"];
+  Product -> Product_basePrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_compareAtPrice [shape=ellipse, label="compareAtPrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="19.595778057528726,14.794087516842298!"];
+  Product -> Product_compareAtPrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_weightGrams [shape=ellipse, label="weightGrams", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.904221942471278,14.794087516842298!"];
+  Product -> Product_weightGrams [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_stock [shape=ellipse, label="stock", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.243389725247265,14.590247773533612!"];
+  Product -> Product_stock [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_reservedStock [shape=ellipse, label="reservedStock", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.671999248371467,14.200680342645196!"];
+  Product -> Product_reservedStock [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_soldCount [shape=ellipse, label="soldCount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.240821063220103,13.66!"];
+  Product -> Product_soldCount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_ratingAverage [shape=ellipse, label="ratingAverage", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.988167243738168,13.01624856677865!"];
+  Product -> Product_ratingAverage [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_ratingCount [shape=ellipse, label="ratingCount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.936487190539662,12.326626182879496!"];
+  Product -> Product_ratingCount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_status [shape=ellipse, label="status", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.090372903145447,11.652408823469962!"];
+  Product -> Product_status [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.43615096067417,11.053503659687738!"];
+  Product -> Product_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.943097465292396,10.583126043586892!"];
+  Product -> Product_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Product_deletedAt [shape=ellipse, label="deletedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.5661679953667,10.283071090576154!"];
+  Product -> Product_deletedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  ProductImage [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="ProductImage",
+    width=1.6, height=0.5,
+    pos="30.25,12.5!"
+  ];
+  ProductImage_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="30.25,10.7!"];
+  ProductImage -> ProductImage_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  ProductImage_productId [shape=ellipse, label="productId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="31.522792206135787,11.227207793864213!"];
+  ProductImage -> ProductImage_productId [dir=none, color="#BDC3C7", penwidth=0.5];
+  ProductImage_url [shape=ellipse, label="url", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="32.05,12.5!"];
+  ProductImage -> ProductImage_url [dir=none, color="#BDC3C7", penwidth=0.5];
+  ProductImage_altText [shape=ellipse, label="altText", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="31.522792206135787,13.772792206135787!"];
+  ProductImage -> ProductImage_altText [dir=none, color="#BDC3C7", penwidth=0.5];
+  ProductImage_sortOrder [shape=ellipse, label="sortOrder", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="30.25,14.3!"];
+  ProductImage -> ProductImage_sortOrder [dir=none, color="#BDC3C7", penwidth=0.5];
+  ProductImage_isPrimary [shape=ellipse, label="isPrimary", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.977207793864213,13.772792206135787!"];
+  ProductImage -> ProductImage_isPrimary [dir=none, color="#BDC3C7", penwidth=0.5];
+  ProductImage_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.45,12.5!"];
+  ProductImage -> ProductImage_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  ProductImage_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.977207793864213,11.227207793864215!"];
+  ProductImage -> ProductImage_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Cart [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Cart",
+    width=1.6, height=0.5,
+    pos="8.25,17.5!"
+  ];
+  Cart_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="8.25,15.7!"];
+  Cart -> Cart_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Cart_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="10.05,17.5!"];
+  Cart -> Cart_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Cart_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="8.25,19.3!"];
+  Cart -> Cart_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Cart_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.45,17.5!"];
+  Cart -> Cart_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  CartItem [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="CartItem",
+    width=1.6, height=0.5,
+    pos="13.75,17.5!"
+  ];
+  CartItem_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="13.75,15.7!"];
+  CartItem -> CartItem_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  CartItem_cartId [shape=ellipse, label="cartId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="15.157296668442454,16.37771835665428!"];
+  CartItem -> CartItem_cartId [dir=none, color="#BDC3C7", penwidth=0.5];
+  CartItem_productId [shape=ellipse, label="productId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="15.504870241927282,17.900537681121367!"];
+  CartItem -> CartItem_productId [dir=none, color="#BDC3C7", penwidth=0.5];
+  CartItem_quantity [shape=ellipse, label="quantity", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="14.530990730411604,19.121743962224354!"];
+  CartItem -> CartItem_quantity [dir=none, color="#BDC3C7", penwidth=0.5];
+  CartItem_isSelected [shape=ellipse, label="isSelected", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.969009269588396,19.121743962224354!"];
+  CartItem -> CartItem_isSelected [dir=none, color="#BDC3C7", penwidth=0.5];
+  CartItem_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.995129758072718,17.900537681121367!"];
+  CartItem -> CartItem_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  CartItem_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.342703331557546,16.37771835665428!"];
+  CartItem -> CartItem_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Order [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Order",
+    width=1.6, height=0.5,
+    pos="19.25,22.5!"
+  ];
+  Order_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="19.25,19.78!"];
+  Order -> Order_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="19.797531974641156,19.835678559793216!"];
+  Order -> Order_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingAddressId [shape=ellipse, label="shippingAddressId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="20.322647925908228,20.000434752392973!"];
+  Order -> Order_shippingAddressId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_orderNumber [shape=ellipse, label="orderNumber", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.803849545057837,20.267523439916207!"];
+  Order -> Order_orderNumber [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_status [shape=ellipse, label="status", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.221436381263207,20.626009980114134!"];
+  Order -> Order_status [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_paymentStatus [shape=ellipse, label="paymentStatus", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.558312380385722,21.061217891910662!"];
+  Order -> Order_paymentStatus [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingStatus [shape=ellipse, label="shippingStatus", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.80068579944006,21.55532971226209!"];
+  Order -> Order_shippingStatus [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_currencyCode [shape=ellipse, label="currencyCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.938633842172464,22.088116445187552!"];
+  Order -> Order_currencyCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_subtotalAmount [shape=ellipse, label="subtotalAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.966508899505264,22.6377657392413!"];
+  Order -> Order_subtotalAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingAmount [shape=ellipse, label="shippingAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.883169763316076,23.18177488774372!"];
+  Order -> Order_shippingAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_discountAmount [shape=ellipse, label="discountAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.692028347632416,23.697872092236764!"];
+  Order -> Order_discountAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_taxAmount [shape=ellipse, label="taxAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.40091000447054,24.164928272529643!"];
+  Order -> Order_taxAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_grandTotalAmount [shape=ellipse, label="grandTotalAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.021733153004444,24.56382209372439!"];
+  Order -> Order_grandTotalAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_notes [shape=ellipse, label="notes", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.57002133808454,24.878222795913263!"];
+  Order -> Order_notes [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_adminNote [shape=ellipse, label="adminNote", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.064267694487533,25.095258777408134!"];
+  Order -> Order_adminNote [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingRecipientName [shape=ellipse, label="shippingRecipientName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="19.525177835805817,25.206044559625955!"];
+  Order -> Order_shippingRecipientName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingPhone [shape=ellipse, label="shippingPhone", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.974822164194183,25.206044559625955!"];
+  Order -> Order_shippingPhone [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingProvinceName [shape=ellipse, label="shippingProvinceName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.435732305512467,25.095258777408134!"];
+  Order -> Order_shippingProvinceName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingCityName [shape=ellipse, label="shippingCityName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.92997866191546,24.878222795913263!"];
+  Order -> Order_shippingCityName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingDistrictName [shape=ellipse, label="shippingDistrictName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.478266846995556,24.56382209372439!"];
+  Order -> Order_shippingDistrictName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingSubdistrictName [shape=ellipse, label="shippingSubdistrictName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.09908999552946,24.164928272529643!"];
+  Order -> Order_shippingSubdistrictName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingPostalCode [shape=ellipse, label="shippingPostalCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.807971652367584,23.697872092236764!"];
+  Order -> Order_shippingPostalCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingStreet [shape=ellipse, label="shippingStreet", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.616830236683924,23.18177488774372!"];
+  Order -> Order_shippingStreet [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_shippingDetail [shape=ellipse, label="shippingDetail", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.533491100494736,22.6377657392413!"];
+  Order -> Order_shippingDetail [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_placedAt [shape=ellipse, label="placedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.561366157827536,22.088116445187552!"];
+  Order -> Order_placedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_paidAt [shape=ellipse, label="paidAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.69931420055994,21.55532971226209!"];
+  Order -> Order_paidAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_cancelledAt [shape=ellipse, label="cancelledAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="16.941687619614278,21.061217891910662!"];
+  Order -> Order_cancelledAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_expiresAt [shape=ellipse, label="expiresAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.278563618736793,20.626009980114134!"];
+  Order -> Order_expiresAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.696150454942163,20.267523439916207!"];
+  Order -> Order_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.177352074091772,20.000434752392973!"];
+  Order -> Order_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Order_deletedAt [shape=ellipse, label="deletedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.70246802535884,19.835678559793216!"];
+  Order -> Order_deletedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  OrderItem [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="OrderItem",
+    width=1.6, height=0.5,
+    pos="30.25,22.5!"
+  ];
+  OrderItem_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="30.25,20.46!"];
+  OrderItem -> OrderItem_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_orderId [shape=ellipse, label="orderId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="31.13512282779982,20.662023509479067!"];
+  OrderItem -> OrderItem_orderId [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_productId [shape=ellipse, label="productId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="31.844936224234782,21.228080804208183!"];
+  OrderItem -> OrderItem_productId [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_productSku [shape=ellipse, label="productSku", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="32.23885294085092,22.046057294729117!"];
+  OrderItem -> OrderItem_productSku [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_productSlug [shape=ellipse, label="productSlug", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="32.23885294085092,22.953942705270883!"];
+  OrderItem -> OrderItem_productSlug [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_productName [shape=ellipse, label="productName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="31.844936224234782,23.771919195791817!"];
+  OrderItem -> OrderItem_productName [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_productImageUrl [shape=ellipse, label="productImageUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="31.13512282779982,24.337976490520933!"];
+  OrderItem -> OrderItem_productImageUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_quantity [shape=ellipse, label="quantity", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="30.25,24.54!"];
+  OrderItem -> OrderItem_quantity [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_unitPrice [shape=ellipse, label="unitPrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.36487717220018,24.337976490520933!"];
+  OrderItem -> OrderItem_unitPrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_negotiatedUnitPrice [shape=ellipse, label="negotiatedUnitPrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.65506377576522,23.771919195791817!"];
+  OrderItem -> OrderItem_negotiatedUnitPrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_lineSubtotal [shape=ellipse, label="lineSubtotal", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.26114705914908,22.953942705270883!"];
+  OrderItem -> OrderItem_lineSubtotal [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_weightGrams [shape=ellipse, label="weightGrams", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.261147059149078,22.04605729472912!"];
+  OrderItem -> OrderItem_weightGrams [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.655063775765218,21.228080804208183!"];
+  OrderItem -> OrderItem_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  OrderItem_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.36487717220018,20.662023509479063!"];
+  OrderItem -> OrderItem_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Payment [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Payment",
+    width=1.6, height=0.5,
+    pos="13.75,27.5!"
+  ];
+  Payment_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="13.75,25.34!"];
+  Payment -> Payment_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_orderId [shape=ellipse, label="orderId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="14.53028199896425,25.48585998448659!"];
+  Payment -> Payment_orderId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_provider [shape=ellipse, label="provider", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.205182590276564,25.903740738803375!"];
+  Payment -> Payment_provider [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_providerOrderId [shape=ellipse, label="providerOrderId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="15.683552709326936,26.537205151522677!"];
+  Payment -> Payment_providerOrderId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_providerTransactionId [shape=ellipse, label="providerTransactionId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="15.900785820797275,27.300700343559267!"];
+  Payment -> Payment_providerTransactionId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_snapToken [shape=ellipse, label="snapToken", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.82754338925329,28.091112058555698!"];
+  Payment -> Payment_snapToken [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_paymentUrl [shape=ellipse, label="paymentUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.473717210925317,28.801690814579192!"];
+  Payment -> Payment_paymentUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_method [shape=ellipse, label="method", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="14.887093471815088,29.336469013175968!"];
+  Payment -> Payment_method [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_channel [shape=ellipse, label="channel", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="14.146898958483792,29.62322189531723!"];
+  Payment -> Payment_channel [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_status [shape=ellipse, label="status", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="13.353101041516208,29.62322189531723!"];
+  Payment -> Payment_status [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_grossAmount [shape=ellipse, label="grossAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.612906528184912,29.336469013175968!"];
+  Payment -> Payment_grossAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_fraudStatus [shape=ellipse, label="fraudStatus", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.026282789074683,28.801690814579196!"];
+  Payment -> Payment_fraudStatus [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_transactionTime [shape=ellipse, label="transactionTime", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.67245661074671,28.091112058555698!"];
+  Payment -> Payment_transactionTime [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_settlementTime [shape=ellipse, label="settlementTime", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.599214179202725,27.300700343559267!"];
+  Payment -> Payment_settlementTime [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_expiryTime [shape=ellipse, label="expiryTime", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.816447290673064,26.537205151522677!"];
+  Payment -> Payment_expiryTime [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.294817409723436,25.90374073880338!"];
+  Payment -> Payment_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Payment_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.96971800103575,25.48585998448659!"];
+  Payment -> Payment_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  PaymentEvent [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="PaymentEvent",
+    width=1.6, height=0.5,
+    pos="8.25,27.5!"
+  ];
+  PaymentEvent_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="8.25,25.58!"];
+  PaymentEvent -> PaymentEvent_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_paymentId [shape=ellipse, label="paymentId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="9.288030369514747,25.884793216964134!"];
+  PaymentEvent -> PaymentEvent_paymentId [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_provider [shape=ellipse, label="provider", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="9.996493431080676,26.702403175036377!"];
+  PaymentEvent -> PaymentEvent_provider [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_eventType [shape=ellipse, label="eventType", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="10.150457168411391,27.773244489484707!"];
+  PaymentEvent -> PaymentEvent_eventType [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_providerEventId [shape=ellipse, label="providerEventId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="9.701039182760177,28.75733260917495!"];
+  PaymentEvent -> PaymentEvent_providerEventId [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_payloadHash [shape=ellipse, label="payloadHash", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="8.790926509135545,29.342226509339834!"];
+  PaymentEvent -> PaymentEvent_payloadHash [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_signatureKey [shape=ellipse, label="signatureKey", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="7.709073490864456,29.342226509339834!"];
+  PaymentEvent -> PaymentEvent_signatureKey [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_isSignatureValid [shape=ellipse, label="isSignatureValid", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.798960817239824,28.75733260917495!"];
+  PaymentEvent -> PaymentEvent_isSignatureValid [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_payload [shape=ellipse, label="payload", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.349542831588609,27.773244489484707!"];
+  PaymentEvent -> PaymentEvent_payload [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_processedAt [shape=ellipse, label="processedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.503506568919325,26.70240317503638!"];
+  PaymentEvent -> PaymentEvent_processedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  PaymentEvent_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="7.211969630485253,25.88479321696413!"];
+  PaymentEvent -> PaymentEvent_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Shipment [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Shipment",
+    width=1.6, height=0.5,
+    pos="24.75,27.5!"
+  ];
+  Shipment_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="24.75,25.46!"];
+  Shipment -> Shipment_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_orderId [shape=ellipse, label="orderId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="25.63512282779982,25.662023509479067!"];
+  Shipment -> Shipment_orderId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_provider [shape=ellipse, label="provider", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="26.344936224234782,26.228080804208183!"];
+  Shipment -> Shipment_provider [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_courierCode [shape=ellipse, label="courierCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="26.73885294085092,27.046057294729117!"];
+  Shipment -> Shipment_courierCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_courierName [shape=ellipse, label="courierName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="26.73885294085092,27.953942705270883!"];
+  Shipment -> Shipment_courierName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_serviceCode [shape=ellipse, label="serviceCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="26.344936224234782,28.771919195791817!"];
+  Shipment -> Shipment_serviceCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_serviceName [shape=ellipse, label="serviceName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="25.63512282779982,29.337976490520933!"];
+  Shipment -> Shipment_serviceName [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_trackingNumber [shape=ellipse, label="trackingNumber", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="24.75,29.54!"];
+  Shipment -> Shipment_trackingNumber [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_trackingUrl [shape=ellipse, label="trackingUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="23.86487717220018,29.337976490520933!"];
+  Shipment -> Shipment_trackingUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_status [shape=ellipse, label="status", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="23.15506377576522,28.771919195791817!"];
+  Shipment -> Shipment_status [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_shippedAt [shape=ellipse, label="shippedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="22.76114705914908,27.953942705270883!"];
+  Shipment -> Shipment_shippedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_deliveredAt [shape=ellipse, label="deliveredAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="22.761147059149078,27.04605729472912!"];
+  Shipment -> Shipment_deliveredAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="23.155063775765218,26.228080804208183!"];
+  Shipment -> Shipment_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Shipment_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="23.86487717220018,25.662023509479063!"];
+  Shipment -> Shipment_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Negotiation [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Negotiation",
+    width=1.6, height=0.5,
+    pos="19.25,32.5!"
+  ];
+  Negotiation_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="19.25,30.38!"];
+  Negotiation -> Negotiation_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="20.06128887661399,30.541375391076073!"];
+  Negotiation -> Negotiation_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_processedById [shape=ellipse, label="processedById", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="20.74906637611548,31.00093362388452!"];
+  Negotiation -> Negotiation_processedById [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_finalOrderId [shape=ellipse, label="finalOrderId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="21.208624608923927,31.68871112338601!"];
+  Negotiation -> Negotiation_finalOrderId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_negotiationNumber [shape=ellipse, label="negotiationNumber", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.37,32.5!"];
+  Negotiation -> Negotiation_negotiationNumber [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_status [shape=ellipse, label="status", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="21.208624608923927,33.31128887661399!"];
+  Negotiation -> Negotiation_status [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_requestedTotalAmount [shape=ellipse, label="requestedTotalAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.74906637611548,33.99906637611548!"];
+  Negotiation -> Negotiation_requestedTotalAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_counterTotalAmount [shape=ellipse, label="counterTotalAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="20.06128887661399,34.45862460892393!"];
+  Negotiation -> Negotiation_counterTotalAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_finalTotalAmount [shape=ellipse, label="finalTotalAmount", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="19.25,34.62!"];
+  Negotiation -> Negotiation_finalTotalAmount [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_expiresAt [shape=ellipse, label="expiresAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.43871112338601,34.45862460892393!"];
+  Negotiation -> Negotiation_expiresAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_submittedAt [shape=ellipse, label="submittedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.75093362388452,33.99906637611548!"];
+  Negotiation -> Negotiation_submittedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_respondedAt [shape=ellipse, label="respondedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.291375391076073,33.31128887661399!"];
+  Negotiation -> Negotiation_respondedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_closedAt [shape=ellipse, label="closedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.13,32.5!"];
+  Negotiation -> Negotiation_closedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_notes [shape=ellipse, label="notes", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.291375391076073,31.68871112338601!"];
+  Negotiation -> Negotiation_notes [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="17.750933623884517,31.00093362388452!"];
+  Negotiation -> Negotiation_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Negotiation_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="18.438711123386007,30.541375391076073!"];
+  Negotiation -> Negotiation_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  NegotiationItem [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="NegotiationItem",
+    width=1.6, height=0.5,
+    pos="30.25,32.5!"
+  ];
+  NegotiationItem_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="30.25,30.62!"];
+  NegotiationItem -> NegotiationItem_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_negotiationId [shape=ellipse, label="negotiationId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="31.35503627430985,30.9790480505751!"];
+  NegotiationItem -> NegotiationItem_negotiationId [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_productId [shape=ellipse, label="productId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="32.03798625063489,31.9190480505751!"];
+  NegotiationItem -> NegotiationItem_productId [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_quantity [shape=ellipse, label="quantity", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="32.03798625063489,33.0809519494249!"];
+  NegotiationItem -> NegotiationItem_quantity [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_baseUnitPrice [shape=ellipse, label="baseUnitPrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="31.35503627430985,34.0209519494249!"];
+  NegotiationItem -> NegotiationItem_baseUnitPrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_buyerOfferUnitPrice [shape=ellipse, label="buyerOfferUnitPrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="30.25,34.38!"];
+  NegotiationItem -> NegotiationItem_buyerOfferUnitPrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_adminCounterUnitPrice [shape=ellipse, label="adminCounterUnitPrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.14496372569015,34.0209519494249!"];
+  NegotiationItem -> NegotiationItem_adminCounterUnitPrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_finalUnitPrice [shape=ellipse, label="finalUnitPrice", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.462013749365113,33.0809519494249!"];
+  NegotiationItem -> NegotiationItem_finalUnitPrice [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.462013749365113,31.9190480505751!"];
+  NegotiationItem -> NegotiationItem_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationItem_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.14496372569015,30.9790480505751!"];
+  NegotiationItem -> NegotiationItem_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  NegotiationMessage [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="NegotiationMessage",
+    width=1.6, height=0.5,
+    pos="8.25,32.5!"
+  ];
+  NegotiationMessage_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="8.25,30.7!"];
+  NegotiationMessage -> NegotiationMessage_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationMessage_negotiationId [shape=ellipse, label="negotiationId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="9.80884572681199,31.6!"];
+  NegotiationMessage -> NegotiationMessage_negotiationId [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationMessage_senderId [shape=ellipse, label="senderId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="9.80884572681199,33.4!"];
+  NegotiationMessage -> NegotiationMessage_senderId [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationMessage_senderRole [shape=ellipse, label="senderRole", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="8.25,34.3!"];
+  NegotiationMessage -> NegotiationMessage_senderRole [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationMessage_message [shape=ellipse, label="message", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.691154273188011,33.4!"];
+  NegotiationMessage -> NegotiationMessage_message [dir=none, color="#BDC3C7", penwidth=0.5];
+  NegotiationMessage_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="6.69115427318801,31.6!"];
+  NegotiationMessage -> NegotiationMessage_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  Review [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="Review",
+    width=1.6, height=0.5,
+    pos="30.25,37.5!"
+  ];
+  Review_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="30.25,35.58!"];
+  Review -> Review_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_userId [shape=ellipse, label="userId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="31.288030369514747,35.884793216964134!"];
+  Review -> Review_userId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_productId [shape=ellipse, label="productId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="31.996493431080676,36.70240317503638!"];
+  Review -> Review_productId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_orderItemId [shape=ellipse, label="orderItemId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="32.15045716841139,37.77324448948471!"];
+  Review -> Review_orderItemId [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_rating [shape=ellipse, label="rating", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="31.701039182760177,38.757332609174945!"];
+  Review -> Review_rating [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_title [shape=ellipse, label="title", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="30.790926509135545,39.34222650933984!"];
+  Review -> Review_title [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_content [shape=ellipse, label="content", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.709073490864455,39.34222650933984!"];
+  Review -> Review_content [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_status [shape=ellipse, label="status", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.798960817239823,38.757332609174945!"];
+  Review -> Review_status [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.34954283158861,37.77324448948471!"];
+  Review -> Review_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="28.503506568919324,36.70240317503638!"];
+  Review -> Review_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  Review_deletedAt [shape=ellipse, label="deletedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="29.211969630485253,35.884793216964134!"];
+  Review -> Review_deletedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  ReviewImage [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="ReviewImage",
+    width=1.6, height=0.5,
+    pos="35.75,37.5!"
+  ];
+  ReviewImage_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="35.75,35.7!"];
+  ReviewImage -> ReviewImage_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  ReviewImage_reviewId [shape=ellipse, label="reviewId", fontsize=7, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", penwidth=0.7, width=1.1, height=0.35, pos="37.30884572681199,36.6!"];
+  ReviewImage -> ReviewImage_reviewId [dir=none, color="#BDC3C7", penwidth=0.5];
+  ReviewImage_url [shape=ellipse, label="url", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="37.30884572681199,38.4!"];
+  ReviewImage -> ReviewImage_url [dir=none, color="#BDC3C7", penwidth=0.5];
+  ReviewImage_sortOrder [shape=ellipse, label="sortOrder", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="35.75,39.3!"];
+  ReviewImage -> ReviewImage_sortOrder [dir=none, color="#BDC3C7", penwidth=0.5];
+  ReviewImage_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="34.19115427318801,38.4!"];
+  ReviewImage -> ReviewImage_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  ReviewImage_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="34.19115427318801,36.6!"];
+  ReviewImage -> ReviewImage_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  AppSetting [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="AppSetting",
+    width=1.6, height=0.5,
+    pos="2.75,42.5!"
+  ];
+  AppSetting_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="2.75,40.7!"];
+  AppSetting -> AppSetting_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  AppSetting_shippingCourierCode [shape=ellipse, label="shippingCourierCode", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="4.157296668442454,41.37771835665428!"];
+  AppSetting -> AppSetting_shippingCourierCode [dir=none, color="#BDC3C7", penwidth=0.5];
+  AppSetting_shippingCourierName [shape=ellipse, label="shippingCourierName", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="4.504870241927282,42.900537681121364!"];
+  AppSetting -> AppSetting_shippingCourierName [dir=none, color="#BDC3C7", penwidth=0.5];
+  AppSetting_shippingTrackingBaseUrl [shape=ellipse, label="shippingTrackingBaseUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="3.5309907304116046,44.12174396222436!"];
+  AppSetting -> AppSetting_shippingTrackingBaseUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  AppSetting_bannerAutoplayMs [shape=ellipse, label="bannerAutoplayMs", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="1.9690092695883954,44.12174396222436!"];
+  AppSetting -> AppSetting_bannerAutoplayMs [dir=none, color="#BDC3C7", penwidth=0.5];
+  AppSetting_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="0.9951297580727174,42.900537681121364!"];
+  AppSetting -> AppSetting_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  AppSetting_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="1.342703331557546,41.37771835665428!"];
+  AppSetting -> AppSetting_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  HomeBanner [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="HomeBanner",
+    width=1.6, height=0.5,
+    pos="13.75,42.5!"
+  ];
+  HomeBanner_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="13.75,40.62!"];
+  HomeBanner -> HomeBanner_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_title [shape=ellipse, label="title", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="14.85503627430985,40.9790480505751!"];
+  HomeBanner -> HomeBanner_title [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_subtitle [shape=ellipse, label="subtitle", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.537986250634889,41.9190480505751!"];
+  HomeBanner -> HomeBanner_subtitle [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_imageUrl [shape=ellipse, label="imageUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="15.537986250634889,43.0809519494249!"];
+  HomeBanner -> HomeBanner_imageUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_altText [shape=ellipse, label="altText", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="14.85503627430985,44.0209519494249!"];
+  HomeBanner -> HomeBanner_altText [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_targetUrl [shape=ellipse, label="targetUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="13.75,44.38!"];
+  HomeBanner -> HomeBanner_targetUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_isActive [shape=ellipse, label="isActive", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.64496372569015,44.0209519494249!"];
+  HomeBanner -> HomeBanner_isActive [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_sortOrder [shape=ellipse, label="sortOrder", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.962013749365111,43.0809519494249!"];
+  HomeBanner -> HomeBanner_sortOrder [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="11.962013749365111,41.9190480505751!"];
+  HomeBanner -> HomeBanner_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  HomeBanner_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="12.64496372569015,40.9790480505751!"];
+  HomeBanner -> HomeBanner_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  AuthBanner [
+    shape=box,
+    style="filled,bold",
+    fillcolor="#D4E6F1",
+    color="#2980B9",
+    fontsize=13,
+    fontcolor="#1A5276",
+    penwidth=2.0,
+    label="AuthBanner",
+    width=1.6, height=0.5,
+    pos="24.75,42.5!"
+  ];
+  AuthBanner_id [shape=ellipse, label=<<u>id</u>>, fontsize=7, style="filled", fillcolor="#FCF3CF", color="#B7950B", penwidth=0.7, width=1.1, height=0.35, pos="24.75,40.66!"];
+  AuthBanner -> AuthBanner_id [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_imageUrl [shape=ellipse, label="imageUrl", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="25.932729201823232,41.090478224661084!"];
+  AuthBanner -> AuthBanner_imageUrl [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_altText [shape=ellipse, label="altText", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="26.562046265542463,42.18048735309285!"];
+  AuthBanner -> AuthBanner_altText [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_title [shape=ellipse, label="title", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="26.343486742963368,43.42!"];
+  AuthBanner -> AuthBanner_title [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_subtitle [shape=ellipse, label="subtitle", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="25.37931706371923,44.22903442224607!"];
+  AuthBanner -> AuthBanner_subtitle [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_isActive [shape=ellipse, label="isActive", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="24.12068293628077,44.22903442224607!"];
+  AuthBanner -> AuthBanner_isActive [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_sortOrder [shape=ellipse, label="sortOrder", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="23.156513257036632,43.42!"];
+  AuthBanner -> AuthBanner_sortOrder [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_createdAt [shape=ellipse, label="createdAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="22.937953734457537,42.18048735309285!"];
+  AuthBanner -> AuthBanner_createdAt [dir=none, color="#BDC3C7", penwidth=0.5];
+  AuthBanner_updatedAt [shape=ellipse, label="updatedAt", fontsize=7, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", penwidth=0.7, width=1.1, height=0.35, pos="23.567270798176768,41.090478224661084!"];
+  AuthBanner -> AuthBanner_updatedAt [dir=none, color="#BDC3C7", penwidth=0.5];
+
+  // ── Relasi ──
+  rel_0 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="milik",
+    width=1.5, height=0.8,
+    pos="13.75,2.5!"
+  ];
+  Session -> rel_0 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_0 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_1 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="milik",
+    width=1.5, height=0.8,
+    pos="24.75,2.5!"
+  ];
+  AuthAccount -> rel_1 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_1 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_2 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="milik",
+    width=1.5, height=0.8,
+    pos="11.0,5.0!"
+  ];
+  EmailVerification -> rel_2 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_2 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_3 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="milik",
+    width=1.5, height=0.8,
+    pos="16.5,5.0!"
+  ];
+  Address -> rel_3 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_3 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_4 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="sub-kategori",
+    width=1.5, height=0.8,
+    pos="8.25,12.5!"
+  ];
+  Category -> rel_4 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_4 -> Category [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_5 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="dikategorikan",
+    width=1.5, height=0.8,
+    pos="13.75,12.5!"
+  ];
+  Product -> rel_5 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_5 -> Category [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_6 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="dibuat oleh",
+    width=1.5, height=0.8,
+    pos="19.25,7.5!"
+  ];
+  Product -> rel_6 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_6 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_7 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="diperbarui oleh",
+    width=1.5, height=0.8,
+    pos="20.05,7.5!"
+  ];
+  Product -> rel_7 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_7 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_8 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="gambar dari",
+    width=1.5, height=0.8,
+    pos="24.75,12.5!"
+  ];
+  ProductImage -> rel_8 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_8 -> Product [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_9 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="milik",
+    width=1.5, height=0.8,
+    pos="13.75,10.0!"
+  ];
+  Cart -> rel_9 [label="  1  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_9 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_10 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="isi keranjang",
+    width=1.5, height=0.8,
+    pos="11.0,17.5!"
+  ];
+  CartItem -> rel_10 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_10 -> Cart [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_11 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="produk",
+    width=1.5, height=0.8,
+    pos="16.5,15.0!"
+  ];
+  CartItem -> rel_11 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_11 -> Product [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_12 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="dikirim ke",
+    width=1.5, height=0.8,
+    pos="16.5,15.0!"
+  ];
+  Order -> rel_12 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_12 -> Address [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_13 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="memesan",
+    width=1.5, height=0.8,
+    pos="19.25,12.5!"
+  ];
+  Order -> rel_13 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_13 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_14 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="item pesanan",
+    width=1.5, height=0.8,
+    pos="24.75,22.5!"
+  ];
+  OrderItem -> rel_14 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_14 -> Order [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_15 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="produk pesanan",
+    width=1.5, height=0.8,
+    pos="24.75,17.5!"
+  ];
+  OrderItem -> rel_15 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_15 -> Product [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_16 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="pembayaran",
+    width=1.5, height=0.8,
+    pos="16.5,25.0!"
+  ];
+  Payment -> rel_16 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_16 -> Order [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_17 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="event pembayaran",
+    width=1.5, height=0.8,
+    pos="11.0,27.5!"
+  ];
+  PaymentEvent -> rel_17 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_17 -> Payment [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_18 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="pengiriman",
+    width=1.5, height=0.8,
+    pos="22.0,25.0!"
+  ];
+  Shipment -> rel_18 [label="  1  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_18 -> Order [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_19 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="menghasilkan",
+    width=1.5, height=0.8,
+    pos="19.25,27.5!"
+  ];
+  Negotiation -> rel_19 [label="  1  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_19 -> Order [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_20 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="diproses oleh",
+    width=1.5, height=0.8,
+    pos="19.25,17.5!"
+  ];
+  Negotiation -> rel_20 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_20 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_21 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="mengajukan",
+    width=1.5, height=0.8,
+    pos="20.05,17.5!"
+  ];
+  Negotiation -> rel_21 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_21 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_22 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="item negosiasi",
+    width=1.5, height=0.8,
+    pos="24.75,32.5!"
+  ];
+  NegotiationItem -> rel_22 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_22 -> Negotiation [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_23 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="produk negosiasi",
+    width=1.5, height=0.8,
+    pos="24.75,22.5!"
+  ];
+  NegotiationItem -> rel_23 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_23 -> Product [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_24 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="pesan negosiasi",
+    width=1.5, height=0.8,
+    pos="13.75,32.5!"
+  ];
+  NegotiationMessage -> rel_24 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_24 -> Negotiation [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_25 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="dikirim oleh",
+    width=1.5, height=0.8,
+    pos="13.75,17.5!"
+  ];
+  NegotiationMessage -> rel_25 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_25 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_26 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="ulasan item",
+    width=1.5, height=0.8,
+    pos="30.25,30.0!"
+  ];
+  Review -> rel_26 [label="  1  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_26 -> OrderItem [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_27 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="ulasan untuk",
+    width=1.5, height=0.8,
+    pos="24.75,25.0!"
+  ];
+  Review -> rel_27 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_27 -> Product [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_28 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="menulis",
+    width=1.5, height=0.8,
+    pos="24.75,20.0!"
+  ];
+  Review -> rel_28 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_28 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_29 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="gambar ulasan",
+    width=1.5, height=0.8,
+    pos="33.0,37.5!"
+  ];
+  ReviewImage -> rel_29 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_29 -> Review [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  rel_30 [
+    shape=diamond,
+    style="filled",
+    fillcolor="#FDEBD0",
+    color="#E67E22",
+    fontsize=9,
+    fontcolor="#784212",
+    penwidth=1.4,
+    label="dicatat oleh",
+    width=1.5, height=0.8,
+    pos="27.5,5.0!"
+  ];
+  AdminAuditLog -> rel_30 [label="  N  ", fontsize=10, fontcolor="#E74C3C", penwidth=1.3, color="#E67E22", arrowhead=none];
+  rel_30 -> User [label="  1  ", fontsize=10, fontcolor="#2980B9", penwidth=1.3, color="#E67E22", arrowhead=none];
+
+  subgraph cluster_legend {
+    label="Legenda";
+    fontsize=13; fontcolor="#2C3E50";
+    style="rounded,filled"; fillcolor="#F8F9FA"; color="#BDC3C7";
+    leg_e [shape=box, style="filled,bold", fillcolor="#D4E6F1", color="#2980B9", label="Entitas", fontsize=9, penwidth=2, pos="40.5,1.0!"];
+    leg_pk [shape=ellipse, style="filled", fillcolor="#FCF3CF", color="#B7950B", label=<<u>Primary Key</u>>, fontsize=8, pos="40.5,0.4!"];
+    leg_a [shape=ellipse, style="filled", fillcolor="#FDFEFE", color="#5D6D7E", label="Atribut", fontsize=8, pos="40.5,-0.19999999999999996!"];
+    leg_fk [shape=ellipse, style="dashed,filled", fillcolor="#F5EEF8", color="#7D3C98", label="Foreign Key", fontsize=8, pos="40.5,-0.8!"];
+    leg_r [shape=diamond, style="filled", fillcolor="#FDEBD0", color="#E67E22", label="Relasi", fontsize=8, penwidth=1.4, pos="40.5,-1.4!"];
+    leg_1 [shape=plaintext, label="1 = Satu\nN = Banyak", fontsize=8, pos="40.5,-2.2!"];
+    leg_e -> leg_pk [style=invis];
+    leg_pk -> leg_a [style=invis];
+    leg_a -> leg_fk [style=invis];
+    leg_fk -> leg_r [style=invis];
+    leg_r -> leg_1 [style=invis];
+  }
+}

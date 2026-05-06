@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   OAUTH_STATE_COOKIE_NAME,
   OAUTH_STATE_TTL_MS,
+  shouldCookieBeSecure,
 } from "@/lib/auth/config";
 import { createGoogleAuthUrl } from "@/lib/auth/google";
 import {
@@ -34,7 +35,7 @@ export function GET(request: NextRequest) {
     name: OAUTH_STATE_COOKIE_NAME,
     value: encodedState,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldCookieBeSecure(),
     sameSite: "lax",
     path: "/",
     expires: new Date(Date.now() + OAUTH_STATE_TTL_MS),

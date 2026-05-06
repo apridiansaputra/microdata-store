@@ -2,7 +2,7 @@ import type { Role, UserStatus } from "@prisma/client";
 import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 
-import { getSessionCookieName, SESSION_TTL_MS, type SessionKind } from "@/lib/auth/config";
+import { getSessionCookieName, SESSION_TTL_MS, shouldCookieBeSecure, type SessionKind } from "@/lib/auth/config";
 import { maybeCleanupExpiredSessions } from "@/lib/auth/session-cleanup";
 import { hashSessionToken } from "@/lib/auth/session-token";
 import { prisma } from "@/lib/prisma";
@@ -37,7 +37,7 @@ export function setSessionCookie(
     name: getSessionCookieName(kind),
     value: sessionToken,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldCookieBeSecure(),
     sameSite: "lax",
     path: "/",
     expires: expiresAt,
@@ -49,7 +49,7 @@ export function clearSessionCookie(response: NextResponse, kind: SessionKind = "
     name: getSessionCookieName(kind),
     value: "",
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldCookieBeSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: 0,

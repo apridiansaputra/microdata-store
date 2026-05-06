@@ -91,6 +91,15 @@ export function getAuthBaseUrl() {
   return "http://localhost:3000";
 }
 
+/**
+ * Menentukan apakah cookie harus menggunakan flag `secure`.
+ * Berdasarkan protokol AUTH_URL, bukan NODE_ENV.
+ * Ini memastikan cookie tetap bisa tersimpan saat deploy via HTTP (misal IP tanpa HTTPS).
+ */
+export function shouldCookieBeSecure() {
+  return getAuthBaseUrl().startsWith("https://");
+}
+
 export function getGoogleOAuthConfig() {
   const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();

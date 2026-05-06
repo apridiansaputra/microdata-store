@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-import { OAUTH_STATE_COOKIE_NAME } from "@/lib/auth/config";
+import { OAUTH_STATE_COOKIE_NAME, shouldCookieBeSecure } from "@/lib/auth/config";
 import {
   exchangeGoogleCode,
   fetchGoogleUserInfo,
@@ -19,7 +19,7 @@ function clearOAuthStateCookie(response: NextResponse) {
     name: OAUTH_STATE_COOKIE_NAME,
     value: "",
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: shouldCookieBeSecure(),
     sameSite: "lax",
     path: "/",
     maxAge: 0,
