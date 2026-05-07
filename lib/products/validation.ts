@@ -12,7 +12,7 @@ const imagePathSchema = z
   .max(2048, "Path gambar terlalu panjang.")
   .refine(
     (value) => isLocalImagePath(value),
-    "Path gambar harus berupa path lokal yang diawali '/'.",
+    "Path gambar tidak valid.",
   );
 
 const baseProductSchema = z

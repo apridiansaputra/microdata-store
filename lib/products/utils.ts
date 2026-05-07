@@ -90,6 +90,9 @@ export function toSafeNumber(value: bigint | null) {
 }
 
 export function isLocalImagePath(value: string) {
+  if (value.startsWith("https://") && value.includes("public.blob.vercel-storage.com")) {
+    return true;
+  }
   if (!value.startsWith("/")) return false;
   if (value.startsWith("//")) return false;
   if (value.includes("..")) return false;
