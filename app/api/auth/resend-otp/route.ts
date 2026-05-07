@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { assertEmailDeliveryConfigured } from "@/lib/auth/email";
+import { assertEmailDeliveryConfigured, sendOtpEmail } from "@/lib/auth/email";
 import { normalizeEmail } from "@/lib/auth/normalize";
-import { enqueueOtpEmailJob } from "@/lib/auth/otp-email-queue";
 import { generateOtpCode } from "@/lib/auth/otp";
 import { resendOtpSchema } from "@/lib/auth/validation";
 import {
@@ -72,7 +71,7 @@ export async function POST(request: Request) {
     });
 
     assertEmailDeliveryConfigured();
-    enqueueOtpEmailJob({ to: user.email, code: otpCode, purpose: "register" });
+    await sendOtpEmail({ to: user.email, code: otpCode, purpose: "register" });
 
     return NextResponse.json(
       {
@@ -92,15 +91,7 @@ export async function POST(request: Request) {
         );
       }
 
-      if (error.message === "OTP_EMAIL_QUEUE_FULL") {
-        return NextResponse.json(
-          {
-            error:
-              "Layanan OTP sedang sibuk. Coba lagi beberapa saat lagi.",
-          },
-          { status: 503 },
-        );
-      }
+
     }
 
     console.error("Resend OTP error:", error);

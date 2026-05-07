@@ -1,9 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-import { assertEmailDeliveryConfigured } from "@/lib/auth/email";
+import { assertEmailDeliveryConfigured, sendOtpEmail } from "@/lib/auth/email";
 import { normalizeEmail, normalizeUsername } from "@/lib/auth/normalize";
-import { enqueueOtpEmailJob } from "@/lib/auth/otp-email-queue";
 import { isStrongPassword, hashPassword } from "@/lib/auth/password";
 import { generateOtpCode } from "@/lib/auth/otp";
 import { registerSchema } from "@/lib/auth/validation";
@@ -125,7 +124,7 @@ export async function POST(request: Request) {
     });
 
     assertEmailDeliveryConfigured();
-    enqueueOtpEmailJob({
+    await sendOtpEmail({
       to: upsertedUser.email,
       code: otpCode,
       purpose: "register",
@@ -159,15 +158,7 @@ export async function POST(request: Request) {
         );
       }
 
-      if (error.message === "OTP_EMAIL_QUEUE_FULL") {
-        return NextResponse.json(
-          {
-            error:
-              "Layanan OTP sedang sibuk. Coba lagi beberapa saat lagi.",
-          },
-          { status: 503 },
-        );
-      }
+
     }
 
     console.error("Register error:", error);

@@ -1,9 +1,8 @@
 import { VerificationPurpose } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-import { assertEmailDeliveryConfigured } from "@/lib/auth/email";
+import { assertEmailDeliveryConfigured, sendOtpEmail } from "@/lib/auth/email";
 import { normalizeEmail } from "@/lib/auth/normalize";
-import { enqueueOtpEmailJob } from "@/lib/auth/otp-email-queue";
 import { verifyOtpCode } from "@/lib/auth/otp";
 import { generateOtpCode } from "@/lib/auth/otp";
 import { createPasswordResetSession } from "@/lib/auth/password-reset";
@@ -54,7 +53,7 @@ async function resendResetOtpBestEffort(input: {
     requestedUserAgent: input.userAgent,
   });
   assertEmailDeliveryConfigured();
-  enqueueOtpEmailJob({
+  await sendOtpEmail({
     to: user.email,
     code: otpCode,
     purpose: "password_reset",
