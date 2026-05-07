@@ -1,6 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import { put } from "@vercel/blob";
 
 import { NextRequest, NextResponse } from "next/server";
 
@@ -52,19 +51,16 @@ export async function POST(request: NextRequest) {
   const year = String(now.getFullYear());
   const month = String(now.getMonth() + 1).padStart(2, "0");
 
-  const relativeDir = path.join("uploads", "reviews", year, month);
-  const absoluteDir = path.join(process.cwd(), "public", relativeDir);
-  await mkdir(absoluteDir, { recursive: true });
+  const fileName = `uploads/reviews/${year}/${month}/${Date.now()}-${randomUUID()}${extension}`;
 
-  const fileName = `${Date.now()}-${randomUUID()}${extension}`;
-  const absolutePath = path.join(absoluteDir, fileName);
-  const fileBuffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(absolutePath, fileBuffer);
+  const blob = await put(fileName, file, {
+    access: "public",
+  });
 
   return NextResponse.json(
     {
       success: true,
-      url: `/${relativeDir.replaceAll("\\", "/")}/${fileName}`,
+      url: blob.url,
     },
     { status: 201 },
   );
