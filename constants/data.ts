@@ -15,10 +15,10 @@ export const footerHelp = [
 ]
 
 export const footerCategory = [
-  { title: "Laptop", href: "/kategori/infinix-200" },
-  { title: "Smartphone", href: "/kategori/smartphone" },
-  { title: "Komputer", href: "/kategori/komputer" },
-  { title: "Hardware", href: "/kategori/hardware" },
+  { title: "Laptop", href: "/products" },
+  { title: "Smartphone", href: "/products" },
+  { title: "Komputer", href: "/products" },
+  { title: "Hardware", href: "/products" },
 ]
 
 export type AdminProduct = {

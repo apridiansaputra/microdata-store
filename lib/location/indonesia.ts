@@ -23,14 +23,23 @@ function normalizeLocationOptions(nodes: RegionNode[]): LocationOption[] {
 }
 
 async function fetchWithFallback(pathname: string): Promise<Response> {
+  const FETCH_TIMEOUT = 3000;
+  
   try {
-    const res = await fetch(`${PRIMARY_BASE_URL}/${pathname}`, { cache: "no-store" });
+    const res = await fetch(`${PRIMARY_BASE_URL}/${pathname}`, { 
+      cache: "no-store",
+      signal: AbortSignal.timeout(FETCH_TIMEOUT)
+    });
     if (res.ok) return res;
   } catch (err) {
-    // Primary failed, proceed to fallback
+    // Primary failed (timeout or network error), proceed to fallback
   }
 
-  const fallbackRes = await fetch(`${FALLBACK_BASE_URL}/${pathname}`, { cache: "no-store" });
+  const fallbackRes = await fetch(`${FALLBACK_BASE_URL}/${pathname}`, { 
+    cache: "no-store",
+    signal: AbortSignal.timeout(FETCH_TIMEOUT)
+  });
+  
   if (!fallbackRes.ok) {
     throw new Error(`Gagal mengambil data wilayah (${fallbackRes.status}).`);
   }
