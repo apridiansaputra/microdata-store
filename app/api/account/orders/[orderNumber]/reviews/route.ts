@@ -58,15 +58,11 @@ function canReviewOrderStatus(status: string) {
   return status === "COMPLETED" || status === "DELIVERED";
 }
 
-function isLocalImagePath(value: string) {
-  if (!value.startsWith("/")) return false;
-  if (value.startsWith("//")) return false;
-  if (value.includes("..")) return false;
-  return true;
-}
-
 function isAllowedReviewImagePath(value: string) {
-  return isLocalImagePath(value) && value.startsWith("/uploads/reviews/");
+  if (value.startsWith("https://") && value.includes("public.blob.vercel-storage.com")) {
+    return true;
+  }
+  return value.startsWith("/uploads/reviews/") && !value.includes("..");
 }
 
 function dedupeImagePaths(imagePaths: string[]) {
