@@ -22,40 +22,28 @@ function normalizeLocationOptions(nodes: RegionNode[]): LocationOption[] {
     .sort((a, b) => a.name.localeCompare(b.name, "id"));
 }
 
-async function fetchWithTimeout(url: string): Promise<Response> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-
+async function fetchWithFallback(pathname: string): Promise<Response> {
   try {
-    return await fetch(url, {
-      method: "GET",
-      signal: controller.signal,
-      cache: "no-store",
-    });
-  } finally {
-    clearTimeout(timer);
+    const res = await fetch(`${PRIMARY_BASE_URL}/${pathname}`, { cache: "no-store" });
+    if (res.ok) return res;
+  } catch (err) {
+    // Primary failed, proceed to fallback
   }
+
+  const fallbackRes = await fetch(`${FALLBACK_BASE_URL}/${pathname}`, { cache: "no-store" });
+  if (!fallbackRes.ok) {
+    throw new Error(`Gagal mengambil data wilayah (${fallbackRes.status}).`);
+  }
+  return fallbackRes;
 }
 
 async function fetchRegion(pathname: string): Promise<LocationOption[]> {
-  let response: Response | null = null;
+  let response: Response;
 
   try {
-    response = await fetchWithTimeout(`${PRIMARY_BASE_URL}/${pathname}`);
-  } catch {
-    // Primary URL failed, will try fallback below
-  }
-
-  if (!response || !response.ok) {
-    try {
-      response = await fetchWithTimeout(`${FALLBACK_BASE_URL}/${pathname}`);
-    } catch {
-      throw new Error("Gagal mengambil data wilayah: kedua sumber tidak tersedia.");
-    }
-  }
-
-  if (!response.ok) {
-    throw new Error(`Gagal mengambil data wilayah (${response.status}).`);
+    response = await fetchWithFallback(pathname);
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : "Gagal mengambil data wilayah.");
   }
 
   const data = (await response.json().catch(() => null)) as RegionNode[] | null;
