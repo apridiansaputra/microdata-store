@@ -8,7 +8,9 @@ export type LocationOption = {
   name: string;
 };
 
-const EMSIFA_BASE_URL = "https://www.emsifa.com/api-wilayah-indonesia/api";
+const PRIMARY_BASE_URL = "https://emsifa.github.io/api-wilayah-indonesia/api";
+const FALLBACK_BASE_URL = "https://www.emsifa.com/api-wilayah-indonesia/api";
+const FETCH_TIMEOUT_MS = 10_000;
 
 function normalizeLocationOptions(nodes: RegionNode[]): LocationOption[] {
   return nodes
@@ -20,11 +22,37 @@ function normalizeLocationOptions(nodes: RegionNode[]): LocationOption[] {
     .sort((a, b) => a.name.localeCompare(b.name, "id"));
 }
 
+async function fetchWithTimeout(url: string): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  try {
+    return await fetch(url, {
+      method: "GET",
+      signal: controller.signal,
+      cache: "no-store",
+    });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function fetchRegion(pathname: string): Promise<LocationOption[]> {
-  const response = await fetch(`${EMSIFA_BASE_URL}/${pathname}`, {
-    method: "GET",
-    next: { revalidate: 60 * 60 * 24 },
-  });
+  let response: Response | null = null;
+
+  try {
+    response = await fetchWithTimeout(`${PRIMARY_BASE_URL}/${pathname}`);
+  } catch {
+    // Primary URL failed, will try fallback below
+  }
+
+  if (!response || !response.ok) {
+    try {
+      response = await fetchWithTimeout(`${FALLBACK_BASE_URL}/${pathname}`);
+    } catch {
+      throw new Error("Gagal mengambil data wilayah: kedua sumber tidak tersedia.");
+    }
+  }
 
   if (!response.ok) {
     throw new Error(`Gagal mengambil data wilayah (${response.status}).`);
