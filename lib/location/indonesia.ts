@@ -53,11 +53,10 @@ async function fetchWithFallback(primaryUrl: string, fallbackUrl: string): Promi
   return normalizeLocationOptions(data);
 }
 
+import provincesData from "./provinces-data.json";
+
 export async function fetchProvinces() {
-  return fetchWithFallback(
-    `${IBNUX_BASE_URL}/provinsi.json`,
-    `${EMSIFA_BASE_URL}/provinces.json`
-  );
+  return normalizeLocationOptions(provincesData as RegionNode[]);
 }
 
 export async function fetchCitiesByProvince(provinceCode: string) {
