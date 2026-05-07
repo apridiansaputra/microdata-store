@@ -106,7 +106,7 @@ export async function POST(request: Request) {
         username: usernameNormalized,
         phone: payload.phone ?? null,
         passwordHash,
-        role: "USER",
+        role: emailNormalized === normalizeEmail(process.env.SUPER_ADMIN_EMAIL || "") ? "SUPER_ADMIN" : "USER",
         status: "PENDING_VERIFICATION",
       },
       select: {

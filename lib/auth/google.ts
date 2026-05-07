@@ -172,6 +172,7 @@ export async function upsertGoogleAuthUser(input: {
           emailVerifiedAt: existingAccount.user.emailVerifiedAt ?? now,
           lastLoginAt: now,
           deletedAt: null,
+          ...(googleEmail === process.env.SUPER_ADMIN_EMAIL ? { role: "SUPER_ADMIN" } : {}),
         },
         select: {
           id: true,
@@ -222,6 +223,7 @@ export async function upsertGoogleAuthUser(input: {
             lastLoginAt: now,
             deletedAt: null,
             avatarUrl: input.profile.picture ?? undefined,
+            ...(googleEmail === process.env.SUPER_ADMIN_EMAIL ? { role: "SUPER_ADMIN" } : {}),
           },
           select: {
             id: true,
@@ -235,7 +237,7 @@ export async function upsertGoogleAuthUser(input: {
             emailNormalized,
             fullName: getFallbackFullName(googleEmail, input.profile.name),
             avatarUrl: input.profile.picture ?? null,
-            role: "USER",
+            role: googleEmail === process.env.SUPER_ADMIN_EMAIL ? "SUPER_ADMIN" : "USER",
             status: UserStatus.ACTIVE,
             emailVerifiedAt: now,
             lastLoginAt: now,
