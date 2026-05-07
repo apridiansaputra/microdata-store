@@ -1,6 +1,7 @@
 type RegionNode = {
   id: string;
-  name: string;
+  name?: string;
+  nama?: string;
 };
 
 export type LocationOption = {
@@ -8,69 +9,67 @@ export type LocationOption = {
   name: string;
 };
 
-const PRIMARY_BASE_URL = "https://emsifa.github.io/api-wilayah-indonesia/api";
-const FALLBACK_BASE_URL = "https://www.emsifa.com/api-wilayah-indonesia/api";
-const FETCH_TIMEOUT_MS = 10_000;
+const IBNUX_BASE_URL = "https://ibnux.github.io/data-indonesia";
+const EMSIFA_BASE_URL = "https://emsifa.github.io/api-wilayah-indonesia/api";
+const FETCH_TIMEOUT = 3000;
 
 function normalizeLocationOptions(nodes: RegionNode[]): LocationOption[] {
   return nodes
     .map((node) => ({
       code: String(node.id ?? "").trim(),
-      name: String(node.name ?? "").trim(),
+      name: String(node.name ?? node.nama ?? "").trim().toUpperCase(),
     }))
     .filter((node) => node.code.length > 0 && node.name.length > 0)
     .sort((a, b) => a.name.localeCompare(b.name, "id"));
 }
 
-async function fetchWithFallback(pathname: string): Promise<Response> {
-  const FETCH_TIMEOUT = 3000;
-  
+async function fetchWithFallback(primaryUrl: string, fallbackUrl: string): Promise<LocationOption[]> {
   try {
-    const res = await fetch(`${PRIMARY_BASE_URL}/${pathname}`, { 
+    const res = await fetch(primaryUrl, {
       cache: "no-store",
-      signal: AbortSignal.timeout(FETCH_TIMEOUT)
+      signal: AbortSignal.timeout(FETCH_TIMEOUT),
     });
-    if (res.ok) return res;
+    if (res.ok) {
+      const data = await res.json().catch(() => null);
+      if (Array.isArray(data)) return normalizeLocationOptions(data);
+    }
   } catch (err) {
-    // Primary failed (timeout or network error), proceed to fallback
+    // Primary failed (timeout or network error)
   }
 
-  const fallbackRes = await fetch(`${FALLBACK_BASE_URL}/${pathname}`, { 
+  const fallbackRes = await fetch(fallbackUrl, {
     cache: "no-store",
-    signal: AbortSignal.timeout(FETCH_TIMEOUT)
+    signal: AbortSignal.timeout(FETCH_TIMEOUT),
   });
   
   if (!fallbackRes.ok) {
     throw new Error(`Gagal mengambil data wilayah (${fallbackRes.status}).`);
   }
-  return fallbackRes;
-}
 
-async function fetchRegion(pathname: string): Promise<LocationOption[]> {
-  let response: Response;
-
-  try {
-    response = await fetchWithFallback(pathname);
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : "Gagal mengambil data wilayah.");
-  }
-
-  const data = (await response.json().catch(() => null)) as RegionNode[] | null;
+  const data = await fallbackRes.json().catch(() => null);
   if (!Array.isArray(data)) {
     throw new Error("Format data wilayah tidak valid.");
   }
-
   return normalizeLocationOptions(data);
 }
 
 export async function fetchProvinces() {
-  return fetchRegion("provinces.json");
+  return fetchWithFallback(
+    `${IBNUX_BASE_URL}/provinsi.json`,
+    `${EMSIFA_BASE_URL}/provinces.json`
+  );
 }
 
 export async function fetchCitiesByProvince(provinceCode: string) {
-  return fetchRegion(`regencies/${encodeURIComponent(provinceCode)}.json`);
+  return fetchWithFallback(
+    `${IBNUX_BASE_URL}/kabupaten/${encodeURIComponent(provinceCode)}.json`,
+    `${EMSIFA_BASE_URL}/regencies/${encodeURIComponent(provinceCode)}.json`
+  );
 }
 
 export async function fetchDistrictsByCity(cityCode: string) {
-  return fetchRegion(`districts/${encodeURIComponent(cityCode)}.json`);
+  return fetchWithFallback(
+    `${IBNUX_BASE_URL}/kecamatan/${encodeURIComponent(cityCode)}.json`,
+    `${EMSIFA_BASE_URL}/districts/${encodeURIComponent(cityCode)}.json`
+  );
 }
