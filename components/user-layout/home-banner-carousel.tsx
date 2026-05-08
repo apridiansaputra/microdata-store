@@ -72,30 +72,40 @@ export default function HomeBannerCarousel({
       <Carousel setApi={setCarouselApi} opts={{ align: "start", loop: true }}>
         <CarouselContent className="-ml-0">
           {banners.map((banner) => {
+            const hasTextContent = !!(banner.title || banner.subtitle);
+
             const content = (
               <div className="relative h-56 w-full md:h-[360px]">
                 <Image
                   src={banner.imageUrl}
                   alt={banner.altText ?? banner.title ?? "Banner"}
                   fill
-                  className="object-cover"
+                  className="object-fill"
                   priority
                   sizes="(min-width: 768px) 100vw, 100vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/10 to-transparent" />
-                <div className="absolute inset-0 flex items-center px-6 md:px-12">
-                  <div className="max-w-md text-white">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-white/80">
-                      Microdata Store
-                    </p>
-                    <h2 className="mt-3 text-xl font-semibold md:text-3xl">
-                      {banner.title ?? "Promo Spesial"}
-                    </h2>
-                    <p className="mt-2 text-xs text-white/80 md:text-sm">
-                      {banner.subtitle ?? "Belanja kebutuhan IT dengan penawaran terbaik."}
-                    </p>
-                  </div>
-                </div>
+                {hasTextContent && (
+                  <>
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/10 to-transparent" />
+                    <div className="absolute inset-0 flex items-center px-6 md:px-12">
+                      <div className="max-w-md text-white">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-white/80">
+                          Microdata Store
+                        </p>
+                        {banner.title && (
+                          <h2 className="mt-3 text-xl font-semibold md:text-3xl">
+                            {banner.title}
+                          </h2>
+                        )}
+                        {banner.subtitle && (
+                          <p className="mt-2 text-xs text-white/80 md:text-sm">
+                            {banner.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             );
 
