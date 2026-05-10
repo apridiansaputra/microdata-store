@@ -19,26 +19,31 @@ const shoppingGuideSteps = [
     title: "Pilih Produk",
     description: "Telusuri dan pilih produk yang kamu inginkan.",
     icon: Search,
+    colSpan: "md:col-span-7",
   },
   {
     title: "Tambah Keranjang",
-    description: "Masukkan produk pilihanmu ke keranjang belanja.",
+    description: "Telusuri dan pilih produk yang kamu inginkan.",
     icon: ShoppingCart,
+    colSpan: "md:col-span-5",
   },
   {
     title: "Negosiasi Harga",
     description: "Jika total harga > 50 juta pembeli dapat melakukan pengajuan negosiasi.",
     icon: Handshake,
+    colSpan: "md:col-span-5",
   },
   {
     title: "Lakukan Pembayaran",
-    description: "Selesaikan pembayaran dengan metode yang tersedia.",
+    description: "Selesaikan transaksi menggunakan metode pembayaran yang aman dan terverifikasi dalam sistem kami.",
     icon: Wallet,
+    colSpan: "md:col-span-7",
   },
   {
     title: "Produk Dikirim",
-    description: "Pesananmu diproses dan segera dikirim.",
+    description: "Pesanan anda akan segera diproses dan dikirimkan ke lokasi tujuan dengan aman. Lacak pada tautan yang tertera menggunakan nomor resi yang ada.",
     icon: Truck,
+    colSpan: "md:col-span-12",
   },
 ];
 
@@ -130,45 +135,41 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="rounded-[28px] bg-secondary px-6 py-10 text-white md:px-10 md:py-12">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="text-2xl font-semibold">Panduan Belanja</h2>
-          <p className="mt-2 text-sm text-slate-300/90">
+      <section className="rounded-xl bg-[#131722] px-6 py-12 text-white md:px-12 md:py-16">
+        <div className="mx-auto text-center">
+          <h2 className="text-xl font-semibold md:text-2xl">Panduan Belanja</h2>
+          <p className="mt-2 text-sm text-slate-400">
             Telusuri dan pilih produk yang kamu inginkan.
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-9 md:mt-24 md:grid-cols-3 md:gap-x-12 md:gap-y-10">
-          {shoppingGuideSteps.slice(0, 3).map((step) => {
+        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-4">
+          {shoppingGuideSteps.map((step, index) => {
             const Icon = step.icon;
+            const isLast = index === 4;
 
             return (
-              <div key={step.title} className="flex flex-col items-center text-center">
-                <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-slate-500/70">
-                  <Icon className="size-5 text-white" />
+              <div
+                key={step.title}
+                className={`flex flex-col justify-between rounded-xl bg-[#272f3f] p-6 ${step.colSpan}`}
+              >
+                <div className="mb-12">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-[#1a202c]">
+                    <Icon className="size-4 text-white" />
+                  </div>
                 </div>
-                <h3 className="text-base font-semibold">{step.title}</h3>
-                <p className="mt-1 max-w-[240px] text-xs leading-relaxed text-slate-300/90">
-                  {step.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
 
-        <div className="mt-9 grid grid-cols-1 gap-9 md:mx-auto md:mt-14 md:max-w-3xl md:grid-cols-2 md:gap-x-16">
-          {shoppingGuideSteps.slice(3).map((step) => {
-            const Icon = step.icon;
-
-            return (
-              <div key={step.title} className="flex flex-col items-center text-center">
-                <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-slate-500/70">
-                  <Icon className="size-5 text-white" />
+                <div className={isLast ? "flex flex-col justify-between gap-4 md:flex-row md:items-end" : ""}>
+                  <div className={isLast ? "max-w-4xl" : ""}>
+                    <h3 className="text-base font-semibold text-white">{step.title}</h3>
+                    <p className="mt-2 text-[13px] leading-relaxed text-slate-400">
+                      {step.description}
+                    </p>
+                  </div>
+                  <div className={`mt-6 whitespace-nowrap text-xs font-medium text-slate-500 md:mt-0`}>
+                    {isLast ? "Langkah 5 (selesai)" : `Langkah ${index + 1}`}
+                  </div>
                 </div>
-                <h3 className="text-base font-semibold">{step.title}</h3>
-                <p className="mt-1 max-w-[240px] text-xs leading-relaxed text-slate-300/90">
-                  {step.description}
-                </p>
               </div>
             );
           })}
